@@ -124,7 +124,7 @@ with open(QUESTIONS_PATH, 'r', encoding='utf-8') as f:
 
 # Category definitions
 CATEGORY_KEYS = {
-    'all':          '✈️ All Categories',
+    'all':          '🎲 No Filters',
     'ethiopian':    '🇪🇹 Ethiopian Airlines',
     'aerodynamics': '🌬️ Aerodynamics',
     'systems':      '🔧 Aircraft Systems',
@@ -576,7 +576,7 @@ def launch_game(chat_id: int, setup: SetupState):
     active_games[setup.key] = game
     pending_setups.pop(setup.key, None)
 
-    cat_label = CATEGORY_KEYS.get(setup.cat_key, 'All Categories')
+    cat_label = CATEGORY_KEYS.get(setup.cat_key, 'No Filters')
     difficulty_label = DIFFICULTY_KEYS.get(setup.difficulty_key, 'All Levels')
     mode_label = "Individual Competition" if setup.mode == 'individual' else "Group vs Group"
 
@@ -889,7 +889,9 @@ def cmd_categories(message):
             count = sum(1 for q in ALL_QUESTIONS if q.get('difficulty', 'medium') == key)
         text += f"{label} — *{count}* questions\n"
 
-    text += "\nUse /quiz and pick a category + difficulty to play! 🎮"
+    text += "\n🎲 *No Filters* mixes questions from every category.\n"
+    text += "🌍 *General Aviation* only uses the General Aviation category.\n\n"
+    text += "Use /quiz and pick a category + difficulty to play! 🎮"
     send_chat_message(message.chat.id, text, thread_id=get_message_thread_id(message),
                       parse_mode='Markdown')
 
@@ -965,8 +967,9 @@ def cmd_help(message):
         "*Modes:*\n"
         "👤 *Individual* — open competition, everyone answers\n"
         "👥 *Group vs Group* — team battle, 2–4 groups\n\n"
-        "*Categories:* 7 aviation topics covering ETH, aerodynamics, systems, meteorology, air law, navigation & general aviation! 🌍\n"
-        "*Difficulties:* Easy, Medium, Hard, or All Levels.",
+        "*Categories:* Pick No Filters for every category, or General Aviation for only general aviation. 🌍\n"
+        "*Difficulties:* Easy, Medium, Hard, or All Levels.\n\n"
+        "*Support:* @teddy444 @yohannestakata",
         thread_id=get_message_thread_id(message), parse_mode='Markdown')
 
 
