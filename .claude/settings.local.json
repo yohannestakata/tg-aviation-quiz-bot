@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import json; qs = json.load\\(open\\('questions.json'\\)\\); cats = {}; [cats.update\\({q['category']: cats.get\\(q['category'],0\\)+1}\\) for q in qs]; print\\(f'Total: {len\\(qs\\)} questions'\\); [print\\(f'  {k}: {v}'\\) for k,v in sorted\\(cats.items\\(\\)\\)]\")",
+      "Bash(python -m py_compile bot.py)"
+    ]
+  }
+}

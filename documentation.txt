@@ -1,0 +1,120 @@
+# Aviation Quiz Bot - Advanced Upgrade Requirements
+
+## Project Goal
+Upgrade the current Aviation Quiz Bot into a **highly engaging, educational, and competitive** bot specifically for Ethiopian trainee pilot applicants.
+
+The bot must support **two main quiz modes**:  
+- **Individual Mode** (existing)  
+- **Group Mode** (new major feature)
+
+**Critical Rule**: All questions must remain **open-ended**. Users must type their answers manually. No multiple-choice questions are allowed.
+
+---
+
+## Core Features to Keep
+- Open-ended answering with progressive hint system (dashes → random letters → more letters → final reveal)
+- Hint timing: First hint after ~12 seconds, then every 20 seconds
+- First correct answer wins the point
+- Persistent scoring using SQLite
+- Aviation-themed, energetic, and professional messaging with relevant emojis (✈️, 🛫, 🏆, 🔥, etc.)
+
+---
+
+## New Major Feature: Group vs Group Mode
+
+### Group Mode Flow
+1. User types `/quiz`
+2. Bot shows mode selection using **Inline Keyboards**:
+   - Individual Competition
+   - Group Competition
+3. If **Group Competition** is selected:
+   - Bot asks how many groups to create (2, 3, or 4)
+   - The user who started the quiz becomes the **Group Leader**
+   - Leader assigns a **custom name** to each group (e.g., "Sky Hawks", "Bole Eagles", "Addis Future Pilots", "Ethiopian Wings")
+   - Users join a group by either typing the group name or clicking inline buttons
+   - Group Leader can start the quiz when ready
+4. During the quiz:
+   - Questions remain fully open-ended
+   - The **first correct answer** from any group member gives **1 point to the entire group**
+   - Hints work the same as before
+5. After each question → Show **Live Group Standings**
+6. At the end of the quiz:
+   - Final **Group Leaderboard**
+   - Individual contributions within each group (how many points each member scored for their team)
+
+---
+
+## Question Format (Must Upgrade)
+
+Update `questions.json` to this structure:
+
+```json
+{
+  "question": "What is the ICAO code of Ethiopian Airlines?",
+  "answer": "ETH",
+  "category": "Ethiopian Airlines",
+  "explanation": "ETH is the official ICAO designator used in flight plans and air traffic communication."
+}
+Required Categories:
+
+Aerodynamics & Principles of Flight
+Aircraft Systems & Instruments
+Meteorology
+Air Law & Regulations
+Ethiopian Airlines & Bole Airport
+Navigation & Radio Aids
+Airlines & Airports
+
+
+Commands (Must Support)
+Core Commands
+
+/start — Welcome message + main menu with inline buttons
+/quiz — Start a new quiz (then choose mode)
+/stop — Stop the current quiz (only leader or admin)
+/mystats — Show personal all-time statistics
+/leaderboard — Show all-time individual leaderboard
+/groupleaderboard — Show all-time group performance (if possible)
+/help — Show available commands and instructions
+
+Additional Advanced Commands
+
+/mygroup — Show which group the user is currently in (during group quiz)
+/groups — Show current groups and their scores (during active group quiz)
+/categories — Show available question categories
+
+
+Technical & UX Requirements
+
+Use Inline Keyboards extensively for better user experience (mode selection, group joining, number of groups, starting quiz, etc.)
+Maintain clean, vibrant, aviation-themed messages
+Keep code clean, modular, and well-commented
+Use SQLite for persistence (expand schema if needed for groups)
+Support both private chats and group chats
+Good state management for Group Creation Phase and Active Quiz Phase
+
+Deliverables
+Please deliver the upgrade in the following order:
+
+Updated questions.json Structure
+Show the new format with 15 sample questions covering different categories, including category and explanation fields.
+Complete Upgraded bot.py Code
+Full code supporting:
+Both Individual and Group Modes
+Inline keyboards
+All listed commands
+Proper state management
+Existing hint system preserved
+
+Updated requirements.txt (if any new packages are needed)
+Brief Explanation of how group state is managed in the code.
+
+
+Important Notes:
+
+The answering experience must remain exactly the same: users type their answer freely.
+The hint system (timers and progressive revealing) must be preserved.
+Make the bot feel energetic, professional, and aviation-themed.
+Prioritize clean code architecture and maintainability.
+
+Thank you!
