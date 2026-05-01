@@ -3,792 +3,1334 @@
     "question": "What is the ICAO code of Ethiopian Airlines?",
     "answer": "ETH",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "ETH is the ICAO designator assigned to Ethiopian Airlines, used in all official flight plans and ATC communications."
+    "explanation": "ETH is the ICAO designator assigned to Ethiopian Airlines, used in all official flight plans and ATC communications.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the IATA code of Ethiopian Airlines?",
     "answer": "ET",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "ET is the two-letter IATA code used on tickets, timetables, and booking systems worldwide."
+    "explanation": "ET is the two-letter IATA code used on tickets, timetables, and booking systems worldwide.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the official callsign of Ethiopian Airlines?",
     "answer": "ethiopian",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Pilots and controllers use the callsign 'Ethiopian' in all voice communications."
+    "explanation": "Pilots and controllers use the callsign 'Ethiopian' in all voice communications.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the ICAO code of Bole International Airport?",
     "answer": "HAAB",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "HAAB is the four-letter ICAO location indicator for Addis Ababa Bole International Airport."
+    "explanation": "HAAB is the four-letter ICAO location indicator for Addis Ababa Bole International Airport.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the IATA code of Addis Ababa Bole International Airport?",
     "answer": "ADD",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "ADD is the three-letter IATA airport code for Addis Ababa's main international airport."
+    "explanation": "ADD is the three-letter IATA airport code for Addis Ababa's main international airport.",
+    "difficulty": "easy"
   },
   {
     "question": "In which year was Ethiopian Airlines founded?",
     "answer": "1945",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Ethiopian Airlines was established on 30 December 1945 by Emperor Haile Selassie I."
+    "explanation": "Ethiopian Airlines was established on 30 December 1945 by Emperor Haile Selassie I.",
+    "difficulty": "easy"
   },
   {
     "question": "In which year did Ethiopian Airlines begin revenue operations?",
     "answer": "1946",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Regular commercial flights began in April 1946 with the help of TWA under a management contract."
+    "explanation": "Regular commercial flights began in April 1946 with the help of TWA under a management contract.",
+    "difficulty": "easy"
   },
   {
     "question": "What was the first aircraft type used by Ethiopian Airlines?",
     "answer": "DC-3",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Douglas DC-3 was the first aircraft operated by Ethiopian Airlines on its inaugural routes."
+    "explanation": "The Douglas DC-3 was the first aircraft operated by Ethiopian Airlines on its inaugural routes.",
+    "difficulty": "easy"
   },
   {
     "question": "What was the first international destination of Ethiopian Airlines?",
     "answer": "Cairo",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Cairo, Egypt was Ethiopian's first international destination, establishing early continental connections."
+    "explanation": "Cairo, Egypt was Ethiopian's first international destination, establishing early continental connections.",
+    "difficulty": "easy"
   },
   {
     "question": "What long-range widebody aircraft is a flagship in Ethiopian's fleet?",
     "answer": "A350",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Airbus A350 XWB is Ethiopian's primary ultra-long-range aircraft used on intercontinental routes."
+    "explanation": "The Airbus A350 XWB is Ethiopian's primary ultra-long-range aircraft used on intercontinental routes.",
+    "difficulty": "medium"
   },
   {
     "question": "What is the Dreamliner aircraft type in Ethiopian's fleet?",
     "answer": "B787",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Boeing 787 Dreamliner is a fuel-efficient widebody used by Ethiopian on medium to long-haul routes."
+    "explanation": "The Boeing 787 Dreamliner is a fuel-efficient widebody used by Ethiopian on medium to long-haul routes.",
+    "difficulty": "easy"
   },
   {
     "question": "What aircraft does Ethiopian mainly use for regional African flights?",
     "answer": "Q400",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Bombardier Q400 turboprop serves Ethiopian's regional network across shorter African routes."
+    "explanation": "The Bombardier Q400 turboprop serves Ethiopian's regional network across shorter African routes.",
+    "difficulty": "medium"
   },
   {
     "question": "What is the main cargo aircraft type used by Ethiopian Airlines?",
     "answer": "B777F",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Boeing 777 Freighter is used extensively by Ethiopian Cargo for intercontinental freight operations."
+    "explanation": "The Boeing 777 Freighter is used extensively by Ethiopian Cargo for intercontinental freight operations.",
+    "difficulty": "medium"
   },
   {
     "question": "What aircraft type is used for pilot ab-initio training at Ethiopian Aviation Academy?",
     "answer": "DA40",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Diamond DA40 is the primary single-engine trainer aircraft at the Ethiopian Aviation Academy."
+    "explanation": "The Diamond DA40 is the primary single-engine trainer aircraft at the Ethiopian Aviation Academy.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is the name of Ethiopian Airlines' pilot training institution?",
-    "answer": "Ethiopian Aviation Academy",
+    "question": "What single word completes Ethiopian Aviation ___?",
+    "answer": "Academy",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Ethiopian Aviation Academy (EAA) in Addis Ababa trains pilots, engineers, and aviation professionals."
+    "explanation": "The Ethiopian Aviation Academy (EAA) in Addis Ababa trains pilots, engineers, and aviation professionals.",
+    "acceptable_answers": [
+      "EAA"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What is the full official name of Ethiopian Airlines' training university?",
-    "answer": "Ethiopian Aviation University",
+    "question": "What single word completes Ethiopian Aviation ___ for the degree-granting school?",
+    "answer": "University",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The Ethiopian Aviation University (EAU) is the degree-granting institution attached to the training academy."
+    "explanation": "The Ethiopian Aviation University (EAU) is the degree-granting institution attached to the training academy.",
+    "acceptable_answers": [
+      "EAU"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "What is the abbreviation of the Ethiopian Aviation Academy?",
     "answer": "EAA",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "EAA stands for Ethiopian Aviation Academy, the premier aviation training institution in Africa."
+    "explanation": "EAA stands for Ethiopian Aviation Academy, the premier aviation training institution in Africa.",
+    "difficulty": "easy"
   },
   {
     "question": "Where is the main campus of the Ethiopian Aviation Academy located?",
     "answer": "Addis Ababa",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "The main EAA campus is in Addis Ababa, adjacent to Bole International Airport."
+    "explanation": "The main EAA campus is in Addis Ababa, adjacent to Bole International Airport.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the second campus city of the Ethiopian Aviation Academy?",
     "answer": "Hawassa",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Hawassa hosts EAA's second campus to expand capacity for training Ethiopian aviation professionals."
+    "explanation": "Hawassa hosts EAA's second campus to expand capacity for training Ethiopian aviation professionals.",
+    "difficulty": "easy"
   },
   {
     "question": "Which global airline alliance is Ethiopian Airlines a member of?",
     "answer": "Star Alliance",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Ethiopian Airlines joined Star Alliance in 2011, the world's largest airline alliance."
+    "explanation": "Ethiopian Airlines joined Star Alliance in 2011, the world's largest airline alliance.",
+    "difficulty": "medium"
   },
   {
     "question": "Who is the primary owner of Ethiopian Airlines?",
     "answer": "government",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Ethiopian Airlines is 100% state-owned by the Federal Democratic Republic of Ethiopia."
+    "explanation": "Ethiopian Airlines is 100% state-owned by the Federal Democratic Republic of Ethiopia.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the approximate fleet size of Ethiopian Airlines?",
     "answer": "170",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Ethiopian Airlines operates approximately 170 aircraft, making it one of Africa's largest fleets."
+    "explanation": "Ethiopian Airlines operates approximately 170 aircraft, making it one of Africa's largest fleets.",
+    "difficulty": "easy"
   },
   {
-    "question": "What is the cargo capacity target of Ethiopian Airlines?",
-    "answer": "1.5 million tons",
+    "question": "How many million tons is Ethiopian Airlines' cargo capacity target?",
+    "answer": "1.5",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Under Vision 2025, Ethiopian Cargo aims to handle 1.5 million tons of freight annually."
+    "explanation": "Under Vision 2025, Ethiopian Cargo aims to handle 1.5 million tons of freight annually.",
+    "acceptable_answers": [
+      "1.5 million"
+    ],
+    "difficulty": "hard"
   },
   {
     "question": "What is the name of Ethiopian Airlines' cargo and logistics arm?",
     "answer": "Ethiopian Cargo",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Ethiopian Cargo & Logistics Services is one of Africa's largest cargo airlines by volume."
+    "explanation": "Ethiopian Cargo & Logistics Services is one of Africa's largest cargo airlines by volume.",
+    "difficulty": "medium"
   },
   {
     "question": "What Ethiopian Airlines strategic plan is referenced for 2025 growth targets?",
     "answer": "Vision 2025",
     "category": "Ethiopian Airlines & Bole Airport",
-    "explanation": "Vision 2025 is Ethiopian Airlines' strategic growth plan targeting 18 million passengers and major cargo expansion."
+    "explanation": "Vision 2025 is Ethiopian Airlines' strategic growth plan targeting 18 million passengers and major cargo expansion.",
+    "difficulty": "medium"
   },
   {
     "question": "What does the control surface 'aileron' control?",
     "answer": "roll",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Ailerons move in opposite directions to roll the aircraft around its longitudinal axis."
+    "explanation": "Ailerons move in opposite directions to roll the aircraft around its longitudinal axis.",
+    "difficulty": "easy"
   },
   {
     "question": "What does the control surface 'elevator' control?",
     "answer": "pitch",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "The elevator controls pitch, rotating the aircraft around its lateral axis (nose up or down)."
+    "explanation": "The elevator controls pitch, rotating the aircraft around its lateral axis (nose up or down).",
+    "difficulty": "easy"
   },
   {
     "question": "What does the control surface 'rudder' control?",
     "answer": "yaw",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "The rudder controls yaw, rotating the aircraft around its vertical axis (nose left or right)."
+    "explanation": "The rudder controls yaw, rotating the aircraft around its vertical axis (nose left or right).",
+    "difficulty": "easy"
   },
   {
-    "question": "What are the four fundamental forces acting on an aircraft in flight?",
-    "answer": "lift weight thrust drag",
+    "question": "What force directly opposes drag?",
+    "answer": "thrust",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["lift drag thrust weight", "thrust drag lift weight", "weight lift drag thrust"],
-    "explanation": "Lift and weight act vertically; thrust and drag act horizontally. Balanced forces produce steady flight."
+    "explanation": "Lift and weight act vertically; thrust and drag act horizontally. Balanced forces produce steady flight.",
+    "difficulty": "medium"
   },
   {
     "question": "What force directly opposes thrust?",
     "answer": "drag",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Drag is the aerodynamic resistance opposing the forward motion of the aircraft through the air."
+    "explanation": "Drag is the aerodynamic resistance opposing the forward motion of the aircraft through the air.",
+    "difficulty": "easy"
   },
   {
     "question": "What force directly opposes lift?",
     "answer": "weight",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Weight (gravity) acts downward and must be overcome by lift for flight to be maintained."
+    "explanation": "Weight (gravity) acts downward and must be overcome by lift for flight to be maintained.",
+    "difficulty": "easy"
   },
   {
-    "question": "What is the angle between the chord line and the relative airflow called?",
-    "answer": "angle of attack",
+    "question": "What abbreviation means angle of attack?",
+    "answer": "AoA",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "The angle of attack (AoA) is critical — exceeding the critical AoA causes the wing to stall."
+    "explanation": "The angle of attack (AoA) is critical — exceeding the critical AoA causes the wing to stall.",
+    "acceptable_answers": [
+      "angle attack"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What causes an aircraft wing to stall?",
-    "answer": "critical angle of attack",
+    "question": "What flight condition occurs when a wing exceeds its critical angle of attack?",
+    "answer": "stall",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "A stall occurs when the angle of attack exceeds the critical value, causing airflow separation over the wing."
+    "explanation": "A stall occurs when the angle of attack exceeds the critical value, causing airflow separation over the wing.",
+    "difficulty": "medium"
   },
   {
     "question": "What happens to stall speed when bank angle increases?",
     "answer": "increases",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "In a banked turn, load factor increases, requiring more lift and thus a higher stall speed."
+    "explanation": "In a banked turn, load factor increases, requiring more lift and thus a higher stall speed.",
+    "difficulty": "easy"
   },
   {
-    "question": "What is the primary purpose of wing flaps?",
-    "answer": "increase lift and drag",
+    "question": "What do wing flaps mainly increase for slower flight?",
+    "answer": "lift",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["increase lift", "generate more lift"],
-    "explanation": "Flaps increase wing camber, allowing slower flight for takeoff and landing by boosting lift (and drag)."
+    "explanation": "Flaps increase wing camber, allowing slower flight for takeoff and landing by boosting lift (and drag).",
+    "difficulty": "medium"
   },
   {
     "question": "What is the primary purpose of leading-edge slats?",
     "answer": "delay stall",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["improve stall characteristics", "reduce stall speed"],
-    "explanation": "Slats extend the leading edge, smoothing airflow at high angles of attack and lowering stall speed."
+    "acceptable_answers": [
+      "improve stall characteristics",
+      "reduce stall speed"
+    ],
+    "explanation": "Slats extend the leading edge, smoothing airflow at high angles of attack and lowering stall speed.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the primary purpose of spoilers?",
     "answer": "reduce lift",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["spoil lift", "increase drag"],
-    "explanation": "Spoilers disrupt airflow over the wing, reducing lift and increasing drag for descent and braking."
+    "acceptable_answers": [
+      "spoil lift",
+      "increase drag"
+    ],
+    "explanation": "Spoilers disrupt airflow over the wing, reducing lift and increasing drag for descent and braking.",
+    "difficulty": "easy"
   },
   {
-    "question": "What is ground effect?",
-    "answer": "reduced induced drag near ground",
+    "question": "What is the near-ground phenomenon that reduces induced drag?",
+    "answer": "ground effect",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["increased lift near ground", "reduced drag"],
-    "explanation": "Ground effect occurs within one wingspan of the ground, reducing induced drag and increasing lift efficiency."
+    "explanation": "Ground effect occurs within one wingspan of the ground, reducing induced drag and increasing lift efficiency.",
+    "difficulty": "medium"
   },
   {
-    "question": "What causes the P-factor (asymmetric blade effect) on a propeller aircraft?",
-    "answer": "asymmetric propeller thrust",
+    "question": "What propeller effect is caused by asymmetric blade thrust?",
+    "answer": "P-factor",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["propeller slipstream", "descending blade produces more thrust"],
-    "explanation": "At high angles of attack, the descending blade produces more thrust than the ascending blade, yawing the nose left."
+    "explanation": "At high angles of attack, the descending blade produces more thrust than the ascending blade, yawing the nose left.",
+    "acceptable_answers": [
+      "pfactor"
+    ],
+    "difficulty": "hard"
   },
   {
     "question": "What is the best recovery technique from a spin?",
     "answer": "opposite rudder",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Apply full opposite rudder to stop the rotation, then ease back pressure to recover from the dive."
+    "explanation": "Apply full opposite rudder to stop the rotation, then ease back pressure to recover from the dive.",
+    "difficulty": "medium"
   },
   {
     "question": "What type of drag is produced as a byproduct of lift generation?",
     "answer": "induced drag",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Induced drag arises from wingtip vortices created when the wing generates lift; it decreases as speed increases."
+    "explanation": "Induced drag arises from wingtip vortices created when the wing generates lift; it decreases as speed increases.",
+    "difficulty": "medium"
   },
   {
     "question": "What is parasite drag also commonly called?",
     "answer": "profile drag",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Parasite (profile) drag includes form drag and skin friction; it increases with the square of airspeed."
+    "explanation": "Parasite (profile) drag includes form drag and skin friction; it increases with the square of airspeed.",
+    "difficulty": "medium"
   },
   {
     "question": "What is the best glide speed used for in an emergency?",
     "answer": "maximum range",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["maximum distance", "greatest glide distance"],
-    "explanation": "Flying at best glide speed (Vg) gives the greatest distance per unit of altitude lost."
+    "acceptable_answers": [
+      "maximum distance",
+      "greatest glide distance"
+    ],
+    "explanation": "Flying at best glide speed (Vg) gives the greatest distance per unit of altitude lost.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is the first action after an engine failure on takeoff?",
-    "answer": "pitch for best glide",
+    "question": "After engine failure on takeoff, what should the pilot do to maintain airspeed?",
+    "answer": "lower nose",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["lower nose", "maintain best glide speed"],
-    "explanation": "Immediately pitch for best glide speed to maintain control and maximise options for a safe landing."
+    "explanation": "Immediately pitch for best glide speed to maintain control and maximise options for a safe landing.",
+    "acceptable_answers": [
+      "pitch down"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What is a load factor?",
-    "answer": "ratio of lift to weight",
+    "question": "What common term describes load factor felt by occupants?",
+    "answer": "G-force",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "Load factor (n) = Lift / Weight. In level flight n=1; in a 60° banked turn n=2 (double the structural stress)."
+    "explanation": "Load factor (n) = Lift / Weight. In level flight n=1; in a 60° banked turn n=2 (double the structural stress).",
+    "acceptable_answers": [
+      "G force",
+      "G"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What is Dutch roll?",
-    "answer": "yaw roll coupled oscillation",
+    "question": "What oscillation combines yaw and roll in swept-wing jets?",
+    "answer": "Dutch roll",
     "category": "Aerodynamics & Principles of Flight",
-    "acceptable_answers": ["yaw-roll oscillation", "coupled yaw and roll"],
-    "explanation": "Dutch roll is an oscillatory motion combining yaw and roll, common in swept-wing jets. The yaw damper suppresses it."
+    "explanation": "Dutch roll is an oscillatory motion combining yaw and roll, common in swept-wing jets. The yaw damper suppresses it.",
+    "difficulty": "hard"
   },
   {
-    "question": "What is the center of pressure?",
-    "answer": "point where lift acts",
+    "question": "At what point can wing lift be considered to act?",
+    "answer": "lift point",
     "category": "Aerodynamics & Principles of Flight",
-    "explanation": "The center of pressure is the single point on a wing where all aerodynamic lift forces can be considered to act."
+    "explanation": "The center of pressure is the single point on a wing where all aerodynamic lift forces can be considered to act.",
+    "acceptable_answers": [
+      "center pressure",
+      "centre pressure"
+    ],
+    "difficulty": "hard"
   },
   {
     "question": "What does V1 represent during a takeoff?",
     "answer": "decision speed",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "V1 is the takeoff decision speed — above V1 the crew must continue the takeoff even if an engine fails."
+    "explanation": "V1 is the takeoff decision speed — above V1 the crew must continue the takeoff even if an engine fails.",
+    "difficulty": "medium"
   },
   {
     "question": "What does VR represent during a takeoff?",
     "answer": "rotation speed",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "VR is the speed at which the pilot applies back pressure to rotate the nose of the aircraft off the runway."
+    "explanation": "VR is the speed at which the pilot applies back pressure to rotate the nose of the aircraft off the runway.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does V2 represent during a takeoff?",
-    "answer": "takeoff safety speed",
+    "question": "What speed does V2 represent after takeoff?",
+    "answer": "safety speed",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "V2 is the minimum speed that must be maintained after engine failure to ensure a safe climb gradient."
+    "explanation": "V2 is the minimum speed that must be maintained after engine failure to ensure a safe climb gradient.",
+    "acceptable_answers": [
+      "takeoff speed"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "What does ASI stand for?",
     "answer": "airspeed indicator",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The Airspeed Indicator (ASI) measures the dynamic pressure of the airflow to display indicated airspeed."
+    "explanation": "The Airspeed Indicator (ASI) measures the dynamic pressure of the airflow to display indicated airspeed.",
+    "difficulty": "medium"
   },
   {
     "question": "What does the altimeter measure?",
     "answer": "altitude",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The altimeter senses static air pressure and converts it to altitude above a reference pressure datum."
+    "explanation": "The altimeter senses static air pressure and converts it to altitude above a reference pressure datum.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does the green arc on the ASI represent?",
-    "answer": "normal operating range",
+    "question": "What ASI arc marks the normal speed range?",
+    "answer": "green arc",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The green arc (Vno to Vs1) marks the normal operating speed range for the aircraft."
+    "explanation": "The green arc (Vno to Vs1) marks the normal operating speed range for the aircraft.",
+    "acceptable_answers": [
+      "green"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does the white arc on the ASI represent?",
-    "answer": "flap operating range",
+    "question": "What ASI arc marks flap operating speeds?",
+    "answer": "white arc",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The white arc shows the speed range in which flaps may be used (Vso to Vfe)."
+    "explanation": "The white arc shows the speed range in which flaps may be used (Vso to Vfe).",
+    "acceptable_answers": [
+      "white"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does the red line on the ASI indicate?",
-    "answer": "never exceed speed",
+    "question": "What ASI marking indicates VNE?",
+    "answer": "red line",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The red line (VNE) is the never-exceed speed; flight beyond this risks structural damage."
+    "explanation": "The red line (VNE) is the never-exceed speed; flight beyond this risks structural damage.",
+    "acceptable_answers": [
+      "red"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does VSI stand for?",
-    "answer": "vertical speed indicator",
+    "question": "What instrument is abbreviated VSI?",
+    "answer": "VSI",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The Vertical Speed Indicator (VSI) shows the rate of climb or descent in feet per minute."
+    "explanation": "The Vertical Speed Indicator (VSI) shows the rate of climb or descent in feet per minute.",
+    "acceptable_answers": [
+      "vertical speed"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does the attitude indicator display?",
-    "answer": "pitch and bank",
+    "question": "What instrument displays aircraft pitch and bank?",
+    "answer": "attitude indicator",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The attitude indicator (artificial horizon) shows the aircraft's pitch and bank relative to the earth's horizon."
+    "explanation": "The attitude indicator (artificial horizon) shows the aircraft's pitch and bank relative to the earth's horizon.",
+    "difficulty": "medium",
+    "acceptable_answers": [
+      "artificial horizon"
+    ]
   },
   {
-    "question": "What is the unit of vertical speed in aviation?",
-    "answer": "feet per minute",
+    "question": "What abbreviation is used for feet per minute?",
+    "answer": "FPM",
     "category": "Aircraft Systems & Instruments",
-    "acceptable_answers": ["fpm", "ft/min"],
-    "explanation": "Vertical speed (rate of climb or descent) is measured in feet per minute (FPM)."
+    "explanation": "Vertical speed (rate of climb or descent) is measured in feet per minute (FPM).",
+    "acceptable_answers": [
+      "ft/min"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "What typically powers gyroscopic instruments in small piston aircraft?",
     "answer": "vacuum",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "A vacuum pump driven by the engine creates suction to spin the gyros in the attitude indicator and DI."
+    "explanation": "A vacuum pump driven by the engine creates suction to spin the gyros in the attitude indicator and DI.",
+    "difficulty": "easy"
   },
   {
     "question": "What does TAS stand for?",
     "answer": "true airspeed",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "True Airspeed (TAS) is the actual speed of the aircraft through the air mass, corrected for altitude and temperature."
+    "explanation": "True Airspeed (TAS) is the actual speed of the aircraft through the air mass, corrected for altitude and temperature.",
+    "difficulty": "medium"
   },
   {
     "question": "What does IAS stand for?",
     "answer": "indicated airspeed",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "Indicated Airspeed (IAS) is the direct reading from the ASI, uncorrected for density altitude or position error."
+    "explanation": "Indicated Airspeed (IAS) is the direct reading from the ASI, uncorrected for density altitude or position error.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does MTOW stand for?",
-    "answer": "maximum takeoff weight",
+    "question": "What aircraft weight limit is abbreviated MTOW?",
+    "answer": "MTOW",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "MTOW is the maximum weight an aircraft is certified to weigh at the start of the takeoff roll."
+    "explanation": "MTOW is the maximum weight an aircraft is certified to weigh at the start of the takeoff roll.",
+    "acceptable_answers": [
+      "takeoff weight"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does LDA stand for?",
-    "answer": "landing distance available",
+    "question": "What runway landing distance value is abbreviated LDA?",
+    "answer": "LDA",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "LDA is the runway length declared available and suitable for the ground run of a landing aeroplane."
+    "explanation": "LDA is the runway length declared available and suitable for the ground run of a landing aeroplane.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does the yaw damper system do?",
-    "answer": "suppress Dutch roll",
+    "question": "What does a yaw damper suppress?",
+    "answer": "Dutch roll",
     "category": "Aircraft Systems & Instruments",
-    "acceptable_answers": ["prevent dutch roll", "dampen yaw oscillation"],
-    "explanation": "The yaw damper automatically applies small rudder inputs to suppress the Dutch roll oscillation in swept-wing jets."
+    "explanation": "The yaw damper automatically applies small rudder inputs to suppress the Dutch roll oscillation in swept-wing jets.",
+    "difficulty": "medium"
   },
   {
     "question": "What does the stick pusher system prevent?",
     "answer": "stall",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "A stick pusher automatically pushes the control column forward when the angle of attack approaches the stall threshold."
+    "explanation": "A stick pusher automatically pushes the control column forward when the angle of attack approaches the stall threshold.",
+    "difficulty": "easy"
   },
   {
     "question": "What does the flight data recorder (black box) record?",
     "answer": "flight data",
     "category": "Aircraft Systems & Instruments",
-    "acceptable_answers": ["flight parameters", "aircraft data"],
-    "explanation": "The FDR continuously records hundreds of flight parameters (speed, altitude, heading, control inputs) for accident investigation."
+    "acceptable_answers": [
+      "flight parameters",
+      "aircraft data"
+    ],
+    "explanation": "The FDR continuously records hundreds of flight parameters (speed, altitude, heading, control inputs) for accident investigation.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is the purpose of the anti-skid system on landing?",
-    "answer": "prevent wheel lock",
+    "question": "What does anti-skid prevent during braking?",
+    "answer": "wheel lock",
     "category": "Aircraft Systems & Instruments",
-    "acceptable_answers": ["prevent skidding", "prevent brake lockup"],
-    "explanation": "Anti-skid (anti-lock braking) automatically modulates brake pressure to prevent wheel lockup and tyre skidding."
+    "explanation": "Anti-skid (anti-lock braking) automatically modulates brake pressure to prevent wheel lockup and tyre skidding.",
+    "acceptable_answers": [
+      "skidding"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "What type of engine is used in most modern commercial airliners?",
     "answer": "turbofan",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The turbofan engine is standard on airliners; a large fan provides most thrust with high efficiency at cruise."
+    "explanation": "The turbofan engine is standard on airliners; a large fan provides most thrust with high efficiency at cruise.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does EPR stand for in jet engine monitoring?",
-    "answer": "engine pressure ratio",
+    "question": "What jet engine monitoring value is abbreviated EPR?",
+    "answer": "EPR",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "EPR is the ratio of exhaust total pressure to engine inlet total pressure, used as a power setting parameter."
+    "explanation": "EPR is the ratio of exhaust total pressure to engine inlet total pressure, used as a power setting parameter.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does the mixture control on a piston engine adjust?",
-    "answer": "fuel air ratio",
+    "question": "What does mixture control adjust between fuel and air?",
+    "answer": "ratio",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "The mixture control adjusts the ratio of fuel to air entering the engine to optimise combustion at altitude."
+    "explanation": "The mixture control adjusts the ratio of fuel to air entering the engine to optimise combustion at altitude.",
+    "acceptable_answers": [
+      "fuel ratio"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "What is the primary purpose of carburetor heat?",
     "answer": "prevent icing",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "Carburetor heat supplies warm air to the carburetor to melt or prevent ice formation in the venturi and throttle."
+    "explanation": "Carburetor heat supplies warm air to the carburetor to melt or prevent ice formation in the venturi and throttle.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does 'balanced field' mean in takeoff performance?",
-    "answer": "accelerate stop equals accelerate go",
+    "question": "In balanced field performance, which takeoff speed is central?",
+    "answer": "V1",
     "category": "Aircraft Systems & Instruments",
-    "explanation": "A balanced field exists when the distance to stop after an engine failure at V1 equals the distance to continue and clear the obstacle."
+    "explanation": "A balanced field exists when the distance to stop after an engine failure at V1 equals the distance to continue and clear the obstacle.",
+    "difficulty": "hard"
   },
   {
     "question": "What errors does the magnetic compass suffer from during turns?",
     "answer": "turning error",
     "category": "Aircraft Systems & Instruments",
-    "acceptable_answers": ["acceleration error", "magnetic dip error"],
-    "explanation": "The magnetic compass shows erroneous readings during turns (turning error) and acceleration/deceleration (acceleration error)."
+    "acceptable_answers": [
+      "acceleration error",
+      "magnetic dip error"
+    ],
+    "explanation": "The magnetic compass shows erroneous readings during turns (turning error) and acceleration/deceleration (acceleration error).",
+    "difficulty": "medium"
   },
   {
     "question": "What is the standard sea level pressure in the International Standard Atmosphere?",
     "answer": "1013 hPa",
     "category": "Meteorology",
-    "acceptable_answers": ["1013", "29.92 inhg", "1013.25"],
-    "explanation": "ISA defines standard sea level pressure as 1013.25 hPa (29.92 inHg), the reference for altimeter settings."
+    "acceptable_answers": [
+      "1013",
+      "29.92 inhg",
+      "1013.25"
+    ],
+    "explanation": "ISA defines standard sea level pressure as 1013.25 hPa (29.92 inHg), the reference for altimeter settings.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the standard sea level temperature in the International Standard Atmosphere?",
     "answer": "15°C",
     "category": "Meteorology",
-    "acceptable_answers": ["15", "15 c"],
-    "explanation": "ISA defines standard sea level temperature as 15°C (59°F), decreasing at the standard lapse rate with altitude."
+    "acceptable_answers": [
+      "15",
+      "15 c"
+    ],
+    "explanation": "ISA defines standard sea level temperature as 15°C (59°F), decreasing at the standard lapse rate with altitude.",
+    "difficulty": "easy"
   },
   {
-    "question": "What is the standard temperature lapse rate in the troposphere?",
-    "answer": "2°C per 1000 feet",
+    "question": "What is the ISA temperature lapse rate per 1000 feet?",
+    "answer": "2°C",
     "category": "Meteorology",
-    "acceptable_answers": ["2 degrees per 1000 feet", "2c per 1000ft", "2 c per 1000 ft"],
-    "explanation": "Temperature decreases approximately 2°C per 1000 ft (or 6.5°C per 1000 m) in the ISA troposphere."
+    "explanation": "Temperature decreases approximately 2°C per 1000 ft (or 6.5°C per 1000 m) in the ISA troposphere.",
+    "acceptable_answers": [
+      "2C",
+      "2 degrees",
+      "2"
+    ],
+    "difficulty": "medium"
   },
   {
     "question": "Which cloud type is associated with severe thunderstorms and turbulence?",
     "answer": "cumulonimbus",
     "category": "Meteorology",
-    "explanation": "Cumulonimbus (CB) clouds produce lightning, heavy rain, hail, severe turbulence, and icing — the most hazardous cloud to fly through."
+    "explanation": "Cumulonimbus (CB) clouds produce lightning, heavy rain, hail, severe turbulence, and icing — the most hazardous cloud to fly through.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the most dangerous type of aircraft icing?",
     "answer": "clear ice",
     "category": "Meteorology",
-    "explanation": "Clear ice is most dangerous: it adheres strongly, distorts wing shape significantly, and is hardest to remove."
+    "explanation": "Clear ice is most dangerous: it adheres strongly, distorts wing shape significantly, and is hardest to remove.",
+    "difficulty": "easy"
   },
   {
     "question": "Which cloud type indicates a stable atmosphere and reduced visibility?",
     "answer": "stratus",
     "category": "Meteorology",
-    "explanation": "Stratus is a low, grey, layered cloud forming in stable air; it causes drizzle, fog, and reduced ceiling."
+    "explanation": "Stratus is a low, grey, layered cloud forming in stable air; it causes drizzle, fog, and reduced ceiling.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does CAVOK stand for?",
-    "answer": "ceiling and visibility OK",
+    "question": "What METAR term means ceiling and visibility are OK?",
+    "answer": "CAVOK",
     "category": "Meteorology",
-    "acceptable_answers": ["cavok"],
-    "explanation": "CAVOK in a METAR means visibility ≥10 km, no cloud below 5000 ft or MSA, and no significant weather."
+    "explanation": "CAVOK in a METAR means visibility ≥10 km, no cloud below 5000 ft or MSA, and no significant weather.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does METAR stand for?",
-    "answer": "meteorological aerodrome report",
+    "question": "What routine aerodrome weather report is issued as a METAR?",
+    "answer": "METAR",
     "category": "Meteorology",
-    "explanation": "A METAR is a routine hourly weather observation report issued for a specific aerodrome."
+    "explanation": "A METAR is a routine hourly weather observation report issued for a specific aerodrome.",
+    "difficulty": "medium"
   },
   {
-    "question": "What type of weather report does a TAF provide?",
-    "answer": "terminal aerodrome forecast",
+    "question": "What aerodrome forecast is abbreviated TAF?",
+    "answer": "TAF",
     "category": "Meteorology",
-    "acceptable_answers": ["forecast", "weather forecast"],
-    "explanation": "A Terminal Aerodrome Forecast (TAF) provides a 24 to 30-hour weather forecast for the aerodrome area."
+    "explanation": "A Terminal Aerodrome Forecast (TAF) provides a 24 to 30-hour weather forecast for the aerodrome area.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is wind shear?",
-    "answer": "sudden change in wind speed or direction",
+    "question": "What weather hazard is a sudden change in wind speed or direction?",
+    "answer": "wind shear",
     "category": "Meteorology",
-    "acceptable_answers": ["sudden wind change", "rapid wind change"],
-    "explanation": "Wind shear is a rapid change in wind speed or direction over a short distance; it is extremely hazardous on approach."
+    "explanation": "Wind shear is a rapid change in wind speed or direction over a short distance; it is extremely hazardous on approach.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is density altitude?",
-    "answer": "pressure altitude corrected for temperature",
+    "question": "What altitude value is pressure altitude corrected for temperature?",
+    "answer": "density altitude",
     "category": "Meteorology",
-    "explanation": "Density altitude is the altitude in the Standard Atmosphere that corresponds to the actual air density; high DA degrades performance."
+    "explanation": "Density altitude is the altitude in the Standard Atmosphere that corresponds to the actual air density; high DA degrades performance.",
+    "difficulty": "hard"
   },
   {
     "question": "What is the unit of wind speed used in aviation?",
     "answer": "knots",
     "category": "Meteorology",
-    "explanation": "Aviation uses knots (nautical miles per hour) for all airspeed and wind speed measurements."
+    "explanation": "Aviation uses knots (nautical miles per hour) for all airspeed and wind speed measurements.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the danger of frost forming on aircraft wings before flight?",
     "answer": "reduced lift",
     "category": "Meteorology",
-    "explanation": "Even thin frost disrupts airflow over the wing, reducing lift and increasing stall speed — enough to prevent safe takeoff."
+    "explanation": "Even thin frost disrupts airflow over the wing, reducing lift and increasing stall speed — enough to prevent safe takeoff.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the medical condition caused by insufficient oxygen at altitude?",
     "answer": "hypoxia",
     "category": "Meteorology",
-    "explanation": "Hypoxia occurs when insufficient oxygen reaches the brain; insidious onset at altitude can impair judgement without warning."
+    "explanation": "Hypoxia occurs when insufficient oxygen reaches the brain; insidious onset at altitude can impair judgement without warning.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does a SIGMET report warn about?",
-    "answer": "significant meteorological hazards",
+    "question": "What report warns pilots about significant weather hazards?",
+    "answer": "SIGMET",
     "category": "Meteorology",
-    "acceptable_answers": ["severe weather", "significant weather"],
-    "explanation": "A SIGMET (Significant Meteorological Information) warns of severe weather events hazardous to aircraft operations."
+    "explanation": "A SIGMET (Significant Meteorological Information) warns of severe weather events hazardous to aircraft operations.",
+    "difficulty": "medium"
   },
   {
-    "question": "What causes turbulence in clear air (CAT)?",
-    "answer": "wind shear at altitude",
+    "question": "What turbulence hazard is abbreviated CAT?",
+    "answer": "CAT",
     "category": "Meteorology",
-    "acceptable_answers": ["jet stream wind shear", "clear air turbulence"],
-    "explanation": "Clear Air Turbulence (CAT) is caused by wind shear near jet streams at cruise altitude and gives no radar warning."
+    "explanation": "Clear Air Turbulence (CAT) is caused by wind shear near jet streams at cruise altitude and gives no radar warning.",
+    "acceptable_answers": [
+      "clear air"
+    ],
+    "difficulty": "hard"
   },
   {
     "question": "What is the international aviation emergency radio frequency?",
     "answer": "121.5",
     "category": "Air Law & Regulations",
-    "acceptable_answers": ["121.5 mhz"],
-    "explanation": "121.5 MHz is the internationally designated VHF guard (emergency) frequency monitored by all aircraft and ATC."
+    "acceptable_answers": [
+      "121.5 mhz"
+    ],
+    "explanation": "121.5 MHz is the internationally designated VHF guard (emergency) frequency monitored by all aircraft and ATC.",
+    "difficulty": "easy"
   },
   {
     "question": "What does squawk 7700 indicate?",
     "answer": "emergency",
     "category": "Air Law & Regulations",
-    "explanation": "Transponder code 7700 signals a general emergency to ATC. The aircraft receives immediate priority handling."
+    "explanation": "Transponder code 7700 signals a general emergency to ATC. The aircraft receives immediate priority handling.",
+    "difficulty": "easy"
   },
   {
     "question": "What does squawk 7600 indicate?",
     "answer": "radio failure",
     "category": "Air Law & Regulations",
-    "explanation": "Code 7600 informs ATC of a complete radio communication failure. Pilots follow lost comms procedures."
+    "explanation": "Code 7600 informs ATC of a complete radio communication failure. Pilots follow lost comms procedures.",
+    "difficulty": "easy"
   },
   {
     "question": "What does squawk 7500 indicate?",
     "answer": "unlawful interference",
     "category": "Air Law & Regulations",
-    "acceptable_answers": ["hijack", "hijacking"],
-    "explanation": "Code 7500 covertly signals to ATC that the aircraft is subject to unlawful interference (hijacking)."
+    "acceptable_answers": [
+      "hijack",
+      "hijacking"
+    ],
+    "explanation": "Code 7500 covertly signals to ATC that the aircraft is subject to unlawful interference (hijacking).",
+    "difficulty": "medium"
   },
   {
-    "question": "What does ATC stand for?",
-    "answer": "air traffic control",
+    "question": "What aviation service is abbreviated ATC?",
+    "answer": "ATC",
     "category": "Air Law & Regulations",
-    "explanation": "Air Traffic Control (ATC) provides safe, orderly, and expeditious flow of air traffic using separation standards."
+    "explanation": "Air Traffic Control (ATC) provides safe, orderly, and expeditious flow of air traffic using separation standards.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does ICAO stand for?",
-    "answer": "international civil aviation organization",
+    "question": "What global civil aviation agency is abbreviated ICAO?",
+    "answer": "ICAO",
     "category": "Air Law & Regulations",
-    "explanation": "ICAO is the UN specialised agency that sets global standards and regulations for international civil aviation."
+    "explanation": "ICAO is the UN specialised agency that sets global standards and regulations for international civil aviation.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does IATA stand for?",
-    "answer": "international air transport association",
+    "question": "What airline industry association is abbreviated IATA?",
+    "answer": "IATA",
     "category": "Air Law & Regulations",
-    "explanation": "IATA represents the airline industry globally, setting commercial standards like codes, ticketing, and safety audits."
+    "explanation": "IATA represents the airline industry globally, setting commercial standards like codes, ticketing, and safety audits.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does NOTAM stand for?",
-    "answer": "notice to airmen",
+    "question": "What aviation notice is abbreviated NOTAM?",
+    "answer": "NOTAM",
     "category": "Air Law & Regulations",
-    "explanation": "A NOTAM contains essential information about changes to airspace, navigation aids, or procedures not yet reflected in charts."
+    "explanation": "A NOTAM contains essential information about changes to airspace, navigation aids, or procedures not yet reflected in charts.",
+    "difficulty": "easy",
+    "acceptable_answers": [
+      "notice"
+    ]
   },
   {
-    "question": "What does VMC stand for?",
-    "answer": "visual meteorological conditions",
+    "question": "What visual weather condition is abbreviated VMC?",
+    "answer": "VMC",
     "category": "Air Law & Regulations",
-    "explanation": "VMC means weather conditions meet the minimum flight visibility and cloud clearance for visual flight rules (VFR)."
+    "explanation": "VMC means weather conditions meet the minimum flight visibility and cloud clearance for visual flight rules (VFR).",
+    "difficulty": "medium"
   },
   {
-    "question": "What does IMC stand for?",
-    "answer": "instrument meteorological conditions",
+    "question": "What instrument weather condition is abbreviated IMC?",
+    "answer": "IMC",
     "category": "Air Law & Regulations",
-    "explanation": "IMC means weather is below VMC minima; flight requires adherence to instrument flight rules (IFR)."
+    "explanation": "IMC means weather is below VMC minima; flight requires adherence to instrument flight rules (IFR).",
+    "difficulty": "medium"
   },
   {
     "question": "What is a go-around?",
     "answer": "missed approach",
     "category": "Air Law & Regulations",
-    "acceptable_answers": ["aborted landing", "go around"],
-    "explanation": "A go-around (missed approach) is the procedure of abandoning an approach to land and climbing away to try again."
+    "acceptable_answers": [
+      "aborted landing",
+      "go around"
+    ],
+    "explanation": "A go-around (missed approach) is the procedure of abandoning an approach to land and climbing away to try again.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does TEM stand for in aviation safety?",
-    "answer": "threat and error management",
+    "question": "What aviation safety framework is abbreviated TEM?",
+    "answer": "TEM",
     "category": "Air Law & Regulations",
-    "explanation": "TEM is a safety framework used in crew resource management (CRM) training to identify, avoid, and recover from threats and errors."
+    "explanation": "TEM is a safety framework used in crew resource management (CRM) training to identify, avoid, and recover from threats and errors.",
+    "difficulty": "medium"
   },
   {
     "question": "In what magnetic direction does runway 09 point?",
     "answer": "090",
     "category": "Air Law & Regulations",
-    "acceptable_answers": ["090 degrees", "90", "east"],
-    "explanation": "Runway designators are the first two digits of the magnetic heading divided by 10; runway 09 faces approximately 090° magnetic."
+    "acceptable_answers": [
+      "090 degrees",
+      "90",
+      "east"
+    ],
+    "explanation": "Runway designators are the first two digits of the magnetic heading divided by 10; runway 09 faces approximately 090° magnetic.",
+    "difficulty": "easy"
   },
   {
     "question": "In what magnetic direction does runway 27 point?",
     "answer": "270",
     "category": "Air Law & Regulations",
-    "acceptable_answers": ["270 degrees", "west"],
-    "explanation": "Runway 27 faces approximately 270° magnetic (west), the reciprocal of runway 09."
+    "acceptable_answers": [
+      "270 degrees",
+      "west"
+    ],
+    "explanation": "Runway 27 faces approximately 270° magnetic (west), the reciprocal of runway 09.",
+    "difficulty": "easy"
   },
   {
-    "question": "What does VOR stand for?",
-    "answer": "VHF omnidirectional range",
+    "question": "What radio navigation aid is abbreviated VOR?",
+    "answer": "VOR",
     "category": "Navigation & Radio Aids",
-    "acceptable_answers": ["very high frequency omnidirectional range"],
-    "explanation": "A VOR is a ground-based radio navigation aid transmitting 360 magnetic bearings (radials) for aircraft to track."
+    "explanation": "A VOR is a ground-based radio navigation aid transmitting 360 magnetic bearings (radials) for aircraft to track.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does DME stand for?",
-    "answer": "distance measuring equipment",
+    "question": "What distance radio aid is abbreviated DME?",
+    "answer": "DME",
     "category": "Navigation & Radio Aids",
-    "explanation": "DME measures the slant-range distance between the aircraft and a ground transponder beacon in nautical miles."
+    "explanation": "DME measures the slant-range distance between the aircraft and a ground transponder beacon in nautical miles.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does NDB stand for?",
-    "answer": "non-directional beacon",
+    "question": "What radio beacon is abbreviated NDB?",
+    "answer": "NDB",
     "category": "Navigation & Radio Aids",
-    "explanation": "An NDB is a radio transmitter that broadcasts in all directions; aircraft use an ADF to find the bearing to the station."
+    "explanation": "An NDB is a radio transmitter that broadcasts in all directions; aircraft use an ADF to find the bearing to the station.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does ILS stand for?",
-    "answer": "instrument landing system",
+    "question": "What precision landing aid is abbreviated ILS?",
+    "answer": "ILS",
     "category": "Navigation & Radio Aids",
-    "explanation": "The ILS provides precision lateral (localizer) and vertical (glideslope) guidance for instrument approaches to a runway."
+    "explanation": "The ILS provides precision lateral (localizer) and vertical (glideslope) guidance for instrument approaches to a runway.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does RAIM stand for?",
-    "answer": "receiver autonomous integrity monitoring",
+    "question": "What GPS integrity check is abbreviated RAIM?",
+    "answer": "RAIM",
     "category": "Navigation & Radio Aids",
-    "explanation": "RAIM is a GPS self-checking function that verifies the integrity of satellite signals and warns if accuracy degrades."
+    "explanation": "RAIM is a GPS self-checking function that verifies the integrity of satellite signals and warns if accuracy degrades.",
+    "difficulty": "hard"
   },
   {
-    "question": "What does QNH provide to the altimeter?",
-    "answer": "altitude above sea level",
+    "question": "With QNH set, does the altimeter show altitude or height?",
+    "answer": "altitude",
     "category": "Navigation & Radio Aids",
-    "explanation": "Setting QNH on the altimeter sub-scale displays the aircraft's pressure altitude corrected to mean sea level (AMSL)."
+    "explanation": "Setting QNH on the altimeter sub-scale displays the aircraft's pressure altitude corrected to mean sea level (AMSL).",
+    "difficulty": "medium"
   },
   {
-    "question": "What does QFE provide to the altimeter?",
-    "answer": "height above airfield",
+    "question": "With QFE set, does the altimeter show altitude or height?",
+    "answer": "height",
     "category": "Navigation & Radio Aids",
-    "acceptable_answers": ["height above field", "height above aerodrome"],
-    "explanation": "Setting QFE makes the altimeter read zero on the airfield surface, displaying height directly above the aerodrome."
+    "explanation": "Setting QFE makes the altimeter read zero on the airfield surface, displaying height directly above the aerodrome.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does dead reckoning navigation involve?",
-    "answer": "time speed direction",
+    "question": "What navigation method estimates position from time and speed?",
+    "answer": "dead reckoning",
     "category": "Navigation & Radio Aids",
-    "acceptable_answers": ["calculating position from speed time and heading", "navigation by time speed and heading"],
-    "explanation": "Dead reckoning estimates current position using a known start point, elapsed time, groundspeed, and track direction."
+    "explanation": "Dead reckoning estimates current position using a known start point, elapsed time, groundspeed, and track direction.",
+    "difficulty": "hard"
   },
   {
-    "question": "What information does a VOR provide to a pilot?",
-    "answer": "bearing from station",
+    "question": "What does a VOR radial give from the station?",
+    "answer": "bearing",
     "category": "Navigation & Radio Aids",
-    "acceptable_answers": ["magnetic bearing", "radial from station"],
-    "explanation": "A VOR tells the pilot which radial (magnetic bearing) they are on from the station, enabling position fixing."
+    "explanation": "A VOR tells the pilot which radial (magnetic bearing) they are on from the station, enabling position fixing.",
+    "acceptable_answers": [
+      "radial"
+    ],
+    "difficulty": "medium"
   },
   {
-    "question": "What does GPS stand for?",
-    "answer": "global positioning system",
+    "question": "What satellite navigation system is abbreviated GPS?",
+    "answer": "GPS",
     "category": "Navigation & Radio Aids",
-    "explanation": "GPS is a US satellite-based navigation system providing precise position, velocity, and time data to equipped aircraft."
+    "explanation": "GPS is a US satellite-based navigation system providing precise position, velocity, and time data to equipped aircraft.",
+    "difficulty": "medium"
   },
   {
-    "question": "What is a waypoint in navigation?",
-    "answer": "defined navigation point",
+    "question": "What is a named navigation point called?",
+    "answer": "waypoint",
     "category": "Navigation & Radio Aids",
-    "acceptable_answers": ["fixed navigation reference", "navigation fix"],
-    "explanation": "A waypoint is a specific geographic position defined by coordinates, used to define airways and flight plans."
+    "explanation": "A waypoint is a specific geographic position defined by coordinates, used to define airways and flight plans.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does ADF stand for?",
-    "answer": "automatic direction finder",
+    "question": "What cockpit instrument points to an NDB?",
+    "answer": "ADF",
     "category": "Navigation & Radio Aids",
-    "explanation": "The ADF is an instrument that automatically points toward an NDB beacon, showing relative bearing to the station."
+    "explanation": "The ADF is an instrument that automatically points toward an NDB beacon, showing relative bearing to the station.",
+    "difficulty": "medium"
   },
   {
     "question": "What is the name of the aircraft flown by the Wright brothers in 1903?",
     "answer": "Flyer",
     "category": "General Aviation",
-    "explanation": "The Wright Flyer made the first successful powered, controlled flight on 17 December 1903 at Kitty Hawk, North Carolina."
+    "explanation": "The Wright Flyer made the first successful powered, controlled flight on 17 December 1903 at Kitty Hawk, North Carolina.",
+    "difficulty": "easy"
   },
   {
     "question": "What year did the Wright brothers achieve the first powered flight?",
     "answer": "1903",
     "category": "General Aviation",
-    "explanation": "Orville Wright piloted the first successful powered flight on 17 December 1903, covering 37 metres in 12 seconds."
+    "explanation": "Orville Wright piloted the first successful powered flight on 17 December 1903, covering 37 metres in 12 seconds.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the approximate speed of sound at sea level in metres per second?",
     "answer": "340",
     "category": "General Aviation",
-    "acceptable_answers": ["340 m/s", "343"],
-    "explanation": "Sound travels approximately 340 m/s (661 knots) at sea level in standard conditions; this is Mach 1."
+    "acceptable_answers": [
+      "340 m/s",
+      "343"
+    ],
+    "explanation": "Sound travels approximately 340 m/s (661 knots) at sea level in standard conditions; this is Mach 1.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the popular nickname for the Boeing 747?",
     "answer": "Jumbo Jet",
     "category": "General Aviation",
-    "explanation": "The Boeing 747 earned the name 'Jumbo Jet' when it entered service in 1970 as the world's first wide-body airliner."
+    "explanation": "The Boeing 747 earned the name 'Jumbo Jet' when it entered service in 1970 as the world's first wide-body airliner.",
+    "difficulty": "medium"
   },
   {
     "question": "What was the world's fastest commercial passenger aircraft?",
     "answer": "Concorde",
     "category": "General Aviation",
-    "explanation": "Concorde flew at Mach 2.04 (2,179 km/h) and operated transatlantic routes from 1976 until its retirement in 2003."
+    "explanation": "Concorde flew at Mach 2.04 (2,179 km/h) and operated transatlantic routes from 1976 until its retirement in 2003.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the standard unit of altitude in aviation?",
     "answer": "feet",
     "category": "General Aviation",
-    "explanation": "Aviation globally uses feet for altitude, even in countries that use the metric system for other measurements."
+    "explanation": "Aviation globally uses feet for altitude, even in countries that use the metric system for other measurements.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the standard unit of airspeed in aviation?",
     "answer": "knots",
     "category": "General Aviation",
-    "explanation": "One knot equals one nautical mile per hour (1.852 km/h). Nautical miles align with latitude degrees, simplifying navigation."
+    "explanation": "One knot equals one nautical mile per hour (1.852 km/h). Nautical miles align with latitude degrees, simplifying navigation.",
+    "difficulty": "easy"
   },
   {
     "question": "What is the approximate typical cruise altitude for a Boeing 787?",
     "answer": "40000 feet",
     "category": "General Aviation",
-    "acceptable_answers": ["40,000 feet", "35000 feet", "43000 feet"],
-    "explanation": "The B787 Dreamliner typically cruises between 35,000 and 43,000 feet, with a service ceiling around 43,000 ft."
+    "acceptable_answers": [
+      "40,000 feet",
+      "35000 feet",
+      "43000 feet"
+    ],
+    "explanation": "The B787 Dreamliner typically cruises between 35,000 and 43,000 feet, with a service ceiling around 43,000 ft.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does EASA stand for?",
-    "answer": "european union aviation safety agency",
+    "question": "What European aviation safety regulator is abbreviated EASA?",
+    "answer": "EASA",
     "category": "General Aviation",
-    "acceptable_answers": ["european aviation safety agency"],
-    "explanation": "EASA is the regulatory authority responsible for civil aviation safety and environmental protection in Europe."
+    "explanation": "EASA is the regulatory authority responsible for civil aviation safety and environmental protection in Europe.",
+    "difficulty": "medium"
   },
   {
-    "question": "What does the term 'Mach number' refer to?",
-    "answer": "ratio of speed to speed of sound",
+    "question": "Mach number compares aircraft speed with what?",
+    "answer": "sound",
     "category": "General Aviation",
-    "acceptable_answers": ["speed relative to sound", "speed of sound ratio"],
-    "explanation": "Mach number = aircraft speed ÷ local speed of sound. Mach 1 = speed of sound; Mach 0.85 is a typical airliner cruise."
+    "explanation": "Mach number = aircraft speed ÷ local speed of sound. Mach 1 = speed of sound; Mach 0.85 is a typical airliner cruise.",
+    "acceptable_answers": [
+      "speed sound"
+    ],
+    "difficulty": "hard"
   },
   {
-    "question": "What does CRM stand for in aviation?",
-    "answer": "crew resource management",
+    "question": "What crew teamwork safety training is abbreviated CRM?",
+    "answer": "CRM",
     "category": "General Aviation",
-    "explanation": "CRM training teaches flight crews to effectively use all available resources (people, information, equipment) to enhance safety."
+    "explanation": "CRM training teaches flight crews to effectively use all available resources (people, information, equipment) to enhance safety.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What airport serves as Ethiopian Airlines' main hub?",
+    "answer": "Bole",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "ADD",
+      "HAAB"
+    ],
+    "explanation": "Addis Ababa Bole International Airport is Ethiopian Airlines' main hub.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Which Ethiopian city is home to Bole International Airport?",
+    "answer": "Addis Ababa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Addis"
+    ],
+    "explanation": "Bole International Airport is located in Addis Ababa, Ethiopia's capital city.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What continent is Ethiopian Airlines based in?",
+    "answer": "Africa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Ethiopian Airlines is based in Ethiopia, in East Africa.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airline alliance uses Ethiopian Airlines as a member carrier?",
+    "answer": "Star Alliance",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Star"
+    ],
+    "explanation": "Ethiopian Airlines is a member of Star Alliance.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What force pulls an aircraft downward?",
+    "answer": "weight",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "gravity"
+    ],
+    "explanation": "Weight is the downward force caused by gravity.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What force pushes an aircraft forward?",
+    "answer": "thrust",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Thrust is the forward force produced by engines or propellers.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What force resists an aircraft moving through air?",
+    "answer": "drag",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Drag is aerodynamic resistance opposite the aircraft's motion.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What control surface is normally on the vertical tail?",
+    "answer": "rudder",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The rudder is mounted on the vertical stabilizer and controls yaw.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What type of turn increases load factor?",
+    "answer": "banked turn",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "turn"
+    ],
+    "explanation": "A banked turn increases load factor because the aircraft must produce more lift.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What device raises wing camber for takeoff and landing?",
+    "answer": "flaps",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Flaps increase wing camber, allowing slower takeoff and landing speeds.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What flight condition happens when airflow separates from the wing?",
+    "answer": "stall",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "A stall occurs when airflow separates and the wing can no longer produce enough lift.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows aircraft heading?",
+    "answer": "compass",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "heading indicator"
+    ],
+    "explanation": "A compass or heading indicator shows the aircraft's heading.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows altitude?",
+    "answer": "altimeter",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The altimeter displays altitude using atmospheric pressure.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows airspeed?",
+    "answer": "ASI",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "airspeed indicator"
+    ],
+    "explanation": "The airspeed indicator, or ASI, shows indicated airspeed.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What system provides aircraft electrical power after engine start?",
+    "answer": "generator",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "alternator"
+    ],
+    "explanation": "A generator or alternator supplies electrical power while the engine is running.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What cockpit warning color usually means immediate danger?",
+    "answer": "red",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Red cockpit warnings typically signal urgent or immediate danger.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What warning color usually means caution?",
+    "answer": "amber",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "yellow"
+    ],
+    "explanation": "Amber or yellow warnings usually indicate caution.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What cloud is often shortened to CB?",
+    "answer": "cumulonimbus",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "CB"
+    ],
+    "explanation": "Cumulonimbus clouds are often abbreviated CB and are associated with thunderstorms.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What weather phenomenon is cloud at ground level?",
+    "answer": "fog",
+    "category": "Meteorology",
+    "explanation": "Fog is cloud that forms at or near the ground.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What precipitation can damage aircraft in thunderstorms?",
+    "answer": "hail",
+    "category": "Meteorology",
+    "explanation": "Hail can damage windscreens, leading edges, and other aircraft surfaces.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What weather hazard is invisible but dangerous near jet streams?",
+    "answer": "CAT",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "clear air"
+    ],
+    "explanation": "Clear Air Turbulence, or CAT, can occur near jet streams without visible cloud clues.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What does a windsock show?",
+    "answer": "wind direction",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "wind"
+    ],
+    "explanation": "A windsock gives a quick visual indication of wind direction and approximate strength.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What rule set is used for visual flying?",
+    "answer": "VFR",
+    "category": "Air Law & Regulations",
+    "explanation": "VFR stands for Visual Flight Rules.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What rule set is used for instrument flying?",
+    "answer": "IFR",
+    "category": "Air Law & Regulations",
+    "explanation": "IFR stands for Instrument Flight Rules.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What transponder code means emergency?",
+    "answer": "7700",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7700 indicates a general emergency.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What transponder code means radio failure?",
+    "answer": "7600",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7600 indicates radio communication failure.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What transponder code means hijacking?",
+    "answer": "7500",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7500 indicates unlawful interference or hijacking.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What aviation phrase means landing clearance is cancelled?",
+    "answer": "go around",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "missed approach"
+    ],
+    "explanation": "A go-around means the aircraft abandons the landing and climbs away.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What radio aid gives distance in nautical miles?",
+    "answer": "DME",
+    "category": "Navigation & Radio Aids",
+    "explanation": "Distance Measuring Equipment, or DME, gives slant-range distance.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What navigation aid gives radials?",
+    "answer": "VOR",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A VOR provides magnetic radials from the station.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What navigation beacon works with an ADF?",
+    "answer": "NDB",
+    "category": "Navigation & Radio Aids",
+    "explanation": "An Automatic Direction Finder points toward an NDB.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What satellite navigation system is common in aircraft?",
+    "answer": "GPS",
+    "category": "Navigation & Radio Aids",
+    "explanation": "GPS provides satellite-based position and navigation information.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What ILS component gives vertical guidance?",
+    "answer": "glideslope",
+    "category": "Navigation & Radio Aids",
+    "acceptable_answers": [
+      "glide slope"
+    ],
+    "explanation": "The glideslope provides vertical guidance on an ILS approach.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What ILS component gives lateral guidance?",
+    "answer": "localizer",
+    "category": "Navigation & Radio Aids",
+    "explanation": "The localizer provides lateral runway alignment guidance.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What unit measures runway distance?",
+    "answer": "meters",
+    "category": "General Aviation",
+    "acceptable_answers": [
+      "metres",
+      "feet"
+    ],
+    "explanation": "Runway lengths are commonly published in meters or feet depending on the charting standard.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What unit measures aviation fuel by weight?",
+    "answer": "kilograms",
+    "category": "General Aviation",
+    "acceptable_answers": [
+      "pounds",
+      "kg",
+      "lbs"
+    ],
+    "explanation": "Aircraft fuel is often tracked by weight, commonly kilograms or pounds.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What number represents Mach one?",
+    "answer": "1",
+    "category": "General Aviation",
+    "acceptable_answers": [
+      "one"
+    ],
+    "explanation": "Mach 1 means the aircraft is travelling at the local speed of sound.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aircraft type has wings and rotors?",
+    "answer": "helicopter",
+    "category": "General Aviation",
+    "explanation": "A helicopter uses rotating wings, or rotors, to produce lift.",
+    "difficulty": "easy"
   }
 ]

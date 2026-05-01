@@ -112,6 +112,13 @@ CATEGORY_KEYS = {
     'general':      '🌍 General Aviation',
 }
 
+DIFFICULTY_KEYS = {
+    'all':    '🎯 All Levels',
+    'easy':   '🟢 Easy',
+    'medium': '🟡 Medium',
+    'hard':   '🔴 Hard',
+}
+
 CATEGORY_MAP = {
     'ethiopian':    'Ethiopian Airlines & Bole Airport',
     'aerodynamics': 'Aerodynamics & Principles of Flight',
@@ -129,13 +136,20 @@ def get_category_emoji(category: str) -> str:
     return CAT_EMOJI.get(category, '✈️')
 
 
-def select_questions(chat_id: int, cat_key: str, num: int):
+def get_difficulty_label(difficulty: str) -> str:
+    return DIFFICULTY_KEYS.get(difficulty, DIFFICULTY_KEYS['medium'])
+
+
+def select_questions(chat_id: int, cat_key: str, difficulty_key: str, num: int):
     """Pick questions randomly, avoiding the last 10 sessions' used questions."""
     if cat_key == 'all':
         pool = list(range(len(ALL_QUESTIONS)))
     else:
         cat_name = CATEGORY_MAP[cat_key]
         pool = [i for i, q in enumerate(ALL_QUESTIONS) if q.get('category') == cat_name]
+
+    if difficulty_key != 'all':
+        pool = [i for i in pool if ALL_QUESTIONS[i].get('difficulty', 'medium') == difficulty_key]
 
     history = load_question_history(chat_id)
     used = {idx for session in history for idx in session}
@@ -175,6 +189,7 @@ class SetupState:
         self.leader_id = leader_id
         self.mode = None          # 'individual' | 'group'
         self.cat_key = 'all'
+        self.difficulty_key = 'all'
         self.num_questions = 10
         self.state = 'choosing_mode'
         # Group-only fields
@@ -200,6 +215,7 @@ class Game:
         self.correct_answer = None
         self.current_explanation = ''
         self.current_category = ''
+        self.current_difficulty = 'medium'
         self.hint_level = 0
         self.timer = None
         self.answered = False
@@ -256,17 +272,20 @@ def start_new_question(game: Game):
     game.correct_answer = q['answer']
     game.current_explanation = q.get('explanation', '')
     game.current_category = q.get('category', '')
+    game.current_difficulty = q.get('difficulty', 'medium')
     game.hint_level = 0
     game.answered = False
 
     bar = _progress_bar(game.current_index, game.num_questions)
     cat_emoji = get_category_emoji(game.current_category)
+    difficulty_label = get_difficulty_label(game.current_difficulty)
     hint = game.get_hint()
 
     text = (
         f"✈️ *Question {game.current_index + 1} / {game.num_questions}*\n"
         f"`{bar}`\n"
         f"{cat_emoji} _{game.current_category}_\n\n"
+        f"{difficulty_label}\n\n"
         f"❓ *{game.current_question}*\n\n"
         f"💡 `{hint}`\n\n"
         f"✍️ Type your answer! _(Hint in 12s)_"
@@ -413,6 +432,17 @@ def send_category_keyboard(chat_id: int):
                      parse_mode='Markdown', reply_markup=markup)
 
 
+def send_difficulty_keyboard(chat_id: int):
+    markup = types.InlineKeyboardMarkup(row_width=2)
+    buttons = [
+        types.InlineKeyboardButton(label, callback_data=f"diff:{key}")
+        for key, label in DIFFICULTY_KEYS.items()
+    ]
+    markup.add(*buttons)
+    bot.send_message(chat_id, "🎯 *Choose a difficulty level:*",
+                     parse_mode='Markdown', reply_markup=markup)
+
+
 def send_num_groups_keyboard(chat_id: int):
     markup = types.InlineKeyboardMarkup(row_width=3)
     markup.add(
@@ -466,10 +496,15 @@ def update_join_message(chat_id: int, setup: SetupState):
 # ====================== LAUNCH GAME ======================
 
 def launch_game(chat_id: int, setup: SetupState):
-    questions, indices = select_questions(chat_id, setup.cat_key, setup.num_questions)
+    questions, indices = select_questions(
+        chat_id,
+        setup.cat_key,
+        setup.difficulty_key,
+        setup.num_questions,
+    )
     if not questions:
         bot.send_message(chat_id,
-            "❌ No questions available for this category. Try another category.")
+            "❌ No questions available for that category and difficulty. Try another setup.")
         pending_setups.pop(chat_id, None)
         return
 
@@ -478,11 +513,13 @@ def launch_game(chat_id: int, setup: SetupState):
     pending_setups.pop(chat_id, None)
 
     cat_label = CATEGORY_KEYS.get(setup.cat_key, 'All Categories')
+    difficulty_label = DIFFICULTY_KEYS.get(setup.difficulty_key, 'All Levels')
     mode_label = "Individual Competition" if setup.mode == 'individual' else "Group vs Group"
 
     bot.send_message(chat_id,
         f"🔥 *Aviation Quiz Starting!* 🛫\n\n"
         f"📚 Category: *{cat_label}*\n"
+        f"🎯 Difficulty: *{difficulty_label}*\n"
         f"🏁 Mode: *{mode_label}*\n"
         f"❓ Questions: *{len(questions)}*\n\n"
         f"First correct answer wins the point!\n"
@@ -542,11 +579,31 @@ def handle_callback(call):
             bot.answer_callback_query(call.id, "Only the quiz leader can choose the category.")
             return
         setup.cat_key = data.split(":", 1)[1]
+        setup.state = 'choosing_difficulty'
+        bot.answer_callback_query(call.id)
+        _delete_safely(chat_id, call.message.message_id)
+        send_difficulty_keyboard(chat_id)
+        return
+
+    # ---- Difficulty selection ----
+    if data.startswith("diff:"):
+        if not setup:
+            bot.answer_callback_query(call.id, "No quiz setup in progress. Use /quiz.")
+            return
+        if user_id != setup.leader_id:
+            bot.answer_callback_query(call.id, "Only the quiz leader can choose the difficulty.")
+            return
+        difficulty_key = data.split(":", 1)[1]
+        if difficulty_key not in DIFFICULTY_KEYS:
+            bot.answer_callback_query(call.id, "Unknown difficulty.")
+            return
+        setup.difficulty_key = difficulty_key
         setup.state = 'choosing_num_questions'
         bot.answer_callback_query(call.id)
         _delete_safely(chat_id, call.message.message_id)
         bot.send_message(chat_id,
             f"✅ Category: *{CATEGORY_KEYS[setup.cat_key]}*\n\n"
+            f"🎯 Difficulty: *{DIFFICULTY_KEYS[setup.difficulty_key]}*\n\n"
             f"📊 How many questions? _(send a number, 1–50)_",
             parse_mode='Markdown')
         return
@@ -637,7 +694,7 @@ def cmd_start(message):
         "• /mygroup — Your current group\n"
         "• /stop — Stop current quiz\n"
         "• /help — Help & instructions\n\n"
-        "Use /quiz to begin! 🔥",
+        "Use /quiz to choose mode, category, difficulty, and question count! 🔥",
         parse_mode='Markdown')
 
 
@@ -732,7 +789,15 @@ def cmd_categories(message):
             cat_name = CATEGORY_MAP[key]
             count = sum(1 for q in ALL_QUESTIONS if q.get('category') == cat_name)
         text += f"{label} — *{count}* questions\n"
-    text += "\nUse /quiz and pick a category to play! 🎮"
+    text += "\n🎯 *Difficulty Levels*\n"
+    for key, label in DIFFICULTY_KEYS.items():
+        if key == 'all':
+            count = len(ALL_QUESTIONS)
+        else:
+            count = sum(1 for q in ALL_QUESTIONS if q.get('difficulty', 'medium') == key)
+        text += f"{label} — *{count}* questions\n"
+
+    text += "\nUse /quiz and pick a category + difficulty to play! 🎮"
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 
@@ -793,11 +858,13 @@ def cmd_help(message):
         "• First correct answer wins the point\n"
         "• Hints appear at 12s and 32s automatically\n"
         "• Answer + explanation shown after each question\n"
-        "• Questions don't repeat for 10 rounds!\n\n"
+        "• Questions don't repeat for 10 rounds!\n"
+        "• Quiz leaders choose category and difficulty before launch\n\n"
         "*Modes:*\n"
         "👤 *Individual* — open competition, everyone answers\n"
         "👥 *Group vs Group* — team battle, 2–4 groups\n\n"
-        "*Categories:* 7 aviation topics covering ETH, aerodynamics, systems, meteorology, air law, navigation & general aviation! 🌍",
+        "*Categories:* 7 aviation topics covering ETH, aerodynamics, systems, meteorology, air law, navigation & general aviation! 🌍\n"
+        "*Difficulties:* Easy, Medium, Hard, or All Levels.",
         parse_mode='Markdown')
 
 
