@@ -17,6 +17,28 @@ if not TOKEN:
 
 bot = telebot.TeleBot(TOKEN, threaded=True)
 
+
+def get_message_thread_id(message):
+    return getattr(message, 'message_thread_id', None)
+
+
+def make_chat_key(chat_id: int, thread_id=None):
+    return (chat_id, thread_id)
+
+
+def get_message_key(message):
+    return make_chat_key(message.chat.id, get_message_thread_id(message))
+
+
+def get_callback_key(call):
+    return make_chat_key(call.message.chat.id, get_message_thread_id(call.message))
+
+
+def send_chat_message(chat_id: int, text: str, thread_id=None, **kwargs):
+    if thread_id is not None:
+        kwargs['message_thread_id'] = thread_id
+    return bot.send_message(chat_id, text, **kwargs)
+
 # ====================== DATABASE ======================
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_PATH, 'scores.db')
@@ -184,8 +206,10 @@ user_names     = {}   # user_id -> first_name
 
 
 class SetupState:
-    def __init__(self, chat_id: int, leader_id: int):
+    def __init__(self, chat_id: int, leader_id: int, thread_id=None):
         self.chat_id = chat_id
+        self.thread_id = thread_id
+        self.key = make_chat_key(chat_id, thread_id)
         self.leader_id = leader_id
         self.mode = None          # 'individual' | 'group'
         self.cat_key = 'all'
@@ -205,6 +229,8 @@ class Game:
     def __init__(self, chat_id: int, questions: list, indices: list,
                  mode: str, setup: SetupState):
         self.chat_id = chat_id
+        self.thread_id = setup.thread_id
+        self.key = setup.key
         self.questions = questions
         self.indices = indices
         self.num_questions = len(questions)
@@ -257,14 +283,14 @@ def _progress_bar(current: int, total: int, width: int = 20) -> str:
 
 
 def start_new_question(game: Game):
-    if game.chat_id not in active_games:
+    if game.key not in active_games:
         return
     if game.current_index >= game.num_questions:
         # Save history then show results
         history = load_question_history(game.chat_id)
         save_question_history(game.chat_id, history + [game.indices])
         show_final_leaderboard(game)
-        active_games.pop(game.chat_id, None)
+        active_games.pop(game.key, None)
         return
 
     q = game.questions[game.current_index]
@@ -290,27 +316,29 @@ def start_new_question(game: Game):
         f"💡 `{hint}`\n\n"
         f"✍️ Type your answer! _(Hint in 12s)_"
     )
-    bot.send_message(game.chat_id, text, parse_mode='Markdown')
+    send_chat_message(game.chat_id, text, thread_id=game.thread_id, parse_mode='Markdown')
     game.timer = threading.Timer(12.0, give_hint, [game])
     game.timer.start()
 
 
 def give_hint(game: Game):
     with game._lock:
-        if game.answered or game.chat_id not in active_games:
+        if game.answered or game.key not in active_games:
             return
         game.hint_level += 1
         hint = game.get_hint()
         level = game.hint_level
 
     if level == 1:
-        bot.send_message(game.chat_id,
-            f"🔍 *Hint 1:* `{hint}`\n_(Next hint in 20s)_", parse_mode='Markdown')
+        send_chat_message(game.chat_id,
+            f"🔍 *Hint 1:* `{hint}`\n_(Next hint in 20s)_",
+            thread_id=game.thread_id, parse_mode='Markdown')
         game.timer = threading.Timer(20.0, give_hint, [game])
         game.timer.start()
     elif level == 2:
-        bot.send_message(game.chat_id,
-            f"🔎 *Hint 2:* `{hint}`\n_(Answer reveal in 20s)_", parse_mode='Markdown')
+        send_chat_message(game.chat_id,
+            f"🔎 *Hint 2:* `{hint}`\n_(Answer reveal in 20s)_",
+            thread_id=game.thread_id, parse_mode='Markdown')
         game.timer = threading.Timer(20.0, give_hint, [game])
         game.timer.start()
     else:
@@ -321,11 +349,11 @@ def give_hint(game: Game):
             game.answered = True
             game.current_index += 1
 
-        bot.send_message(game.chat_id,
+        send_chat_message(game.chat_id,
             f"⏰ *Time's up!*\n\n"
             f"The answer was: *{game.correct_answer}* ✈️\n\n"
             f"📖 _{game.current_explanation}_",
-            parse_mode='Markdown')
+            thread_id=game.thread_id, parse_mode='Markdown')
         time.sleep(2.5)
         start_new_question(game)
 
@@ -358,7 +386,8 @@ def show_live_leaderboard(game: Game):
 
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("📊 Refresh Standings", callback_data="standings"))
-    bot.send_message(game.chat_id, text, parse_mode='Markdown', reply_markup=markup)
+    send_chat_message(game.chat_id, text, thread_id=game.thread_id,
+                      parse_mode='Markdown', reply_markup=markup)
 
 
 def show_final_leaderboard(game: Game):
@@ -371,7 +400,7 @@ def show_final_leaderboard(game: Game):
                 medal = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else "👏"
                 text += f"{medal} {rank}. {name} — *{score}* pts\n"
                 update_user_score(uid, user_names.get(uid, "Unknown"), score)
-            bot.send_message(game.chat_id, text, parse_mode='Markdown')
+            send_chat_message(game.chat_id, text, thread_id=game.thread_id, parse_mode='Markdown')
     else:
         # Group results
         sorted_groups = sorted(game.group_scores.items(), key=lambda x: x[1], reverse=True)
@@ -390,7 +419,7 @@ def show_final_leaderboard(game: Game):
                 pts = game.group_contributors.get(uid, 0)
                 text += f"  • {name} — {pts} pts\n"
                 update_user_score(uid, user_names.get(uid, "Unknown"), pts)
-        bot.send_message(game.chat_id, text, parse_mode='Markdown')
+        send_chat_message(game.chat_id, text, thread_id=game.thread_id, parse_mode='Markdown')
 
     # All-time leaderboard
     all_time = get_all_time_leaderboard(10)
@@ -399,59 +428,60 @@ def show_final_leaderboard(game: Game):
         for rank, (name, score) in enumerate(all_time, 1):
             medal = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else f"{rank}."
             lb_text += f"{medal} {name} — *{score}* pts\n"
-        bot.send_message(game.chat_id, lb_text, parse_mode='Markdown')
+        send_chat_message(game.chat_id, lb_text, thread_id=game.thread_id, parse_mode='Markdown')
 
-    bot.send_message(game.chat_id,
-        "✈️ Quiz complete! Fly again with /quiz 🛫", parse_mode='Markdown')
+    send_chat_message(game.chat_id,
+        "✈️ Quiz complete! Fly again with /quiz 🛫",
+        thread_id=game.thread_id, parse_mode='Markdown')
 
 
 # ====================== SETUP UI ======================
 
-def send_mode_keyboard(chat_id: int):
+def send_mode_keyboard(chat_id: int, thread_id=None):
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
         types.InlineKeyboardButton("👤 Individual", callback_data="mode:individual"),
         types.InlineKeyboardButton("👥 Group vs Group", callback_data="mode:group"),
     )
-    bot.send_message(chat_id,
+    send_chat_message(chat_id,
         "✈️ *Aviation Quiz* — Choose your mode:\n\n"
         "👤 *Individual* — Solo or open competition\n"
         "👥 *Group vs Group* — Team battle!\n\n"
         "_(Only the quiz leader can make this choice)_",
-        parse_mode='Markdown', reply_markup=markup)
+        thread_id=thread_id, parse_mode='Markdown', reply_markup=markup)
 
 
-def send_category_keyboard(chat_id: int):
+def send_category_keyboard(chat_id: int, thread_id=None):
     markup = types.InlineKeyboardMarkup(row_width=2)
     buttons = [
         types.InlineKeyboardButton(label, callback_data=f"cat:{key}")
         for key, label in CATEGORY_KEYS.items()
     ]
     markup.add(*buttons)
-    bot.send_message(chat_id, "📚 *Choose a question category:*",
-                     parse_mode='Markdown', reply_markup=markup)
+    send_chat_message(chat_id, "📚 *Choose a question category:*",
+                      thread_id=thread_id, parse_mode='Markdown', reply_markup=markup)
 
 
-def send_difficulty_keyboard(chat_id: int):
+def send_difficulty_keyboard(chat_id: int, thread_id=None):
     markup = types.InlineKeyboardMarkup(row_width=2)
     buttons = [
         types.InlineKeyboardButton(label, callback_data=f"diff:{key}")
         for key, label in DIFFICULTY_KEYS.items()
     ]
     markup.add(*buttons)
-    bot.send_message(chat_id, "🎯 *Choose a difficulty level:*",
-                     parse_mode='Markdown', reply_markup=markup)
+    send_chat_message(chat_id, "🎯 *Choose a difficulty level:*",
+                      thread_id=thread_id, parse_mode='Markdown', reply_markup=markup)
 
 
-def send_num_groups_keyboard(chat_id: int):
+def send_num_groups_keyboard(chat_id: int, thread_id=None):
     markup = types.InlineKeyboardMarkup(row_width=3)
     markup.add(
         types.InlineKeyboardButton("2 Groups", callback_data="ngroups:2"),
         types.InlineKeyboardButton("3 Groups", callback_data="ngroups:3"),
         types.InlineKeyboardButton("4 Groups", callback_data="ngroups:4"),
     )
-    bot.send_message(chat_id, "👥 *How many groups will compete?*",
-                     parse_mode='Markdown', reply_markup=markup)
+    send_chat_message(chat_id, "👥 *How many groups will compete?*",
+                      thread_id=thread_id, parse_mode='Markdown', reply_markup=markup)
 
 
 def build_join_text(setup: SetupState) -> str:
@@ -473,8 +503,9 @@ def build_join_markup(setup: SetupState) -> types.InlineKeyboardMarkup:
 
 
 def send_join_message(chat_id: int, setup: SetupState):
-    msg = bot.send_message(chat_id,
+    msg = send_chat_message(chat_id,
         build_join_text(setup),
+        thread_id=setup.thread_id,
         parse_mode='Markdown',
         reply_markup=build_join_markup(setup))
     setup.join_msg_id = msg.message_id
@@ -503,20 +534,21 @@ def launch_game(chat_id: int, setup: SetupState):
         setup.num_questions,
     )
     if not questions:
-        bot.send_message(chat_id,
-            "❌ No questions available for that category and difficulty. Try another setup.")
-        pending_setups.pop(chat_id, None)
+        send_chat_message(chat_id,
+            "❌ No questions available for that category and difficulty. Try another setup.",
+            thread_id=setup.thread_id)
+        pending_setups.pop(setup.key, None)
         return
 
     game = Game(chat_id, questions, indices, setup.mode, setup)
-    active_games[chat_id] = game
-    pending_setups.pop(chat_id, None)
+    active_games[setup.key] = game
+    pending_setups.pop(setup.key, None)
 
     cat_label = CATEGORY_KEYS.get(setup.cat_key, 'All Categories')
     difficulty_label = DIFFICULTY_KEYS.get(setup.difficulty_key, 'All Levels')
     mode_label = "Individual Competition" if setup.mode == 'individual' else "Group vs Group"
 
-    bot.send_message(chat_id,
+    send_chat_message(chat_id,
         f"🔥 *Aviation Quiz Starting!* 🛫\n\n"
         f"📚 Category: *{cat_label}*\n"
         f"🎯 Difficulty: *{difficulty_label}*\n"
@@ -525,7 +557,7 @@ def launch_game(chat_id: int, setup: SetupState):
         f"First correct answer wins the point!\n"
         f"Hints appear automatically after 12s and 20s.\n\n"
         f"Get ready... ✈️",
-        parse_mode='Markdown')
+        thread_id=setup.thread_id, parse_mode='Markdown')
     time.sleep(2)
     start_new_question(game)
 
@@ -535,20 +567,21 @@ def launch_game(chat_id: int, setup: SetupState):
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback(call):
     chat_id = call.message.chat.id
+    key = get_callback_key(call)
     user_id = call.from_user.id
     user_names[user_id] = call.from_user.first_name
     data = call.data
 
     # Refresh standings during an active game
     if data == "standings":
-        if chat_id in active_games:
-            show_live_leaderboard(active_games[chat_id])
+        if key in active_games:
+            show_live_leaderboard(active_games[key])
         else:
             bot.answer_callback_query(call.id, "No active quiz.")
         bot.answer_callback_query(call.id)
         return
 
-    setup = pending_setups.get(chat_id)
+    setup = pending_setups.get(key)
 
     # ---- Mode selection ----
     if data.startswith("mode:"):
@@ -564,10 +597,10 @@ def handle_callback(call):
         _delete_safely(chat_id, call.message.message_id)
         if mode == 'individual':
             setup.state = 'choosing_category'
-            send_category_keyboard(chat_id)
+            send_category_keyboard(chat_id, setup.thread_id)
         else:
             setup.state = 'choosing_num_groups'
-            send_num_groups_keyboard(chat_id)
+            send_num_groups_keyboard(chat_id, setup.thread_id)
         return
 
     # ---- Category selection ----
@@ -582,7 +615,7 @@ def handle_callback(call):
         setup.state = 'choosing_difficulty'
         bot.answer_callback_query(call.id)
         _delete_safely(chat_id, call.message.message_id)
-        send_difficulty_keyboard(chat_id)
+        send_difficulty_keyboard(chat_id, setup.thread_id)
         return
 
     # ---- Difficulty selection ----
@@ -601,11 +634,11 @@ def handle_callback(call):
         setup.state = 'choosing_num_questions'
         bot.answer_callback_query(call.id)
         _delete_safely(chat_id, call.message.message_id)
-        bot.send_message(chat_id,
+        send_chat_message(chat_id,
             f"✅ Category: *{CATEGORY_KEYS[setup.cat_key]}*\n\n"
             f"🎯 Difficulty: *{DIFFICULTY_KEYS[setup.difficulty_key]}*\n\n"
             f"📊 How many questions? _(send a number, 1–50)_",
-            parse_mode='Markdown')
+            thread_id=setup.thread_id, parse_mode='Markdown')
         return
 
     # ---- Number of groups ----
@@ -621,11 +654,11 @@ def handle_callback(call):
         setup.naming_index = 0
         bot.answer_callback_query(call.id)
         _delete_safely(chat_id, call.message.message_id)
-        bot.send_message(chat_id,
+        send_chat_message(chat_id,
             f"✅ *{setup.num_groups} groups selected!*\n\n"
             f"Leader, send the name for *Group 1*:\n"
             f"_(e.g. Sky Hawks, Bole Eagles, Ethiopian Wings)_",
-            parse_mode='Markdown')
+            thread_id=setup.thread_id, parse_mode='Markdown')
         return
 
     # ---- Join a group ----
@@ -682,7 +715,7 @@ def _delete_safely(chat_id: int, message_id: int):
 @bot.message_handler(commands=['start'])
 def cmd_start(message):
     user_names[message.from_user.id] = message.from_user.first_name
-    bot.send_message(message.chat.id,
+    send_chat_message(message.chat.id,
         "🛫 *Welcome to Aviation Quiz Bot!* ✈️\n\n"
         "Test your Ethiopian Airlines & aviation knowledge!\n\n"
         "📋 *Commands:*\n"
@@ -695,55 +728,64 @@ def cmd_start(message):
         "• /stop — Stop current quiz\n"
         "• /help — Help & instructions\n\n"
         "Use /quiz to choose mode, category, difficulty, and question count! 🔥",
-        parse_mode='Markdown')
+        thread_id=get_message_thread_id(message), parse_mode='Markdown')
 
 
 @bot.message_handler(commands=['quiz'])
 def cmd_quiz(message):
     chat_id = message.chat.id
+    key = get_message_key(message)
+    thread_id = get_message_thread_id(message)
     user_id = message.from_user.id
     user_names[user_id] = message.from_user.first_name
 
-    if chat_id in active_games:
-        bot.send_message(chat_id,
-            "⚠️ A quiz is already running! Use /stop to end it first.")
+    if key in active_games:
+        send_chat_message(chat_id,
+            "⚠️ A quiz is already running! Use /stop to end it first.",
+            thread_id=thread_id)
         return
-    if chat_id in pending_setups:
-        bot.send_message(chat_id,
-            "⚠️ A quiz setup is already in progress.")
+    if key in pending_setups:
+        send_chat_message(chat_id,
+            "⚠️ A quiz setup is already in progress.",
+            thread_id=thread_id)
         return
 
-    setup = SetupState(chat_id, user_id)
-    pending_setups[chat_id] = setup
-    send_mode_keyboard(chat_id)
+    setup = SetupState(chat_id, user_id, thread_id)
+    pending_setups[key] = setup
+    send_mode_keyboard(chat_id, thread_id)
 
 
 @bot.message_handler(commands=['stop'])
 def cmd_stop(message):
     chat_id = message.chat.id
+    key = get_message_key(message)
+    thread_id = get_message_thread_id(message)
     user_id = message.from_user.id
 
-    if chat_id in pending_setups:
-        setup = pending_setups[chat_id]
+    if key in pending_setups:
+        setup = pending_setups[key]
         if user_id == setup.leader_id:
-            pending_setups.pop(chat_id, None)
-            bot.send_message(chat_id, "🛑 Quiz setup cancelled.")
+            pending_setups.pop(key, None)
+            send_chat_message(chat_id, "🛑 Quiz setup cancelled.", thread_id=thread_id)
         else:
-            bot.send_message(chat_id, "⚠️ Only the quiz leader can cancel the setup.")
+            send_chat_message(chat_id, "⚠️ Only the quiz leader can cancel the setup.",
+                              thread_id=thread_id)
         return
 
-    if chat_id in active_games:
-        game = active_games[chat_id]
+    if key in active_games:
+        game = active_games[key]
         if user_id == game.leader_id:
             if game.timer:
                 game.timer.cancel()
-            active_games.pop(chat_id, None)
-            bot.send_message(chat_id, "🛑 *Quiz stopped by the leader.*", parse_mode='Markdown')
+            active_games.pop(key, None)
+            send_chat_message(chat_id, "🛑 *Quiz stopped by the leader.*",
+                              thread_id=thread_id, parse_mode='Markdown')
         else:
-            bot.send_message(chat_id, "⚠️ Only the quiz leader can stop the quiz.")
+            send_chat_message(chat_id, "⚠️ Only the quiz leader can stop the quiz.",
+                              thread_id=thread_id)
         return
 
-    bot.send_message(chat_id, "No active quiz to stop.")
+    send_chat_message(chat_id, "No active quiz to stop.", thread_id=thread_id)
 
 
 @bot.message_handler(commands=['mystats'])
@@ -756,27 +798,29 @@ def cmd_mystats(message):
         if name == user_names.get(user_id):
             rank = i + 1
             break
-    bot.send_message(message.chat.id,
+    send_chat_message(message.chat.id,
         f"✈️ *Your Aviation Stats*\n\n"
         f"👤 *{message.from_user.first_name}*\n"
         f"🏆 All-time score: *{score}* pts\n"
         f"📊 Global rank: *#{rank}*\n\n"
         "Keep flying and climbing the board! 🚀",
-        parse_mode='Markdown')
+        thread_id=get_message_thread_id(message), parse_mode='Markdown')
 
 
 @bot.message_handler(commands=['leaderboard'])
 def cmd_leaderboard(message):
     data = get_all_time_leaderboard(10)
     if not data:
-        bot.send_message(message.chat.id,
-            "No scores yet — be the first! Use /quiz to start playing.")
+        send_chat_message(message.chat.id,
+            "No scores yet — be the first! Use /quiz to start playing.",
+            thread_id=get_message_thread_id(message))
         return
     text = "🏅 *All-Time Top Pilots* ✈️\n\n"
     for rank, (name, score) in enumerate(data, 1):
         medal = "🥇" if rank == 1 else "🥈" if rank == 2 else "🥉" if rank == 3 else f"{rank}."
         text += f"{medal} {name} — *{score}* pts\n"
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    send_chat_message(message.chat.id, text, thread_id=get_message_thread_id(message),
+                      parse_mode='Markdown')
 
 
 @bot.message_handler(commands=['categories'])
@@ -798,18 +842,22 @@ def cmd_categories(message):
         text += f"{label} — *{count}* questions\n"
 
     text += "\nUse /quiz and pick a category + difficulty to play! 🎮"
-    bot.send_message(message.chat.id, text, parse_mode='Markdown')
+    send_chat_message(message.chat.id, text, thread_id=get_message_thread_id(message),
+                      parse_mode='Markdown')
 
 
 @bot.message_handler(commands=['groups'])
 def cmd_groups(message):
     chat_id = message.chat.id
-    if chat_id not in active_games:
-        bot.send_message(chat_id, "No active quiz. Use /quiz to start one.")
+    key = get_message_key(message)
+    thread_id = get_message_thread_id(message)
+    if key not in active_games:
+        send_chat_message(chat_id, "No active quiz. Use /quiz to start one.", thread_id=thread_id)
         return
-    game = active_games[chat_id]
+    game = active_games[key]
     if game.mode != 'group':
-        bot.send_message(chat_id, "This is an individual competition — no groups!")
+        send_chat_message(chat_id, "This is an individual competition — no groups!",
+                          thread_id=thread_id)
         return
     show_live_leaderboard(game)
 
@@ -817,32 +865,36 @@ def cmd_groups(message):
 @bot.message_handler(commands=['mygroup'])
 def cmd_mygroup(message):
     chat_id = message.chat.id
+    key = get_message_key(message)
+    thread_id = get_message_thread_id(message)
     user_id = message.from_user.id
-    if chat_id not in active_games:
-        bot.send_message(chat_id, "No active quiz.")
+    if key not in active_games:
+        send_chat_message(chat_id, "No active quiz.", thread_id=thread_id)
         return
-    game = active_games[chat_id]
+    game = active_games[key]
     if game.mode != 'group':
-        bot.send_message(chat_id, "This is an individual quiz — no groups here!")
+        send_chat_message(chat_id, "This is an individual quiz — no groups here!",
+                          thread_id=thread_id)
         return
     gname = game.user_groups.get(user_id)
     if gname:
         gscore = game.group_scores.get(gname, 0)
         my_pts = game.group_contributors.get(user_id, 0)
-        bot.send_message(chat_id,
+        send_chat_message(chat_id,
             f"👥 You are in *{gname}*\n"
             f"Group score: *{gscore}* pts\n"
             f"Your contribution: *{my_pts}* pts ✈️",
-            parse_mode='Markdown')
+            thread_id=thread_id, parse_mode='Markdown')
     else:
-        bot.send_message(chat_id,
+        send_chat_message(chat_id,
             "You are not assigned to any group for this quiz.\n"
-            "Ask the leader to restart and join a group next time.")
+            "Ask the leader to restart and join a group next time.",
+            thread_id=thread_id)
 
 
 @bot.message_handler(commands=['help'])
 def cmd_help(message):
-    bot.send_message(message.chat.id,
+    send_chat_message(message.chat.id,
         "🛫 *Aviation Quiz Bot — Help* ✈️\n\n"
         "*Commands:*\n"
         "/quiz — Start a new quiz\n"
@@ -865,7 +917,7 @@ def cmd_help(message):
         "👥 *Group vs Group* — team battle, 2–4 groups\n\n"
         "*Categories:* 7 aviation topics covering ETH, aerodynamics, systems, meteorology, air law, navigation & general aviation! 🌍\n"
         "*Difficulties:* Easy, Medium, Hard, or All Levels.",
-        parse_mode='Markdown')
+        thread_id=get_message_thread_id(message), parse_mode='Markdown')
 
 
 # ====================== MAIN MESSAGE HANDLER ======================
@@ -873,10 +925,12 @@ def cmd_help(message):
 @bot.message_handler(func=lambda m: True)
 def handle_message(message):
     chat_id = message.chat.id
+    key = get_message_key(message)
+    thread_id = get_message_thread_id(message)
     user = message.from_user
     user_names[user.id] = user.first_name
 
-    setup = pending_setups.get(chat_id)
+    setup = pending_setups.get(key)
 
     # --- Setup: leader naming groups ---
     if setup and setup.state == 'naming_groups' and user.id == setup.leader_id:
@@ -887,18 +941,18 @@ def handle_message(message):
         setup.groups[gname] = set()
         setup.naming_index += 1
         if setup.naming_index < setup.num_groups:
-            bot.send_message(chat_id,
+            send_chat_message(chat_id,
                 f"✅ *{gname}* created!\n\n"
                 f"Now send the name for *Group {setup.naming_index + 1}*:",
-                parse_mode='Markdown')
+                thread_id=thread_id, parse_mode='Markdown')
         else:
             # All groups named → move to category selection
             names_str = ', '.join(f"*{g}*" for g in setup.group_names)
-            bot.send_message(chat_id,
+            send_chat_message(chat_id,
                 f"✅ Groups ready: {names_str}\n\nNow choose a category:",
-                parse_mode='Markdown')
+                thread_id=thread_id, parse_mode='Markdown')
             setup.state = 'choosing_category'
-            send_category_keyboard(chat_id)
+            send_category_keyboard(chat_id, thread_id)
         return
 
     # --- Setup: leader entering number of questions ---
@@ -915,14 +969,15 @@ def handle_message(message):
             else:
                 launch_game(chat_id, setup)
         except ValueError:
-            bot.send_message(chat_id, "Please send a number between 1 and 50. ✈️")
+            send_chat_message(chat_id, "Please send a number between 1 and 50. ✈️",
+                              thread_id=thread_id)
         return
 
     # --- Active quiz: process answer ---
-    if chat_id not in active_games:
+    if key not in active_games:
         return
 
-    game = active_games[chat_id]
+    game = active_games[key]
     if message.text.strip().startswith('/'):
         return  # Commands handled by their own handlers
 
@@ -952,11 +1007,11 @@ def handle_message(message):
 
         game.current_index += 1
 
-    bot.send_message(chat_id,
+    send_chat_message(chat_id,
         f"✅ *Correct!* 🎉\n"
         f"{score_line}\n\n"
         f"📖 _{explanation}_",
-        parse_mode='Markdown')
+        thread_id=thread_id, parse_mode='Markdown')
 
     show_live_leaderboard(game)
     time.sleep(2)
