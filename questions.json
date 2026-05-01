@@ -1332,5 +1332,1268 @@
     "category": "General Aviation",
     "explanation": "A helicopter uses rotating wings, or rotors, to produce lift.",
     "difficulty": "easy"
+  },
+  {
+    "question": "What is the country code top-level domain for Ethiopia?",
+    "answer": ".et",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": ".et is the internet country code top-level domain for Ethiopia.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What city is Ethiopian Airlines headquartered in?",
+    "answer": "Addis Ababa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Addis"
+    ],
+    "explanation": "Ethiopian Airlines is headquartered in Addis Ababa.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airport code is used for Addis Ababa in tickets?",
+    "answer": "ADD",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "ADD is the IATA airport code used in passenger systems for Addis Ababa Bole International Airport.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airport code is used for Bole in flight plans?",
+    "answer": "HAAB",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "HAAB is the ICAO location indicator for Addis Ababa Bole International Airport.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What airline code appears before Ethiopian flight numbers?",
+    "answer": "ET",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "ET is Ethiopian Airlines' two-letter IATA airline code.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What three-letter ICAO airline code identifies Ethiopian Airlines?",
+    "answer": "ETH",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "ETH is Ethiopian Airlines' ICAO airline designator.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What word is used as Ethiopian Airlines' radio callsign?",
+    "answer": "Ethiopian",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The radio callsign used in voice communication is Ethiopian.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What Ethiopian Airlines aircraft type is nicknamed Dreamliner?",
+    "answer": "B787",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "787"
+    ],
+    "explanation": "The Boeing 787 is marketed as the Dreamliner.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What Ethiopian widebody Airbus type starts with A350?",
+    "answer": "A350",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The Airbus A350 is one of Ethiopian Airlines' long-range aircraft types.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What Ethiopian turboprop type is common on regional routes?",
+    "answer": "Q400",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The Q400 is used on shorter regional routes.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What freighter suffix marks the cargo Boeing 777?",
+    "answer": "F",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "freighter"
+    ],
+    "explanation": "The F suffix in B777F stands for freighter.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What training aircraft model starts with DA40?",
+    "answer": "DA40",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The Diamond DA40 is used for ab-initio pilot training.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What abbreviation is used for Ethiopian Aviation Academy?",
+    "answer": "EAA",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "EAA stands for Ethiopian Aviation Academy.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What abbreviation is used for Ethiopian Aviation University?",
+    "answer": "EAU",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "EAU stands for Ethiopian Aviation University.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What city hosts the academy's second campus?",
+    "answer": "Hawassa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Hawassa hosts a second Ethiopian Aviation Academy campus.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What word completes Star ___?",
+    "answer": "Alliance",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Ethiopian Airlines is part of Star Alliance.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What ownership type describes Ethiopian Airlines?",
+    "answer": "state-owned",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "government"
+    ],
+    "explanation": "Ethiopian Airlines is state-owned by Ethiopia.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What word completes Vision 2025?",
+    "answer": "Vision",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Vision 2025 is Ethiopian Airlines' strategic growth plan.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What city was Ethiopian Airlines' first international destination?",
+    "answer": "Cairo",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Cairo was Ethiopian Airlines' first international destination.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aircraft type did Ethiopian Airlines first operate?",
+    "answer": "DC-3",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The Douglas DC-3 was Ethiopian Airlines' first aircraft type.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airport word follows Addis Ababa ___ International?",
+    "answer": "Bole",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "The full airport name is Addis Ababa Bole International Airport.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What capital city is abbreviated ADD?",
+    "answer": "Addis Ababa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Addis"
+    ],
+    "explanation": "ADD is the IATA code for Addis Ababa Bole International Airport.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What region of Africa is Ethiopia in?",
+    "answer": "East Africa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "east"
+    ],
+    "explanation": "Ethiopia is located in East Africa.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What word describes Ethiopian Airlines' cargo branch?",
+    "answer": "Cargo",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Ethiopian Cargo is the airline's cargo and logistics operation.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What year was Ethiopian Airlines established?",
+    "answer": "1945",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Ethiopian Airlines was established in 1945.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What year did Ethiopian begin operations?",
+    "answer": "1946",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Ethiopian Airlines began revenue operations in 1946.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What international airline alliance is abbreviated SA?",
+    "answer": "Star Alliance",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Star"
+    ],
+    "explanation": "Star Alliance is the global alliance Ethiopian Airlines joined.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What airport city lies beside the EAA main campus?",
+    "answer": "Addis Ababa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "acceptable_answers": [
+      "Addis"
+    ],
+    "explanation": "The Ethiopian Aviation Academy main campus is in Addis Ababa.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What continent is Addis Ababa Bole located in?",
+    "answer": "Africa",
+    "category": "Ethiopian Airlines & Bole Airport",
+    "explanation": "Addis Ababa Bole International Airport is in Africa.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What axis does roll occur around?",
+    "answer": "longitudinal",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Roll occurs around the aircraft longitudinal axis.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What axis does pitch occur around?",
+    "answer": "lateral",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Pitch occurs around the lateral axis.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What axis does yaw occur around?",
+    "answer": "vertical",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Yaw occurs around the vertical axis.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What control surface controls roll?",
+    "answer": "ailerons",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "aileron"
+    ],
+    "explanation": "Ailerons control roll.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What control surface controls pitch?",
+    "answer": "elevator",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The elevator controls pitch.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What control surface controls yaw?",
+    "answer": "rudder",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The rudder controls yaw.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What force is created by the wing?",
+    "answer": "lift",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The wing produces lift by accelerating airflow and creating pressure differences.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What force opposes weight?",
+    "answer": "lift",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Lift acts upward and opposes weight.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What force opposes thrust?",
+    "answer": "drag",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Drag acts opposite the direction of motion and opposes thrust.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What type of drag is caused by lift?",
+    "answer": "induced drag",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Induced drag is produced as a byproduct of lift.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What type of drag includes skin friction?",
+    "answer": "parasite drag",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Parasite drag includes form drag, interference drag, and skin friction.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What wing shape measurement runs leading edge to trailing edge?",
+    "answer": "chord",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The chord is the line from the leading edge to the trailing edge.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What abbreviation means angle of attack?",
+    "answer": "AoA",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "AoA is the standard abbreviation for angle of attack.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What happens when critical AoA is exceeded?",
+    "answer": "stall",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "A stall occurs when the wing exceeds its critical angle of attack.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What high-lift device is on the leading edge?",
+    "answer": "slats",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Slats are leading-edge devices that delay stall.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What high-lift device is on the trailing edge?",
+    "answer": "flaps",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Flaps are usually trailing-edge high-lift devices.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What devices spoil lift on the wing?",
+    "answer": "spoilers",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Spoilers disrupt airflow and reduce lift.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What speed gives maximum glide distance?",
+    "answer": "best glide",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "Vg"
+    ],
+    "explanation": "Best glide speed gives the greatest distance for altitude lost.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What recovery input stops spin rotation?",
+    "answer": "opposite rudder",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Opposite rudder is used to stop the rotation in a spin recovery.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What effect reduces induced drag near the runway?",
+    "answer": "ground effect",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Ground effect reduces induced drag near the ground.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What propeller effect creates asymmetric thrust?",
+    "answer": "P-factor",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "pfactor"
+    ],
+    "explanation": "P-factor is asymmetric propeller thrust at high angle of attack.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What tendency moves the nose left on many prop aircraft?",
+    "answer": "left yaw",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "yaw"
+    ],
+    "explanation": "Several propeller effects can create a left-yawing tendency.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What factor increases in a steep turn?",
+    "answer": "load factor",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "G-force"
+    ],
+    "explanation": "Load factor increases as bank angle increases in level turns.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What speed increases with bank angle?",
+    "answer": "stall speed",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Stall speed rises as bank angle and load factor increase.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What motion combines yaw and roll?",
+    "answer": "Dutch roll",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "Dutch roll is a coupled yaw and roll oscillation.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What point is the average location of lift?",
+    "answer": "center pressure",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "centre pressure"
+    ],
+    "explanation": "The center of pressure is where the resultant lift force acts.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What wing edge meets airflow first?",
+    "answer": "leading edge",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The leading edge is the front edge of the wing.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What wing edge does airflow leave?",
+    "answer": "trailing edge",
+    "category": "Aerodynamics & Principles of Flight",
+    "explanation": "The trailing edge is the rear edge of the wing.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What control input lowers the nose?",
+    "answer": "forward pressure",
+    "category": "Aerodynamics & Principles of Flight",
+    "acceptable_answers": [
+      "push"
+    ],
+    "explanation": "Forward control pressure lowers the nose and reduces pitch attitude.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows vertical speed?",
+    "answer": "VSI",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "vertical speed"
+    ],
+    "explanation": "The Vertical Speed Indicator shows rate of climb or descent.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows attitude?",
+    "answer": "attitude indicator",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "artificial horizon"
+    ],
+    "explanation": "The attitude indicator shows pitch and bank.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What instrument uses pitot pressure for speed?",
+    "answer": "ASI",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The airspeed indicator uses pitot and static pressure.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What aircraft system measures altitude using static pressure?",
+    "answer": "altimeter",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The altimeter senses static pressure to display altitude.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What speed is abbreviated V1?",
+    "answer": "decision speed",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "V1 is takeoff decision speed.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What speed is abbreviated VR?",
+    "answer": "rotation speed",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "VR is the speed at which the aircraft is rotated for takeoff.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What speed is abbreviated V2?",
+    "answer": "safety speed",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "V2 is takeoff safety speed.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What speed marking is called VNE?",
+    "answer": "red line",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "never exceed"
+    ],
+    "explanation": "VNE is marked by the red line on the ASI.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What ASI color marks flap range?",
+    "answer": "white",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "white arc"
+    ],
+    "explanation": "The white arc shows the flap operating range.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What ASI color marks normal range?",
+    "answer": "green",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "green arc"
+    ],
+    "explanation": "The green arc shows the normal operating range.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What ASI color marks caution range?",
+    "answer": "yellow",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "yellow arc"
+    ],
+    "explanation": "The yellow arc marks the caution range.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What pump often powers vacuum gyros?",
+    "answer": "vacuum pump",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "vacuum"
+    ],
+    "explanation": "A vacuum pump powers many gyroscopic instruments in small aircraft.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What engine type uses a large fan?",
+    "answer": "turbofan",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Modern airliners commonly use turbofan engines.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What piston-engine control adjusts fuel-air mixture?",
+    "answer": "mixture",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The mixture control adjusts the fuel-air ratio.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What heat system prevents carburetor ice?",
+    "answer": "carb heat",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "carburetor heat"
+    ],
+    "explanation": "Carburetor heat helps prevent or remove carburetor ice.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What braking system prevents wheel lock?",
+    "answer": "anti-skid",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "anti skid"
+    ],
+    "explanation": "Anti-skid prevents wheel lockup during braking.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What system suppresses Dutch roll?",
+    "answer": "yaw damper",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The yaw damper suppresses Dutch roll in many aircraft.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What safety device pushes the control column forward?",
+    "answer": "stick pusher",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "A stick pusher helps prevent an aerodynamic stall.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What recorder stores flight parameters?",
+    "answer": "FDR",
+    "category": "Aircraft Systems & Instruments",
+    "acceptable_answers": [
+      "black box"
+    ],
+    "explanation": "The Flight Data Recorder stores flight parameters.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What recorder stores cockpit audio?",
+    "answer": "CVR",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The Cockpit Voice Recorder stores cockpit audio.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What system tells altitude by radio waves?",
+    "answer": "radio altimeter",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "A radio altimeter measures height above terrain using radio waves.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What light color is on the left wingtip?",
+    "answer": "red",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Aircraft left navigation lights are red.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What light color is on the right wingtip?",
+    "answer": "green",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Aircraft right navigation lights are green.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What light color is on the tail?",
+    "answer": "white",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The rear navigation light is white.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What cockpit instrument points north?",
+    "answer": "compass",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The magnetic compass indicates direction relative to magnetic north.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument may tumble during extreme attitude?",
+    "answer": "gyro",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Older gyroscopic instruments can tumble if limits are exceeded.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What unit is engine speed measured in?",
+    "answer": "RPM",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "Engine rotational speed is commonly measured in revolutions per minute.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What display shows engine pressure ratio?",
+    "answer": "EPR",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "EPR is used as a jet engine power indication.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What acronym means maximum takeoff weight?",
+    "answer": "MTOW",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "MTOW is maximum takeoff weight.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What acronym means landing distance available?",
+    "answer": "LDA",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "LDA is the declared landing distance available.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What type of pressure enters the pitot tube?",
+    "answer": "ram air",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The pitot tube senses ram air pressure.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What pressure source feeds the altimeter?",
+    "answer": "static port",
+    "category": "Aircraft Systems & Instruments",
+    "explanation": "The altimeter uses static pressure from the static port.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What cloud type is puffy and detached?",
+    "answer": "cumulus",
+    "category": "Meteorology",
+    "explanation": "Cumulus clouds are puffy, detached clouds often associated with rising air.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What cloud type is layered and flat?",
+    "answer": "stratus",
+    "category": "Meteorology",
+    "explanation": "Stratus clouds are layered and often produce low ceilings.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What cloud type produces thunderstorms?",
+    "answer": "cumulonimbus",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "CB"
+    ],
+    "explanation": "Cumulonimbus clouds produce thunderstorms and severe weather.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What weather report is abbreviated METAR?",
+    "answer": "METAR",
+    "category": "Meteorology",
+    "explanation": "METAR is a routine aerodrome weather report.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What forecast is abbreviated TAF?",
+    "answer": "TAF",
+    "category": "Meteorology",
+    "explanation": "TAF is a Terminal Aerodrome Forecast.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aviation weather warning is abbreviated SIGMET?",
+    "answer": "SIGMET",
+    "category": "Meteorology",
+    "explanation": "A SIGMET warns of significant meteorological hazards.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What condition means ceiling and visibility are OK?",
+    "answer": "CAVOK",
+    "category": "Meteorology",
+    "explanation": "CAVOK is used when visibility, cloud, and weather meet stated good-condition criteria.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What unit is aviation wind speed reported in?",
+    "answer": "knots",
+    "category": "Meteorology",
+    "explanation": "Aviation wind speed is reported in knots.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What is cloud at ground level called?",
+    "answer": "fog",
+    "category": "Meteorology",
+    "explanation": "Fog is cloud that forms at or near ground level.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What frozen precipitation can damage aircraft?",
+    "answer": "hail",
+    "category": "Meteorology",
+    "explanation": "Hail can cause serious aircraft damage.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What icing type is smooth and transparent?",
+    "answer": "clear ice",
+    "category": "Meteorology",
+    "explanation": "Clear ice is smooth, hard, and often difficult to remove.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What icing type is rough and white?",
+    "answer": "rime ice",
+    "category": "Meteorology",
+    "explanation": "Rime ice is rough, milky, and forms from small supercooled droplets.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What altitude problem increases takeoff distance?",
+    "answer": "density altitude",
+    "category": "Meteorology",
+    "explanation": "High density altitude reduces performance and increases takeoff distance.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What condition means insufficient oxygen?",
+    "answer": "hypoxia",
+    "category": "Meteorology",
+    "explanation": "Hypoxia is a lack of adequate oxygen in body tissues.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What wind change hazard affects approach?",
+    "answer": "wind shear",
+    "category": "Meteorology",
+    "explanation": "Wind shear is a sudden change in wind speed or direction.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What turbulence abbreviation means clear air?",
+    "answer": "CAT",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "clear air"
+    ],
+    "explanation": "CAT stands for Clear Air Turbulence.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What standard sea-level pressure is near 1013?",
+    "answer": "1013 hPa",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "1013"
+    ],
+    "explanation": "Standard sea-level pressure is 1013.25 hPa.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What standard sea-level temperature is 15 degrees?",
+    "answer": "15°C",
+    "category": "Meteorology",
+    "acceptable_answers": [
+      "15C",
+      "15"
+    ],
+    "explanation": "Standard sea-level temperature in ISA is 15°C.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What instrument shows wind direction at an airfield?",
+    "answer": "windsock",
+    "category": "Meteorology",
+    "explanation": "A windsock shows wind direction and approximate strength.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What front has cold air advancing?",
+    "answer": "cold front",
+    "category": "Meteorology",
+    "explanation": "A cold front occurs where cold air advances and replaces warmer air.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What front has warm air advancing?",
+    "answer": "warm front",
+    "category": "Meteorology",
+    "explanation": "A warm front occurs where warm air advances over cooler air.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What transponder code means emergency?",
+    "answer": "7700",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7700 indicates a general emergency.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What transponder code means radio failure?",
+    "answer": "7600",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7600 indicates radio communication failure.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What transponder code means hijacking?",
+    "answer": "7500",
+    "category": "Air Law & Regulations",
+    "explanation": "Squawk 7500 indicates unlawful interference.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What rules are used for visual flight?",
+    "answer": "VFR",
+    "category": "Air Law & Regulations",
+    "explanation": "VFR stands for Visual Flight Rules.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What rules are used for instrument flight?",
+    "answer": "IFR",
+    "category": "Air Law & Regulations",
+    "explanation": "IFR stands for Instrument Flight Rules.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What weather condition supports visual flight?",
+    "answer": "VMC",
+    "category": "Air Law & Regulations",
+    "explanation": "VMC means Visual Meteorological Conditions.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What weather condition requires instrument procedures?",
+    "answer": "IMC",
+    "category": "Air Law & Regulations",
+    "explanation": "IMC means Instrument Meteorological Conditions.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What agency sets international aviation standards?",
+    "answer": "ICAO",
+    "category": "Air Law & Regulations",
+    "explanation": "ICAO sets international civil aviation standards.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airline trade association assigns IATA codes?",
+    "answer": "IATA",
+    "category": "Air Law & Regulations",
+    "explanation": "IATA handles airline industry standards such as two-letter codes.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What service controls aircraft traffic?",
+    "answer": "ATC",
+    "category": "Air Law & Regulations",
+    "explanation": "Air Traffic Control manages safe and orderly aircraft movement.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What notice warns pilots of operational changes?",
+    "answer": "NOTAM",
+    "category": "Air Law & Regulations",
+    "explanation": "A NOTAM alerts pilots to important aeronautical information.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What frequency is international VHF guard?",
+    "answer": "121.5",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "121.5 MHz"
+    ],
+    "explanation": "121.5 MHz is the international VHF emergency frequency.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What runway number points east?",
+    "answer": "09",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "runway 09"
+    ],
+    "explanation": "Runway 09 points approximately 090 degrees magnetic, east.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What runway number points west?",
+    "answer": "27",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "runway 27"
+    ],
+    "explanation": "Runway 27 points approximately 270 degrees magnetic, west.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What procedure abandons a landing?",
+    "answer": "go-around",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "go around"
+    ],
+    "explanation": "A go-around abandons the landing and climbs away.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What phrase means cleared to enter a runway?",
+    "answer": "line up",
+    "category": "Air Law & Regulations",
+    "explanation": "Line up means taxi onto the runway and align for takeoff.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What phrase means wait before takeoff?",
+    "answer": "hold short",
+    "category": "Air Law & Regulations",
+    "explanation": "Hold short means stop before the runway or specified point.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What safety concept is abbreviated CRM?",
+    "answer": "CRM",
+    "category": "Air Law & Regulations",
+    "explanation": "CRM is Crew Resource Management.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What safety concept is abbreviated TEM?",
+    "answer": "TEM",
+    "category": "Air Law & Regulations",
+    "explanation": "TEM means Threat and Error Management.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What clearance allows landing?",
+    "answer": "cleared land",
+    "category": "Air Law & Regulations",
+    "acceptable_answers": [
+      "cleared to land"
+    ],
+    "explanation": "Cleared to land authorizes the aircraft to land on the runway.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What radio aid provides radials?",
+    "answer": "VOR",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A VOR provides magnetic radials from the station.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What radio aid provides distance?",
+    "answer": "DME",
+    "category": "Navigation & Radio Aids",
+    "explanation": "DME provides slant-range distance.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What beacon works with ADF?",
+    "answer": "NDB",
+    "category": "Navigation & Radio Aids",
+    "explanation": "An ADF points toward an NDB.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What landing system provides precision guidance?",
+    "answer": "ILS",
+    "category": "Navigation & Radio Aids",
+    "explanation": "ILS provides lateral and vertical precision approach guidance.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What ILS part provides lateral guidance?",
+    "answer": "localizer",
+    "category": "Navigation & Radio Aids",
+    "explanation": "The localizer gives left-right runway alignment guidance.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What ILS part provides vertical guidance?",
+    "answer": "glideslope",
+    "category": "Navigation & Radio Aids",
+    "acceptable_answers": [
+      "glide slope"
+    ],
+    "explanation": "The glideslope gives vertical descent guidance.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What satellite system is abbreviated GPS?",
+    "answer": "GPS",
+    "category": "Navigation & Radio Aids",
+    "explanation": "GPS provides satellite-based navigation.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What GPS integrity monitor is abbreviated RAIM?",
+    "answer": "RAIM",
+    "category": "Navigation & Radio Aids",
+    "explanation": "RAIM monitors GPS signal integrity.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What setting makes altimeter show altitude?",
+    "answer": "QNH",
+    "category": "Navigation & Radio Aids",
+    "explanation": "QNH makes the altimeter show altitude above mean sea level.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What setting makes altimeter show height?",
+    "answer": "QFE",
+    "category": "Navigation & Radio Aids",
+    "explanation": "QFE makes the altimeter show height above the airfield.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What navigation point defines a route?",
+    "answer": "waypoint",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A waypoint is a defined position used in navigation.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What method estimates position from time and speed?",
+    "answer": "dead reckoning",
+    "category": "Navigation & Radio Aids",
+    "explanation": "Dead reckoning estimates position from heading, speed, time, and wind.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What direction reference uses true north?",
+    "answer": "true bearing",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A true bearing is referenced to true north.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What direction reference uses magnetic north?",
+    "answer": "magnetic bearing",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A magnetic bearing is referenced to magnetic north.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What chart line connects equal magnetic variation?",
+    "answer": "isogonic line",
+    "category": "Navigation & Radio Aids",
+    "explanation": "An isogonic line connects points of equal magnetic variation.",
+    "difficulty": "hard"
+  },
+  {
+    "question": "What instrument points toward an NDB?",
+    "answer": "ADF",
+    "category": "Navigation & Radio Aids",
+    "explanation": "The Automatic Direction Finder points toward an NDB station.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What VOR direction is called from the station?",
+    "answer": "radial",
+    "category": "Navigation & Radio Aids",
+    "explanation": "A VOR radial is the magnetic bearing from the station.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What navigation distance unit is abbreviated NM?",
+    "answer": "nautical mile",
+    "category": "Navigation & Radio Aids",
+    "acceptable_answers": [
+      "NM"
+    ],
+    "explanation": "A nautical mile is the standard distance unit in air navigation.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What unit is used for altitude?",
+    "answer": "feet",
+    "category": "General Aviation",
+    "explanation": "Altitude is normally expressed in feet in aviation.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What unit is used for airspeed?",
+    "answer": "knots",
+    "category": "General Aviation",
+    "explanation": "Airspeed is normally expressed in knots.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aircraft made the first powered flight?",
+    "answer": "Flyer",
+    "category": "General Aviation",
+    "explanation": "The Wright Flyer made the first successful powered flight.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What year was the first powered flight?",
+    "answer": "1903",
+    "category": "General Aviation",
+    "explanation": "The Wright brothers achieved powered flight in 1903.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What supersonic passenger aircraft flew at Mach 2?",
+    "answer": "Concorde",
+    "category": "General Aviation",
+    "explanation": "Concorde was a supersonic passenger aircraft.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What nickname belongs to the Boeing 747?",
+    "answer": "Jumbo Jet",
+    "category": "General Aviation",
+    "explanation": "The Boeing 747 is widely known as the Jumbo Jet.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What number means speed of sound?",
+    "answer": "Mach 1",
+    "category": "General Aviation",
+    "acceptable_answers": [
+      "1"
+    ],
+    "explanation": "Mach 1 is the local speed of sound.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aircraft uses rotors for lift?",
+    "answer": "helicopter",
+    "category": "General Aviation",
+    "explanation": "A helicopter uses rotors to generate lift.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What European safety agency is abbreviated EASA?",
+    "answer": "EASA",
+    "category": "General Aviation",
+    "explanation": "EASA is the European Union Aviation Safety Agency.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What teamwork training is abbreviated CRM?",
+    "answer": "CRM",
+    "category": "General Aviation",
+    "explanation": "CRM is Crew Resource Management training.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What distance equals one minute of latitude?",
+    "answer": "nautical mile",
+    "category": "General Aviation",
+    "acceptable_answers": [
+      "NM"
+    ],
+    "explanation": "One nautical mile is based on one minute of latitude.",
+    "difficulty": "medium"
+  },
+  {
+    "question": "What language is standard for aviation radio?",
+    "answer": "English",
+    "category": "General Aviation",
+    "explanation": "English is the standard language for international aviation radio communication.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What aircraft area carries passengers?",
+    "answer": "cabin",
+    "category": "General Aviation",
+    "explanation": "The cabin is where passengers are seated.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What area is used by pilots?",
+    "answer": "cockpit",
+    "category": "General Aviation",
+    "explanation": "The cockpit is where pilots control the aircraft.",
+    "difficulty": "easy"
+  },
+  {
+    "question": "What airport surface is used for takeoff?",
+    "answer": "runway",
+    "category": "General Aviation",
+    "explanation": "A runway is used for takeoff and landing.",
+    "difficulty": "easy"
   }
 ]

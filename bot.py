@@ -245,6 +245,7 @@ class Game:
         self.hint_level = 0
         self.timer = None
         self.answered = False
+        self.waiting_for_continue = False
         self._lock = threading.Lock()
         # Individual scores
         self.scores = defaultdict(int)            # user_id -> pts
@@ -301,6 +302,7 @@ def start_new_question(game: Game):
     game.current_difficulty = q.get('difficulty', 'medium')
     game.hint_level = 0
     game.answered = False
+    game.waiting_for_continue = False
 
     bar = _progress_bar(game.current_index, game.num_questions)
     cat_emoji = get_category_emoji(game.current_category)
@@ -319,6 +321,37 @@ def start_new_question(game: Game):
     send_chat_message(game.chat_id, text, thread_id=game.thread_id, parse_mode='Markdown')
     game.timer = threading.Timer(12.0, give_hint, [game])
     game.timer.start()
+
+
+def send_continue_prompt(game: Game):
+    game.waiting_for_continue = True
+    markup = types.InlineKeyboardMarkup()
+    label = "➡️ Continue" if game.current_index < game.num_questions else "🏁 Show Results"
+    markup.add(types.InlineKeyboardButton(label, callback_data="continue"))
+    send_chat_message(
+        game.chat_id,
+        "Leader, press Continue when ready. Auto-continues in 5 seconds. ✈️",
+        thread_id=game.thread_id,
+        reply_markup=markup,
+    )
+    game.timer = threading.Timer(5.0, auto_continue, [game])
+    game.timer.start()
+
+
+def continue_game(game: Game):
+    with game._lock:
+        if not game.waiting_for_continue or game.key not in active_games:
+            return False
+        game.waiting_for_continue = False
+        if game.timer:
+            game.timer.cancel()
+            game.timer = None
+    start_new_question(game)
+    return True
+
+
+def auto_continue(game: Game):
+    continue_game(game)
 
 
 def give_hint(game: Game):
@@ -354,8 +387,7 @@ def give_hint(game: Game):
             f"The answer was: *{game.correct_answer}* ✈️\n\n"
             f"📖 _{game.current_explanation}_",
             thread_id=game.thread_id, parse_mode='Markdown')
-        time.sleep(2.5)
-        start_new_question(game)
+        send_continue_prompt(game)
 
 
 def show_live_leaderboard(game: Game):
@@ -556,6 +588,7 @@ def launch_game(chat_id: int, setup: SetupState):
         f"❓ Questions: *{len(questions)}*\n\n"
         f"First correct answer wins the point!\n"
         f"Hints appear automatically after 12s and 20s.\n\n"
+        f"After each question, the leader gets 5 seconds to press Continue.\n\n"
         f"Get ready... ✈️",
         thread_id=setup.thread_id, parse_mode='Markdown')
     time.sleep(2)
@@ -579,6 +612,21 @@ def handle_callback(call):
         else:
             bot.answer_callback_query(call.id, "No active quiz.")
         bot.answer_callback_query(call.id)
+        return
+
+    if data == "continue":
+        game = active_games.get(key)
+        if not game:
+            bot.answer_callback_query(call.id, "No active quiz.")
+            return
+        if user_id != game.leader_id:
+            bot.answer_callback_query(call.id, "Only the quiz leader can continue.")
+            return
+        if not continue_game(game):
+            bot.answer_callback_query(call.id, "The quiz is already moving.")
+            return
+        bot.answer_callback_query(call.id, "Continuing...")
+        _delete_safely(chat_id, call.message.message_id)
         return
 
     setup = pending_setups.get(key)
@@ -910,6 +958,8 @@ def cmd_help(message):
         "• First correct answer wins the point\n"
         "• Hints appear at 12s and 32s automatically\n"
         "• Answer + explanation shown after each question\n"
+        "• Send answers normally in the quiz topic; no reply needed\n"
+        "• The quiz leader gets 5 seconds to press Continue for the next question\n"
         "• Questions don't repeat for 10 rounds!\n"
         "• Quiz leaders choose category and difficulty before launch\n\n"
         "*Modes:*\n"
@@ -1014,8 +1064,7 @@ def handle_message(message):
         thread_id=thread_id, parse_mode='Markdown')
 
     show_live_leaderboard(game)
-    time.sleep(2)
-    start_new_question(game)
+    send_continue_prompt(game)
 
 
 # ====================== RUN ======================
