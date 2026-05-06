@@ -19,6 +19,7 @@ const timestamps = {
 export const questionTypeEnum = pgEnum("question_type", ["multiple_choice", "short_answer"]);
 export const difficultyLevelEnum = pgEnum("difficulty_level", ["easy", "medium", "hard"]);
 export const quizModeEnum = pgEnum("quiz_mode", ["private", "group"]);
+export const quizPlayModeEnum = pgEnum("quiz_play_mode", ["individual", "free_form", "teams"]);
 export const quizStatusEnum = pgEnum("quiz_status", ["active", "completed", "cancelled"]);
 
 export const users = pgTable("users", {
@@ -95,11 +96,15 @@ export const questionOptions = pgTable(
 export const quizSessions = pgTable("quiz_sessions", {
   id: uuid("id").defaultRandom().primaryKey(),
   mode: quizModeEnum("mode").notNull(),
+  playMode: quizPlayModeEnum("play_mode").default("individual").notNull(),
   status: quizStatusEnum("status").default("active").notNull(),
   userId: uuid("user_id").references(() => users.id),
   groupId: uuid("group_id").references(() => telegramGroups.id),
   categoryId: uuid("category_id").references(() => categories.id),
   questionType: questionTypeEnum("question_type"),
+  teamNames: text("team_names").array().default([]).notNull(),
+  teamJoinMode: text("team_join_mode"),
+  teamMembers: jsonb("team_members").default({}).notNull(),
   totalQuestions: integer("total_questions").notNull(),
   currentQuestionIndex: integer("current_question_index").default(0).notNull(),
   startedAt: timestamp("started_at", { withTimezone: true }).defaultNow().notNull(),
@@ -129,6 +134,7 @@ export const quizAnswers = pgTable(
     userId: uuid("user_id").references(() => users.id, { onDelete: "restrict" }).notNull(),
     selectedOptionId: uuid("selected_option_id").references(() => questionOptions.id),
     answerText: text("answer_text"),
+    teamName: text("team_name"),
     isCorrect: boolean("is_correct").notNull(),
     pointsAwarded: integer("points_awarded").default(0).notNull(),
     answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull()

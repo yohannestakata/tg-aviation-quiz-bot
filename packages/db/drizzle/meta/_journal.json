@@ -8,6 +8,13 @@
       "when": 1778051950904,
       "tag": "0000_cloudy_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778059058430,
+      "tag": "0001_wealthy_chat",
+      "breakpoints": true
     }
   ]
 }

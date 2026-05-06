@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   questionOptions,
@@ -55,6 +55,10 @@ export async function createQuizSession(input: {
   groupId?: string | null;
   categoryId?: string | null;
   questionType?: "multiple_choice" | "short_answer" | null;
+  playMode?: "individual" | "free_form" | "teams";
+  teamNames?: string[];
+  teamJoinMode?: "manual" | "auto_balance" | null;
+  teamMembers?: unknown;
   totalQuestions: number;
   questionIds: string[];
   mode?: "private" | "group";
@@ -64,10 +68,14 @@ export async function createQuizSession(input: {
       .insert(quizSessions)
       .values({
         mode: input.mode ?? "private",
+        playMode: input.playMode ?? "individual",
         userId: input.userId,
         groupId: input.groupId ?? null,
         categoryId: input.categoryId ?? null,
         questionType: input.questionType ?? null,
+        teamNames: input.teamNames ?? [],
+        teamJoinMode: input.teamJoinMode ?? null,
+        teamMembers: input.teamMembers ?? {},
         totalQuestions: input.totalQuestions
       })
       .returning();
@@ -115,6 +123,7 @@ export async function recordAnswer(input: {
   userId: string;
   selectedOptionId?: string | null;
   answerText?: string | null;
+  teamName?: string | null;
   isCorrect: boolean;
 }) {
   const [answer] = await db
@@ -125,6 +134,7 @@ export async function recordAnswer(input: {
       userId: input.userId,
       selectedOptionId: input.selectedOptionId ?? null,
       answerText: input.answerText ?? null,
+      teamName: input.teamName ?? null,
       isCorrect: input.isCorrect,
       pointsAwarded: input.isCorrect ? 1 : 0
     })
@@ -161,4 +171,33 @@ export async function getQuizScore(sessionId: string) {
     .from(quizAnswers)
     .where(eq(quizAnswers.quizSessionId, sessionId));
   return score ?? { correct: 0, answered: 0 };
+}
+
+export async function getTeamScores(sessionId: string) {
+  return db
+    .select({
+      teamName: quizAnswers.teamName,
+      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::int`,
+      answered: sql<number>`count(${quizAnswers.id})::int`
+    })
+    .from(quizAnswers)
+    .where(eq(quizAnswers.quizSessionId, sessionId))
+    .groupBy(quizAnswers.teamName)
+    .orderBy(desc(sql`coalesce(sum(${quizAnswers.pointsAwarded}), 0)`));
+}
+
+export async function getSessionParticipantScores(sessionId: string) {
+  return db
+    .select({
+      username: users.username,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::int`,
+      answered: sql<number>`count(${quizAnswers.id})::int`
+    })
+    .from(quizAnswers)
+    .innerJoin(users, eq(users.id, quizAnswers.userId))
+    .where(eq(quizAnswers.quizSessionId, sessionId))
+    .groupBy(users.id)
+    .orderBy(desc(sql`coalesce(sum(${quizAnswers.pointsAwarded}), 0)`));
 }

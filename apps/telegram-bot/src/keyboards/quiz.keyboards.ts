@@ -21,6 +21,37 @@ export function categoriesKeyboard(categories: Category[]) {
   return keyboard;
 }
 
+export function playModeKeyboard() {
+  return new InlineKeyboard()
+    .text("Individual", "quiz:mode:individual")
+    .row()
+    .text("Free Form", "quiz:mode:free_form")
+    .row()
+    .text("Teams", "quiz:mode:teams");
+}
+
+export function teamCountKeyboard() {
+  return new InlineKeyboard().text("2", "quiz:teams:2").text("3", "quiz:teams:3").text("4", "quiz:teams:4");
+}
+
+export function teamJoinModeKeyboard() {
+  return new InlineKeyboard().text("Manual Join", "quiz:joinmode:manual").row().text("Auto Balance", "quiz:joinmode:auto_balance");
+}
+
+export function teamLobbyKeyboard(teamNames: string[], joinMode: "manual" | "auto_balance") {
+  const keyboard = new InlineKeyboard();
+  if (joinMode === "auto_balance") {
+    keyboard.text("Join Game", "teamjoin:auto").row();
+  } else {
+    teamNames.forEach((teamName, index) => {
+      keyboard.text(`Join ${teamName}`, `teamjoin:${index}`);
+      keyboard.row();
+    });
+  }
+  keyboard.text("Start Quiz", "quiz:start");
+  return keyboard;
+}
+
 export function countKeyboard() {
   return new InlineKeyboard().text("5", "quiz:count:5").text("10", "quiz:count:10").text("20", "quiz:count:20");
 }
@@ -39,6 +70,17 @@ export function answerKeyboard(options: Array<{ optionText: string }>) {
   options.forEach((option, index) => {
     keyboard.text(option.optionText, `answer:${index}`);
     keyboard.row();
+  });
+  return keyboard;
+}
+
+export function teamAnswerKeyboard(teamNames: string[], options: Array<{ optionText: string }>) {
+  const keyboard = new InlineKeyboard();
+  teamNames.forEach((teamName, teamIndex) => {
+    options.forEach((option, optionIndex) => {
+      keyboard.text(`${teamName}: ${option.optionText}`, `answer:${teamIndex}:${optionIndex}`);
+      keyboard.row();
+    });
   });
   return keyboard;
 }
