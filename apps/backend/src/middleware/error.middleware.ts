@@ -11,6 +11,7 @@ export function errorMiddleware(error: unknown, _req: Request, res: Response, _n
     return;
   }
 
-  console.error(error);
-  res.status(500).json({ error: "Internal server error" });
+  const requestId = crypto.randomUUID();
+  console.error({ requestId, error });
+  res.status(500).json({ error: "Internal server error", requestId });
 }

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const optionSchema = z.object({
+  id: z.string().uuid().optional(),
   optionText: z.string().min(1),
   isCorrect: z.boolean().optional(),
   displayOrder: z.number().int().optional()

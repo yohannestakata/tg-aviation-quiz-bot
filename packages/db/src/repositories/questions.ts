@@ -6,6 +6,7 @@ export type QuestionType = "multiple_choice" | "short_answer";
 export type DifficultyLevel = "easy" | "medium" | "hard";
 
 export type QuestionOptionInput = {
+  id?: string;
   optionText: string;
   isCorrect?: boolean;
   displayOrder?: number;
@@ -119,37 +120,59 @@ export async function createQuestionIfMissing(input: QuestionInput) {
 
 export async function updateQuestion(id: string, input: Partial<QuestionInput>) {
   return db.transaction(async (tx) => {
+    const updateValues = stripUndefined({
+      categoryId: input.categoryId,
+      questionText: input.questionText,
+      questionType: input.questionType,
+      difficulty: input.difficulty,
+      imageUrl: input.imageUrl,
+      cloudinaryPublicId: input.cloudinaryPublicId,
+      correctAnswerText: input.correctAnswerText,
+      acceptedKeywords: input.acceptedKeywords,
+      explanation: input.explanation,
+      isActive: input.isActive,
+      updatedAt: sql`now()`
+    });
+
     const [question] = await tx
       .update(questions)
-      .set({
-        categoryId: input.categoryId,
-        questionText: input.questionText,
-        questionType: input.questionType,
-        difficulty: input.difficulty,
-        imageUrl: input.imageUrl,
-        cloudinaryPublicId: input.cloudinaryPublicId,
-        correctAnswerText: input.correctAnswerText,
-        acceptedKeywords: input.acceptedKeywords,
-        explanation: input.explanation,
-        isActive: input.isActive,
-        updatedAt: sql`now()`
-      })
+      .set(updateValues)
       .where(eq(questions.id, id))
       .returning();
 
     if (!question) return null;
 
     if (input.options) {
-      await tx.delete(questionOptions).where(eq(questionOptions.questionId, id));
-      if (input.options.length) {
-        await tx.insert(questionOptions).values(
-          input.options.map((option, index) => ({
+      const existingOptions = await tx
+        .select()
+        .from(questionOptions)
+        .where(eq(questionOptions.questionId, id))
+        .orderBy(asc(questionOptions.displayOrder));
+
+      for (const [index, option] of input.options.entries()) {
+        const displayOrder = option.displayOrder ?? index;
+        const existing =
+          existingOptions.find((item) => option.id && item.id === option.id) ??
+          existingOptions.find((item) => item.displayOrder === displayOrder);
+
+        if (existing) {
+          await tx
+            .update(questionOptions)
+            .set({
+              optionText: option.optionText,
+              isCorrect: option.isCorrect ?? false,
+              displayOrder,
+              updatedAt: sql`now()`
+            })
+            .where(eq(questionOptions.id, existing.id));
+        } else {
+          await tx.insert(questionOptions).values({
             questionId: id,
             optionText: option.optionText,
             isCorrect: option.isCorrect ?? false,
-            displayOrder: option.displayOrder ?? index
-          }))
-        );
+            displayOrder
+          });
+        }
       }
     }
 
@@ -161,6 +184,10 @@ export async function updateQuestion(id: string, input: Partial<QuestionInput>) 
 
     return { ...question, options };
   });
+}
+
+function stripUndefined<T extends Record<string, unknown>>(value: T) {
+  return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined)) as T;
 }
 
 export async function archiveQuestion(id: string) {

@@ -910,6 +910,7 @@ function normalizeQuestionPayload(form: QuestionPayload): QuestionPayload {
     options:
       form.questionType === "multiple_choice"
         ? (form.options ?? defaultOptions).map((option, index) => ({
+            id: option.id,
             optionText: option.optionText,
             isCorrect: option.isCorrect,
             displayOrder: index,
