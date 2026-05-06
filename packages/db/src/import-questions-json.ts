@@ -1,6 +1,6 @@
 import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "./client";
-import { categories, questions } from "./schema";
+import { categories, questionOptions, questions } from "./schema";
 
 type JsonQuestion = {
   question: string;
@@ -12,6 +12,14 @@ type JsonQuestion = {
 };
 
 type Difficulty = "easy" | "medium" | "hard";
+type ParsedQuestion = {
+  questionText: string;
+  correctAnswerText: string;
+  categoryName: string;
+  explanation: string | null;
+  difficulty: Difficulty;
+  acceptedKeywords: string[];
+};
 
 const inputPath = process.argv[2] ?? "../../questions.json";
 const data = (await Bun.file(inputPath).json()) as JsonQuestion[];
@@ -20,10 +28,13 @@ if (!Array.isArray(data) || !data.length) {
   throw new Error(`No questions found in ${inputPath}`);
 }
 
-const normalized = data.map((item, index) => {
-  if (!item.question?.trim()) throw new Error(`Question ${index + 1} is missing question text`);
-  if (!item.answer?.trim()) throw new Error(`Question ${index + 1} is missing answer`);
-  if (!item.category?.trim()) throw new Error(`Question ${index + 1} is missing category`);
+const normalized: ParsedQuestion[] = data.map((item, index) => {
+  if (!item.question?.trim())
+    throw new Error(`Question ${index + 1} is missing question text`);
+  if (!item.answer?.trim())
+    throw new Error(`Question ${index + 1} is missing answer`);
+  if (!item.category?.trim())
+    throw new Error(`Question ${index + 1} is missing category`);
 
   return {
     questionText: item.question.trim(),
@@ -31,7 +42,13 @@ const normalized = data.map((item, index) => {
     categoryName: item.category.trim(),
     explanation: item.explanation?.trim() || null,
     difficulty: normalizeDifficulty(item.difficulty),
-    acceptedKeywords: [...new Set((item.acceptable_answers ?? []).map((answer) => answer.trim()).filter(Boolean))]
+    acceptedKeywords: [
+      ...new Set(
+        (item.acceptable_answers ?? [])
+          .map((answer) => answer.trim())
+          .filter(Boolean),
+      ),
+    ],
   };
 });
 
@@ -53,7 +70,7 @@ await db.transaction(async (tx) => {
         slug,
         description: `${categoryName} questions imported from questions.json`,
         isActive: true,
-        displayOrder: index
+        displayOrder: index,
       })
       .onConflictDoUpdate({
         target: categories.slug,
@@ -62,8 +79,8 @@ await db.transaction(async (tx) => {
           description: `${categoryName} questions imported from questions.json`,
           isActive: true,
           displayOrder: index,
-          updatedAt: sql`now()`
-        }
+          updatedAt: sql`now()`,
+        },
       })
       .returning();
 
@@ -83,9 +100,58 @@ await db.transaction(async (tx) => {
         correctAnswerText: item.correctAnswerText,
         acceptedKeywords: item.acceptedKeywords,
         explanation: item.explanation,
-        isActive: true
-      }))
+        isActive: true,
+      })),
     );
+  }
+
+  const insertedMultipleChoiceQuestions = await tx
+    .insert(questions)
+    .values(
+      normalized.map((item, index) => ({
+        categoryId: categoryIds.get(item.categoryName)!,
+        questionText: item.questionText,
+        questionType: "multiple_choice" as const,
+        difficulty: item.difficulty,
+        imageUrl: null,
+        cloudinaryPublicId: null,
+        correctAnswerText: item.correctAnswerText,
+        acceptedKeywords: [],
+        explanation: item.explanation,
+        isActive: true,
+      })),
+    )
+    .returning({ id: questions.id });
+
+  const distractorPoolByCategory = buildCategoryAnswerPools(normalized);
+  const globalAnswerPool = [
+    ...new Set(
+      normalized.map((item) => item.correctAnswerText.trim()).filter(Boolean),
+    ),
+  ];
+  const optionsToInsert = insertedMultipleChoiceQuestions.flatMap(
+    (question, index) => {
+      const source = normalized[index];
+      if (!source) return [];
+
+      const options = buildMultipleChoiceOptions(
+        source.correctAnswerText,
+        distractorPoolByCategory.get(source.categoryName) ?? [],
+        globalAnswerPool,
+        index,
+      );
+
+      return options.map((optionText, optionIndex) => ({
+        questionId: question.id,
+        optionText,
+        isCorrect: optionText === source.correctAnswerText,
+        displayOrder: optionIndex,
+      }));
+    },
+  );
+
+  for (const optionsChunk of chunks(optionsToInsert, 500)) {
+    await tx.insert(questionOptions).values(optionsChunk);
   }
 });
 
@@ -104,11 +170,11 @@ console.log(
     {
       importedQuestions: normalized.length,
       activeQuestions: activeCount?.count ?? 0,
-      activeCategories: activeCategories.map((category) => category.name)
+      activeCategories: activeCategories.map((category) => category.name),
     },
     null,
-    2
-  )
+    2,
+  ),
 );
 
 process.exit(0);
@@ -132,4 +198,74 @@ function chunks<T>(items: T[], size: number) {
     result.push(items.slice(index, index + size));
   }
   return result;
+}
+
+function buildCategoryAnswerPools(items: ParsedQuestion[]) {
+  const pools = new Map<string, string[]>();
+
+  for (const item of items) {
+    const normalizedAnswer = item.correctAnswerText.trim();
+    if (!normalizedAnswer) continue;
+    const existing = pools.get(item.categoryName) ?? [];
+    if (!existing.includes(normalizedAnswer)) existing.push(normalizedAnswer);
+    pools.set(item.categoryName, existing);
+  }
+
+  return pools;
+}
+
+function buildMultipleChoiceOptions(
+  correctAnswer: string,
+  categoryPool: string[],
+  globalPool: string[],
+  seed: number,
+) {
+  const correct = correctAnswer.trim();
+  const categoryDistractors = categoryPool.filter(
+    (answer) => answer !== correct,
+  );
+  const globalDistractors = globalPool.filter(
+    (answer) => answer !== correct && !categoryDistractors.includes(answer),
+  );
+  const pickedDistractors = pickDeterministic(categoryDistractors, 3, seed);
+
+  if (pickedDistractors.length < 3) {
+    const fallback = pickDeterministic(
+      globalDistractors,
+      3 - pickedDistractors.length,
+      seed + 101,
+    );
+    pickedDistractors.push(...fallback);
+  }
+
+  while (pickedDistractors.length < 3) {
+    pickedDistractors.push(
+      `None of the above #${pickedDistractors.length + 1}`,
+    );
+  }
+
+  const ordered = [correct, ...pickedDistractors.slice(0, 3)];
+  return rotateDeterministic(ordered, seed);
+}
+
+function pickDeterministic(pool: string[], count: number, seed: number) {
+  if (!pool.length || count <= 0) return [];
+
+  const uniquePool = [...new Set(pool)];
+  const result: string[] = [];
+  let cursor = Math.abs(seed) % uniquePool.length;
+
+  while (result.length < count && result.length < uniquePool.length) {
+    const candidate = uniquePool[cursor];
+    if (candidate && !result.includes(candidate)) result.push(candidate);
+    cursor = (cursor + 7) % uniquePool.length;
+  }
+
+  return result;
+}
+
+function rotateDeterministic(items: string[], seed: number) {
+  if (!items.length) return items;
+  const shift = Math.abs(seed) % items.length;
+  return items.slice(shift).concat(items.slice(0, shift));
 }
