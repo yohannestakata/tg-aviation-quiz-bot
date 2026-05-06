@@ -8,7 +8,7 @@ import {
   quizSessionQuestions,
   quizSessions,
   telegramGroups,
-  users
+  users,
 } from "../schema";
 
 export async function upsertTelegramUser(input: {
@@ -28,14 +28,18 @@ export async function upsertTelegramUser(input: {
         firstName: input.firstName ?? null,
         lastName: input.lastName ?? null,
         languageCode: input.languageCode ?? null,
-        updatedAt: sql`now()`
-      }
+        updatedAt: sql`now()`,
+      },
     })
     .returning();
   return user;
 }
 
-export async function upsertTelegramGroup(input: { telegramChatId: string; title?: string | null; type?: string | null }) {
+export async function upsertTelegramGroup(input: {
+  telegramChatId: string;
+  title?: string | null;
+  type?: string | null;
+}) {
   const [group] = await db
     .insert(telegramGroups)
     .values(input)
@@ -44,8 +48,8 @@ export async function upsertTelegramGroup(input: { telegramChatId: string; title
       set: {
         title: input.title ?? null,
         type: input.type ?? null,
-        updatedAt: sql`now()`
-      }
+        updatedAt: sql`now()`,
+      },
     })
     .returning();
   return group;
@@ -77,7 +81,7 @@ export async function createQuizSession(input: {
         teamNames: input.teamNames ?? [],
         teamJoinMode: input.teamJoinMode ?? null,
         teamMembers: input.teamMembers ?? {},
-        totalQuestions: input.totalQuestions
+        totalQuestions: input.totalQuestions,
       })
       .returning();
     if (!session) throw new Error("Failed to create quiz session");
@@ -86,8 +90,8 @@ export async function createQuizSession(input: {
       input.questionIds.map((questionId, position) => ({
         quizSessionId: session.id,
         questionId,
-        position
-      }))
+        position,
+      })),
     );
 
     return session;
@@ -99,12 +103,17 @@ export async function getSessionQuestion(sessionId: string, position: number) {
     .select({
       sessionQuestionId: quizSessionQuestions.id,
       question: questions,
-      option: questionOptions
+      option: questionOptions,
     })
     .from(quizSessionQuestions)
     .innerJoin(questions, eq(questions.id, quizSessionQuestions.questionId))
     .leftJoin(questionOptions, eq(questionOptions.questionId, questions.id))
-    .where(and(eq(quizSessionQuestions.quizSessionId, sessionId), eq(quizSessionQuestions.position, position)))
+    .where(
+      and(
+        eq(quizSessionQuestions.quizSessionId, sessionId),
+        eq(quizSessionQuestions.position, position),
+      ),
+    )
     .orderBy(asc(questionOptions.displayOrder));
 
   if (!row) return null;
@@ -138,19 +147,23 @@ export async function recordAnswer(input: {
       answerText: input.answerText ?? null,
       teamName: input.teamName ?? null,
       isCorrect: input.isCorrect,
-      pointsAwarded: input.pointsAwarded ?? (input.isCorrect ? 1 : 0)
+      pointsAwarded: input.pointsAwarded ?? (input.isCorrect ? 1 : 0),
     })
     .returning();
   return answer;
 }
 
-export async function advanceQuizSession(sessionId: string, nextIndex: number, completed = false) {
+export async function advanceQuizSession(
+  sessionId: string,
+  nextIndex: number,
+  completed = false,
+) {
   const [session] = await db
     .update(quizSessions)
     .set({
       currentQuestionIndex: nextIndex,
       status: completed ? "completed" : "active",
-      completedAt: completed ? sql`now()` : null
+      completedAt: completed ? sql`now()` : null,
     })
     .where(eq(quizSessions.id, sessionId))
     .returning();
@@ -161,14 +174,16 @@ export async function cancelActiveQuizForUser(userId: string) {
   await db
     .update(quizSessions)
     .set({ status: "cancelled", completedAt: sql`now()` })
-    .where(and(eq(quizSessions.userId, userId), eq(quizSessions.status, "active")));
+    .where(
+      and(eq(quizSessions.userId, userId), eq(quizSessions.status, "active")),
+    );
 }
 
 export async function getQuizScore(sessionId: string) {
   const [score] = await db
     .select({
       correct: sql<number>`coalesce(sum(case when ${quizAnswers.isCorrect} then 1 else 0 end), 0)::int`,
-      answered: sql<number>`count(${quizAnswers.id})::int`
+      answered: sql<number>`count(${quizAnswers.id})::int`,
     })
     .from(quizAnswers)
     .where(eq(quizAnswers.quizSessionId, sessionId));
@@ -180,7 +195,7 @@ export async function getTeamScores(sessionId: string) {
     .select({
       teamName: quizAnswers.teamName,
       points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::float8`,
-      answered: sql<number>`count(${quizAnswers.id})::int`
+      answered: sql<number>`count(${quizAnswers.id})::int`,
     })
     .from(quizAnswers)
     .where(eq(quizAnswers.quizSessionId, sessionId))
@@ -191,11 +206,12 @@ export async function getTeamScores(sessionId: string) {
 export async function getSessionParticipantScores(sessionId: string) {
   return db
     .select({
+      telegramUserId: users.telegramUserId,
       username: users.username,
       firstName: users.firstName,
       lastName: users.lastName,
       points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::float8`,
-      answered: sql<number>`count(${quizAnswers.id})::int`
+      answered: sql<number>`count(${quizAnswers.id})::int`,
     })
     .from(quizAnswers)
     .innerJoin(users, eq(users.id, quizAnswers.userId))
@@ -216,7 +232,7 @@ export async function createQuestionReport(input: {
       questionId: input.questionId,
       quizSessionId: input.quizSessionId ?? null,
       userId: input.userId ?? null,
-      note: input.note?.trim() || null
+      note: input.note?.trim() || null,
     })
     .returning();
   return report;
