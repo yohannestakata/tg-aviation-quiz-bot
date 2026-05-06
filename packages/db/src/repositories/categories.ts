@@ -22,6 +22,11 @@ export async function getCategoryById(id: string) {
   return category ?? null;
 }
 
+export async function getCategoryBySlug(slug: string) {
+  const [category] = await db.select().from(categories).where(eq(categories.slug, slug)).limit(1);
+  return category ?? null;
+}
+
 export async function createCategory(input: CategoryInput) {
   const [category] = await db
     .insert(categories)

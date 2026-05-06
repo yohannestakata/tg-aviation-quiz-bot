@@ -10,12 +10,12 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 headers {
   Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:json {
@@ -52,6 +52,10 @@ body:json {
       }
     ]
   }
+}
+
+vars:pre-request {
+  baseUrl: https://tg-aviation-quiz-bot.onrender.com
 }
 
 script:post-response {

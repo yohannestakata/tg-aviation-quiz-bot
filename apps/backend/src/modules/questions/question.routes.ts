@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { archiveQuestion, createQuestion, getQuestionById, listQuestions, updateQuestion } from "@aviation/db";
+import { archiveQuestion, createQuestion, createQuestionIfMissing, getCategoryBySlug, getQuestionById, listQuestions, updateQuestion } from "@aviation/db";
 import { asyncHandler } from "../../middleware/async-handler";
 import { requireAdmin } from "../../middleware/auth.middleware";
 import { validateBody } from "../../middleware/validate.middleware";
-import { questionSchema, updateQuestionSchema } from "./question.schemas";
+import { bulkQuestionsSchema, questionSchema, updateQuestionSchema } from "./question.schemas";
 
 export const questionRouter = Router();
 
@@ -38,6 +38,30 @@ questionRouter.post(
   asyncHandler(async (req, res) => {
     const question = await createQuestion(req.body);
     res.status(201).json({ question });
+  })
+);
+
+questionRouter.post(
+  "/bulk",
+  validateBody(bulkQuestionsSchema),
+  asyncHandler(async (req, res) => {
+    const created = [];
+
+    for (const item of req.body.questions) {
+      const categoryId = item.categoryId ?? (await getCategoryBySlug(item.categorySlug))?.id;
+      if (!categoryId) {
+        res.status(400).json({ error: `Category not found: ${item.categorySlug ?? item.categoryId}` });
+        return;
+      }
+
+      const question = await createQuestionIfMissing({
+        ...item,
+        categoryId
+      });
+      created.push(question);
+    }
+
+    res.status(201).json({ questions: created, count: created.length });
   })
 );
 

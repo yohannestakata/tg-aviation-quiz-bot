@@ -111,6 +111,12 @@ export async function createQuestion(input: QuestionInput) {
   });
 }
 
+export async function createQuestionIfMissing(input: QuestionInput) {
+  const [existing] = await db.select().from(questions).where(eq(questions.questionText, input.questionText)).limit(1);
+  if (existing) return getQuestionById(existing.id);
+  return createQuestion(input);
+}
+
 export async function updateQuestion(id: string, input: Partial<QuestionInput>) {
   return db.transaction(async (tx) => {
     const [question] = await tx

@@ -9,7 +9,8 @@ const categorySeed = [
   ["Meteorology", "meteorology", "Weather theory and aviation weather interpretation"],
   ["Navigation", "navigation", "Charts, headings, tracks, and navigation procedures"],
   ["Air Law", "air-law", "Rules, regulations, and operational limitations"],
-  ["Human Performance", "human-performance", "Physiology, workload, and decision making"]
+  ["Human Performance", "human-performance", "Physiology, workload, and decision making"],
+  ["Ethiopian Airlines", "ethiopian-airlines", "Ethiopian Airlines history, network, services, and operations"]
 ] as const;
 
 async function upsertCategory(name: string, slug: string, description: string, displayOrder: number) {
@@ -108,18 +109,93 @@ async function main() {
     ]
   });
 
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
+  await seedQuestion({
+    categoryId: seededCategories.get("ethiopian-airlines")!,
+    questionText: "When was Ethiopian Airlines founded?",
+    questionType: "multiple_choice",
+    correctAnswerText: "December 21, 1945",
+    explanation: "Ethiopian Airlines' official overview lists its founding date as December 21, 1945.",
+    options: [
+      { optionText: "December 21, 1945", isCorrect: true },
+      { optionText: "April 8, 1946" },
+      { optionText: "December 1, 1955" },
+      { optionText: "May 25, 1963" }
+    ]
+  });
+
+  await seedQuestion({
+    categoryId: seededCategories.get("ethiopian-airlines")!,
+    questionText: "When did Ethiopian Airlines start operations?",
+    questionType: "multiple_choice",
+    correctAnswerText: "April 8, 1946",
+    explanation: "The airline's official overview lists April 8, 1946 as the starting date of operation.",
+    options: [
+      { optionText: "December 21, 1945" },
+      { optionText: "April 8, 1946", isCorrect: true },
+      { optionText: "January 1, 1950" },
+      { optionText: "September 12, 1974" }
+    ]
+  });
+
+  await seedQuestion({
+    categoryId: seededCategories.get("ethiopian-airlines")!,
+    questionText: "What is Ethiopian Airlines' main hub?",
+    questionType: "multiple_choice",
+    correctAnswerText: "Addis Ababa Bole International Airport",
+    explanation: "Ethiopian identifies Addis Ababa, Ethiopia as its main hub, with its head office at Bole International Airport.",
+    options: [
+      { optionText: "Addis Ababa Bole International Airport", isCorrect: true },
+      { optionText: "Jomo Kenyatta International Airport" },
+      { optionText: "Cairo International Airport" },
+      { optionText: "Kotoka International Airport" }
+    ]
+  });
+
+  await seedQuestion({
+    categoryId: seededCategories.get("ethiopian-airlines")!,
+    questionText: "Which global airline alliance did Ethiopian Airlines join in December 2011?",
+    questionType: "multiple_choice",
+    correctAnswerText: "Star Alliance",
+    explanation: "Ethiopian Airlines joined Star Alliance in December 2011.",
+    options: [
+      { optionText: "oneworld" },
+      { optionText: "SkyTeam" },
+      { optionText: "Star Alliance", isCorrect: true },
+      { optionText: "Vanilla Alliance" }
+    ]
+  });
+
+  await seedQuestion({
+    categoryId: seededCategories.get("ethiopian-airlines")!,
+    questionText: "What is Ethiopian Airlines' frequent flyer program called?",
+    questionType: "multiple_choice",
+    correctAnswerText: "ShebaMiles",
+    explanation: "ShebaMiles is Ethiopian Airlines' frequent flyer program.",
+    options: [
+      { optionText: "ShebaMiles", isCorrect: true },
+      { optionText: "Cloud Rewards" },
+      { optionText: "Bole Miles" },
+      { optionText: "Aksum Club" }
+    ]
+  });
+
+  const adminEmails = (process.env.SEED_ADMIN_EMAILS ?? process.env.SEED_ADMIN_EMAIL ?? "admin@example.com")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "change-me";
   const passwordHash = await bcrypt.hash(adminPassword, 12);
-  await db
-    .insert(admins)
-    .values({ email: adminEmail.toLowerCase(), passwordHash })
-    .onConflictDoNothing({ target: admins.email });
 
-  console.log("Seed complete");
+  for (const email of adminEmails) {
+    await db.insert(admins).values({ email, passwordHash }).onConflictDoNothing({ target: admins.email });
+  }
+
+  console.log(`Seed complete. Admin accounts ensured: ${adminEmails.join(", ")}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

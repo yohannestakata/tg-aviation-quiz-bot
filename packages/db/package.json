@@ -13,6 +13,7 @@
     "db:seed": "bun src/seed/index.ts"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.44.7",
     "postgres": "^3.4.7",
     "zod": "^4.1.12"

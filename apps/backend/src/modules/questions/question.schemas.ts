@@ -44,3 +44,19 @@ export const questionSchema = questionBaseSchema.superRefine(validateQuestionSha
 export const updateQuestionSchema = questionBaseSchema.partial().superRefine((value, ctx) => {
   if (value.questionType) validateQuestionShape(value as z.infer<typeof questionBaseSchema>, ctx);
 });
+
+const bulkQuestionSchema = questionBaseSchema
+  .extend({
+    categoryId: z.string().uuid().optional(),
+    categorySlug: z.string().min(1).optional()
+  })
+  .superRefine((value, ctx) => {
+    if (!value.categoryId && !value.categorySlug) {
+      ctx.addIssue({ code: "custom", path: ["categoryId"], message: "categoryId or categorySlug is required" });
+    }
+    validateQuestionShape(value as z.infer<typeof questionBaseSchema>, ctx);
+  });
+
+export const bulkQuestionsSchema = z.object({
+  questions: z.array(bulkQuestionSchema).min(1).max(100)
+});
