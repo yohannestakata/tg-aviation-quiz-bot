@@ -1,0 +1,15 @@
+meta {
+  name: Overview
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/admin/analytics/overview
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

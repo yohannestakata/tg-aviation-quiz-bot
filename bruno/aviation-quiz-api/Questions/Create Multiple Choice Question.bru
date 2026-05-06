@@ -1,0 +1,61 @@
+meta {
+  name: Create Multiple Choice Question
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/admin/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "categoryId": "{{categoryId}}",
+    "questionText": "What does QNH provide when set on an altimeter?",
+    "questionType": "multiple_choice",
+    "difficulty": "medium",
+    "imageUrl": null,
+    "cloudinaryPublicId": null,
+    "correctAnswerText": "Altitude above mean sea level",
+    "explanation": "QNH is the pressure setting that makes the altimeter read elevation above mean sea level when on the ground.",
+    "isActive": true,
+    "options": [
+      {
+        "optionText": "Altitude above mean sea level",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "optionText": "Height above the airfield",
+        "isCorrect": false,
+        "displayOrder": 1
+      },
+      {
+        "optionText": "Flight level based on standard pressure",
+        "isCorrect": false,
+        "displayOrder": 2
+      },
+      {
+        "optionText": "Density altitude",
+        "isCorrect": false,
+        "displayOrder": 3
+      }
+    ]
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.question && res.body.question.id) {
+    bru.setEnvVar("questionId", res.body.question.id);
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Archive Category
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/admin/categories/{{categoryId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

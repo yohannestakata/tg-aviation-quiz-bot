@@ -1,0 +1,35 @@
+meta {
+  name: Create Category
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/admin/categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Radio Telephony",
+    "slug": "radio-telephony",
+    "description": "Radio phraseology and communication procedures",
+    "isActive": true,
+    "displayOrder": 7
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.category && res.body.category.id) {
+    bru.setEnvVar("categoryId", res.body.category.id);
+  }
+}

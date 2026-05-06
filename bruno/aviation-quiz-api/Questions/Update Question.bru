@@ -1,0 +1,27 @@
+meta {
+  name: Update Question
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/questions/{{questionId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "difficulty": "hard",
+    "explanation": "Updated explanation text.",
+    "isActive": true
+  }
+}

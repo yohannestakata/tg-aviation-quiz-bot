@@ -1,0 +1,26 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/categories/{{categoryId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "description": "Radio phraseology, readbacks, and communication procedures",
+    "displayOrder": 8
+  }
+}

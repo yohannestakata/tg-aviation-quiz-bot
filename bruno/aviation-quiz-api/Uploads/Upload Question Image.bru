@@ -1,0 +1,19 @@
+meta {
+  name: Upload Question Image
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/admin/uploads/question-image
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  image: @/absolute/path/to/question-image.png
+}
