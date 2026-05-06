@@ -1,0 +1,115 @@
+[
+    {
+        "question": "What is the name of the aircraft flown by the Wright brothers in 1903?",
+        "answer": "Flyer",
+        "category": "General Aviation",
+        "explanation": "The Wright Flyer made the first successful powered, controlled flight on 17 December 1903 at Kitty Hawk, North Carolina.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What year did the Wright brothers achieve the first powered flight?",
+        "answer": "1903",
+        "category": "General Aviation",
+        "explanation": "Orville Wright piloted the first successful powered flight on 17 December 1903, covering 37 metres in 12 seconds.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the approximate speed of sound at sea level in metres per second?",
+        "answer": "340",
+        "category": "General Aviation",
+        "acceptable_answers": ["340 m/s", "343"],
+        "explanation": "Sound travels approximately 340 m/s (661 knots) at sea level in standard conditions; this is Mach 1.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the popular nickname for the Boeing 747?",
+        "answer": "Jumbo Jet",
+        "category": "General Aviation",
+        "explanation": "The Boeing 747 earned the name 'Jumbo Jet' when it entered service in 1970 as the world's first wide-body airliner.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What was the world's fastest commercial passenger aircraft?",
+        "answer": "Concorde",
+        "category": "General Aviation",
+        "explanation": "Concorde flew at Mach 2.04 (2,179 km/h) and operated transatlantic routes from 1976 until its retirement in 2003.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the standard unit of altitude in aviation?",
+        "answer": "feet",
+        "category": "General Aviation",
+        "explanation": "Aviation globally uses feet for altitude, even in countries that use the metric system for other measurements.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the standard unit of airspeed in aviation?",
+        "answer": "knots",
+        "category": "General Aviation",
+        "explanation": "One knot equals one nautical mile per hour (1.852 km/h). Nautical miles align with latitude degrees, simplifying navigation.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the approximate typical cruise altitude for a Boeing 787?",
+        "answer": "40000 feet",
+        "category": "General Aviation",
+        "acceptable_answers": ["40,000 feet", "35000 feet", "43000 feet"],
+        "explanation": "The B787 Dreamliner typically cruises between 35,000 and 43,000 feet, with a service ceiling around 43,000 ft.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What European aviation safety regulator is abbreviated EASA?",
+        "answer": "European Union Aviation Safety Agency",
+        "category": "General Aviation",
+        "explanation": "EASA is the regulatory authority responsible for civil aviation safety and environmental protection in Europe.",
+        "acceptable_answers": ["EASA"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does Mach number compare aircraft speed with?",
+        "answer": "sound",
+        "category": "General Aviation",
+        "explanation": "Mach number = aircraft speed ÷ local speed of sound. Mach 1 = speed of sound; Mach 0.85 is a typical airliner cruise.",
+        "acceptable_answers": ["speed of sound"],
+        "difficulty": "hard"
+    },
+    {
+        "question": "What crew teamwork safety training is abbreviated CRM?",
+        "answer": "crew resource management",
+        "category": "General Aviation",
+        "explanation": "CRM training teaches flight crews to effectively use all available resources (people, information, equipment) to enhance safety.",
+        "acceptable_answers": ["CRM"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What unit measures runway distance?",
+        "answer": "meters",
+        "category": "General Aviation",
+        "acceptable_answers": ["metres", "feet"],
+        "explanation": "Runway lengths are commonly published in meters or feet depending on the charting standard.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What unit measures aviation fuel by weight?",
+        "answer": "kilograms",
+        "category": "General Aviation",
+        "acceptable_answers": ["pounds", "kg", "lbs"],
+        "explanation": "Aircraft fuel is often tracked by weight, commonly kilograms or pounds.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What number represents Mach one?",
+        "answer": "1",
+        "category": "General Aviation",
+        "acceptable_answers": ["one"],
+        "explanation": "Mach 1 means the aircraft is travelling at the local speed of sound.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What aircraft type has wings and rotors?",
+        "answer": "helicopter",
+        "category": "General Aviation",
+        "explanation": "A helicopter uses rotating wings, or rotors, to produce lift.",
+        "difficulty": "easy"
+    }
+]

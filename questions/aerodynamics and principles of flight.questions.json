@@ -1,0 +1,300 @@
+[
+    {
+        "question": "What does the control surface 'aileron' control?",
+        "answer": "roll",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Ailerons move in opposite directions to roll the aircraft around its longitudinal axis.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does the control surface 'elevator' control?",
+        "answer": "pitch",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The elevator controls pitch, rotating the aircraft around its lateral axis (nose up or down).",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does the control surface 'rudder' control?",
+        "answer": "yaw",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The rudder controls yaw, rotating the aircraft around its vertical axis (nose left or right).",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force directly opposes drag?",
+        "answer": "thrust",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Lift and weight act vertically; thrust and drag act horizontally. Balanced forces produce steady flight.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What force directly opposes thrust?",
+        "answer": "drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Drag is the aerodynamic resistance opposing the forward motion of the aircraft through the air.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force directly opposes lift?",
+        "answer": "weight",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Weight (gravity) acts downward and must be overcome by lift for flight to be maintained.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What abbreviation means 'angle of attack'?",
+        "answer": "AoA",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The angle of attack (AoA) is critical — exceeding the critical AoA causes the wing to stall.",
+        "acceptable_answers": ["angle attack"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What flight condition occurs when a wing exceeds its critical angle of attack?",
+        "answer": "stall",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "A stall occurs when the angle of attack exceeds the critical value, causing airflow separation over the wing.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What happens to stall speed when bank angle increases?",
+        "answer": "increases",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "In a banked turn, load factor increases, requiring more lift and thus a higher stall speed.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What do wing flaps mainly increase for slower flight?",
+        "answer": "lift",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Flaps increase wing camber, allowing slower flight for takeoff and landing by boosting lift (and drag).",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the primary purpose of leading-edge slats?",
+        "answer": "delay stall",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["improve stall characteristics", "reduce stall speed"],
+        "explanation": "Slats extend the leading edge, smoothing airflow at high angles of attack and lowering stall speed.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the primary purpose of spoilers?",
+        "answer": "reduce lift",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["spoil lift", "increase drag"],
+        "explanation": "Spoilers disrupt airflow over the wing, reducing lift and increasing drag for descent and braking.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the near-ground phenomenon that reduces induced drag?",
+        "answer": "ground effect",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Ground effect occurs within one wingspan of the ground, reducing induced drag and increasing lift efficiency.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What propeller effect is caused by asymmetric blade thrust?",
+        "answer": "P-factor",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "At high angles of attack, the descending blade produces more thrust than the ascending blade, yawing the nose left.",
+        "acceptable_answers": ["pfactor"],
+        "difficulty": "hard"
+    },
+    {
+        "question": "What is the best recovery technique from a spin?",
+        "answer": "opposite rudder",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Apply full opposite rudder to stop the rotation, then ease back pressure to recover from the dive.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What type of drag is produced as a byproduct of lift generation?",
+        "answer": "induced drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Induced drag arises from wingtip vortices created when the wing generates lift; it decreases as speed increases.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is parasite drag also commonly called?",
+        "answer": "profile drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Parasite (profile) drag includes form drag and skin friction; it increases with the square of airspeed.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the best glide speed used for in an emergency?",
+        "answer": "maximum range",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["maximum distance", "greatest glide distance"],
+        "explanation": "Flying at best glide speed (Vg) gives the greatest distance per unit of altitude lost.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "After engine failure on takeoff, what should the pilot do to maintain airspeed?",
+        "answer": "lower nose",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Immediately pitch for best glide speed to maintain control and maximise options for a safe landing.",
+        "acceptable_answers": ["pitch down"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What common term describes load factor felt by occupants?",
+        "answer": "G-force",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Load factor (n) = Lift / Weight. In level flight n=1; in a 60° banked turn n=2 (double the structural stress).",
+        "acceptable_answers": ["G force", "G"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What oscillation combines yaw and roll in swept-wing jets?",
+        "answer": "Dutch roll",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Dutch roll is an oscillatory motion combining yaw and roll, common in swept-wing jets. The yaw damper suppresses it.",
+        "difficulty": "hard"
+    },
+    {
+        "question": "What is the point on a wing where all aerodynamic lift forces can be considered to act?",
+        "answer": "center of pressure",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The center of pressure is the single point on a wing where all aerodynamic lift forces can be considered to act.",
+        "acceptable_answers": ["lift point", "centre pressure"],
+        "difficulty": "hard"
+    },
+    {
+        "question": "What force pulls an aircraft downward?",
+        "answer": "weight",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["gravity"],
+        "explanation": "Weight is the downward force caused by gravity.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force pushes an aircraft forward?",
+        "answer": "thrust",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Thrust is the forward force produced by engines or propellers.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force resists an aircraft moving through air?",
+        "answer": "drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Drag is aerodynamic resistance opposite the aircraft's motion.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What control surface is normally on the vertical tail?",
+        "answer": "rudder",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The rudder is mounted on the vertical stabilizer and controls yaw.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What type of turn increases load factor?",
+        "answer": "banked turn",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["turn"],
+        "explanation": "A banked turn increases load factor because the aircraft must produce more lift.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What device raises wing camber for takeoff and landing?",
+        "answer": "flaps",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Flaps increase wing camber, allowing slower takeoff and landing speeds.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What flight condition happens when airflow separates from the wing?",
+        "answer": "stall",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "A stall occurs when airflow separates and the wing can no longer produce enough lift.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What axis does roll occur around?",
+        "answer": "longitudinal",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Roll occurs around the aircraft longitudinal axis.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What axis does pitch occur around?",
+        "answer": "lateral",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Pitch occurs around the lateral axis.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What axis does yaw occur around?",
+        "answer": "vertical",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Yaw occurs around the vertical axis.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What control surface controls roll?",
+        "answer": "ailerons",
+        "category": "Aerodynamics & Principles of Flight",
+        "acceptable_answers": ["aileron"],
+        "explanation": "Ailerons control roll.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What control surface controls pitch?",
+        "answer": "elevator",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The elevator controls pitch.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What control surface controls yaw?",
+        "answer": "rudder",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The rudder controls yaw.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force is created by the wing?",
+        "answer": "lift",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The wing produces lift by accelerating airflow and creating pressure differences.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force opposes weight?",
+        "answer": "lift",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Lift acts upward and opposes weight.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What force opposes thrust?",
+        "answer": "drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Drag acts opposite the direction of motion and opposes thrust.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What type of drag is caused by lift?",
+        "answer": "induced drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Induced drag is produced as a byproduct of lift.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What type of drag includes skin friction?",
+        "answer": "parasite drag",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "Parasite drag includes form drag, interference drag, and skin friction.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What wing shape measurement runs from leading edge to trailing edge?",
+        "answer": "chord",
+        "category": "Aerodynamics & Principles of Flight",
+        "explanation": "The chord is the line from the leading edge to the trailing edge.",
+        "difficulty": "medium"
+    }
+]

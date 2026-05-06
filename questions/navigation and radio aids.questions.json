@@ -1,0 +1,136 @@
+[
+    {
+        "question": "What radio navigation aid is abbreviated VOR?",
+        "answer": "VHF omnidirectional range",
+        "category": "Navigation & Radio Aids",
+        "explanation": "A VOR is a ground-based radio navigation aid transmitting 360 magnetic bearings (radials) for aircraft to track.",
+        "acceptable_answers": ["VOR"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What distance radio aid is abbreviated DME?",
+        "answer": "distance measuring equipment",
+        "category": "Navigation & Radio Aids",
+        "explanation": "DME measures the slant-range distance between the aircraft and a ground transponder beacon in nautical miles.",
+        "acceptable_answers": ["DME"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What radio beacon is abbreviated NDB?",
+        "answer": "non-directional beacon",
+        "category": "Navigation & Radio Aids",
+        "explanation": "An NDB is a radio transmitter that broadcasts in all directions; aircraft use an ADF to find the bearing to the station.",
+        "acceptable_answers": ["NDB"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What precision landing aid is abbreviated ILS?",
+        "answer": "instrument landing system",
+        "category": "Navigation & Radio Aids",
+        "explanation": "The ILS provides precision lateral (localizer) and vertical (glideslope) guidance for instrument approaches to a runway.",
+        "acceptable_answers": ["ILS"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What GPS integrity check is abbreviated RAIM?",
+        "answer": "receiver autonomous integrity monitoring",
+        "category": "Navigation & Radio Aids",
+        "explanation": "RAIM is a GPS self-checking function that verifies the integrity of satellite signals and warns if accuracy degrades.",
+        "acceptable_answers": ["RAIM"],
+        "difficulty": "hard"
+    },
+    {
+        "question": "With QNH set, does the altimeter show altitude or height above sea level?",
+        "answer": "altitude",
+        "category": "Navigation & Radio Aids",
+        "explanation": "Setting QNH on the altimeter sub-scale displays the aircraft's pressure altitude corrected to mean sea level (AMSL).",
+        "difficulty": "medium"
+    },
+    {
+        "question": "With QFE set, does the altimeter show altitude or height above the airfield?",
+        "answer": "height",
+        "category": "Navigation & Radio Aids",
+        "explanation": "Setting QFE makes the altimeter read zero on the airfield surface, displaying height directly above the aerodrome.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What navigation method estimates position from time and speed?",
+        "answer": "dead reckoning",
+        "category": "Navigation & Radio Aids",
+        "explanation": "Dead reckoning estimates current position using a known start point, elapsed time, groundspeed, and track direction.",
+        "difficulty": "hard"
+    },
+    {
+        "question": "What does a VOR radial give from the station?",
+        "answer": "bearing",
+        "category": "Navigation & Radio Aids",
+        "explanation": "A VOR tells the pilot which radial (magnetic bearing) they are on from the station, enabling position fixing.",
+        "acceptable_answers": ["radial"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What satellite navigation system is abbreviated GPS?",
+        "answer": "global positioning system",
+        "category": "Navigation & Radio Aids",
+        "explanation": "GPS is a US satellite-based navigation system providing precise position, velocity, and time data to equipped aircraft.",
+        "acceptable_answers": ["GPS"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is a named navigation point called?",
+        "answer": "waypoint",
+        "category": "Navigation & Radio Aids",
+        "explanation": "A waypoint is a specific geographic position defined by coordinates, used to define airways and flight plans.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What cockpit instrument points to an NDB?",
+        "answer": "ADF",
+        "category": "Navigation & Radio Aids",
+        "explanation": "The ADF is an instrument that automatically points toward an NDB beacon, showing relative bearing to the station.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What radio aid gives distance in nautical miles?",
+        "answer": "DME",
+        "category": "Navigation & Radio Aids",
+        "explanation": "Distance Measuring Equipment, or DME, gives slant-range distance.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What navigation aid gives radials?",
+        "answer": "VOR",
+        "category": "Navigation & Radio Aids",
+        "explanation": "A VOR provides magnetic radials from the station.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What navigation beacon works with an ADF?",
+        "answer": "NDB",
+        "category": "Navigation & Radio Aids",
+        "explanation": "An Automatic Direction Finder points toward an NDB.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What satellite navigation system is common in aircraft?",
+        "answer": "GPS",
+        "category": "Navigation & Radio Aids",
+        "explanation": "GPS provides satellite-based position and navigation information.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What ILS component gives vertical guidance?",
+        "answer": "glideslope",
+        "category": "Navigation & Radio Aids",
+        "acceptable_answers": ["glide slope"],
+        "explanation": "The glideslope provides vertical guidance on an ILS approach.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What ILS component gives lateral guidance?",
+        "answer": "localizer",
+        "category": "Navigation & Radio Aids",
+        "explanation": "The localizer provides lateral runway alignment guidance.",
+        "difficulty": "medium"
+    }
+]

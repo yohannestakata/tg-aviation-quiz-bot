@@ -1,0 +1,244 @@
+[
+    {
+        "question": "What does V1 represent during a takeoff?",
+        "answer": "decision speed",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "V1 is the takeoff decision speed — above V1 the crew must continue the takeoff even if an engine fails.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does VR represent during a takeoff?",
+        "answer": "rotation speed",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "VR is the speed at which the pilot applies back pressure to rotate the nose of the aircraft off the runway.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What speed does V2 represent after takeoff?",
+        "answer": "safety speed",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "V2 is the minimum speed that must be maintained after engine failure to ensure a safe climb gradient.",
+        "acceptable_answers": ["takeoff speed"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does ASI stand for?",
+        "answer": "airspeed indicator",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The Airspeed Indicator (ASI) measures the dynamic pressure of the airflow to display indicated airspeed.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does the altimeter measure?",
+        "answer": "altitude",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The altimeter senses static air pressure and converts it to altitude above a reference pressure datum.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What ASI arc marks the normal speed range?",
+        "answer": "green arc",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The green arc (Vno to Vs1) marks the normal operating speed range for the aircraft.",
+        "acceptable_answers": ["green"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What ASI arc marks flap operating speeds?",
+        "answer": "white arc",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The white arc shows the speed range in which flaps may be used (Vso to Vfe).",
+        "acceptable_answers": ["white"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What ASI marking indicates VNE?",
+        "answer": "red line",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The red line (VNE) is the never-exceed speed; flight beyond this risks structural damage.",
+        "acceptable_answers": ["red"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What instrument is abbreviated VSI?",
+        "answer": "vertical speed indicator",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The Vertical Speed Indicator (VSI) shows the rate of climb or descent in feet per minute.",
+        "acceptable_answers": ["VSI"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What instrument displays aircraft pitch and bank?",
+        "answer": "attitude indicator",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The attitude indicator (artificial horizon) shows the aircraft's pitch and bank relative to the earth's horizon.",
+        "acceptable_answers": ["artificial horizon"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What abbreviation is used for feet per minute?",
+        "answer": "FPM",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "Vertical speed (rate of climb or descent) is measured in feet per minute (FPM).",
+        "acceptable_answers": ["ft/min"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What typically powers gyroscopic instruments in small piston aircraft?",
+        "answer": "vacuum",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "A vacuum pump driven by the engine creates suction to spin the gyros in the attitude indicator and DI.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does TAS stand for?",
+        "answer": "true airspeed",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "True Airspeed (TAS) is the actual speed of the aircraft through the air mass, corrected for altitude and temperature.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does IAS stand for?",
+        "answer": "indicated airspeed",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "Indicated Airspeed (IAS) is the direct reading from the ASI, uncorrected for density altitude or position error.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What aircraft weight limit is abbreviated MTOW?",
+        "answer": "maximum takeoff weight",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "MTOW is the maximum weight an aircraft is certified to weigh at the start of the takeoff roll.",
+        "acceptable_answers": ["MTOW", "takeoff weight"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What runway landing distance value is abbreviated LDA?",
+        "answer": "landing distance available",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "LDA is the runway length declared available and suitable for the ground run of a landing aeroplane.",
+        "acceptable_answers": ["LDA"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does a yaw damper suppress?",
+        "answer": "Dutch roll",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The yaw damper automatically applies small rudder inputs to suppress the Dutch roll oscillation in swept-wing jets.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does the stick pusher system prevent?",
+        "answer": "stall",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "A stick pusher automatically pushes the control column forward when the angle of attack approaches the stall threshold.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does the flight data recorder (black box) record?",
+        "answer": "flight data",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["flight parameters", "aircraft data"],
+        "explanation": "The FDR continuously records hundreds of flight parameters (speed, altitude, heading, control inputs) for accident investigation.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does anti-skid prevent during braking?",
+        "answer": "wheel lock",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "Anti-skid (anti-lock braking) automatically modulates brake pressure to prevent wheel lockup and tyre skidding.",
+        "acceptable_answers": ["skidding"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What type of engine is used in most modern commercial airliners?",
+        "answer": "turbofan",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The turbofan engine is standard on airliners; a large fan provides most thrust with high efficiency at cruise.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What jet engine monitoring value is abbreviated EPR?",
+        "answer": "engine pressure ratio",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "EPR is the ratio of exhaust total pressure to engine inlet total pressure, used as a power setting parameter.",
+        "acceptable_answers": ["EPR"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What does mixture control adjust between fuel and air?",
+        "answer": "ratio",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The mixture control adjusts the ratio of fuel to air entering the engine to optimise combustion at altitude.",
+        "acceptable_answers": ["fuel ratio"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the primary purpose of carburetor heat?",
+        "answer": "prevent icing",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "Carburetor heat supplies warm air to the carburetor to melt or prevent ice formation in the venturi and throttle.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the central takeoff speed in balanced field performance?",
+        "answer": "V1",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "A balanced field exists when the distance to stop after an engine failure at V1 equals the distance to continue and clear the obstacle.",
+        "difficulty": "hard"
+    },
+    {
+        "question": "What errors does the magnetic compass suffer from during turns?",
+        "answer": "turning error",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["acceleration error", "magnetic dip error"],
+        "explanation": "The magnetic compass shows erroneous readings during turns (turning error) and acceleration/deceleration (acceleration error).",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What instrument shows aircraft heading?",
+        "answer": "compass",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["heading indicator"],
+        "explanation": "A compass or heading indicator shows the aircraft's heading.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What instrument shows altitude?",
+        "answer": "altimeter",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "The altimeter displays altitude using atmospheric pressure.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What instrument shows airspeed?",
+        "answer": "ASI",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["airspeed indicator"],
+        "explanation": "The airspeed indicator, or ASI, shows indicated airspeed.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What system provides aircraft electrical power after engine start?",
+        "answer": "generator",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["alternator"],
+        "explanation": "A generator or alternator supplies electrical power while the engine is running.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What cockpit warning color usually means immediate danger?",
+        "answer": "red",
+        "category": "Aircraft Systems & Instruments",
+        "explanation": "Red cockpit warnings typically signal urgent or immediate danger.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What warning color usually means caution?",
+        "answer": "amber",
+        "category": "Aircraft Systems & Instruments",
+        "acceptable_answers": ["yellow"],
+        "explanation": "Amber or yellow warnings usually indicate caution.",
+        "difficulty": "easy"
+    }
+]

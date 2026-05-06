@@ -1,0 +1,414 @@
+[
+    {
+        "question": "What is the ICAO code of Ethiopian Airlines?",
+        "answer": "ETH",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ETH is the ICAO designator assigned to Ethiopian Airlines, used in all official flight plans and ATC communications.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the IATA code of Ethiopian Airlines?",
+        "answer": "ET",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ET is the two-letter IATA code used on tickets, timetables, and booking systems worldwide.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the official callsign of Ethiopian Airlines?",
+        "answer": "ethiopian",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Pilots and controllers use the callsign 'Ethiopian' in all voice communications.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the ICAO code of Bole International Airport?",
+        "answer": "HAAB",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "HAAB is the four-letter ICAO location indicator for Addis Ababa Bole International Airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the IATA code of Addis Ababa Bole International Airport?",
+        "answer": "ADD",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ADD is the three-letter IATA airport code for Addis Ababa's main international airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "In which year was Ethiopian Airlines founded?",
+        "answer": "1945",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines was established on 30 December 1945 by Emperor Haile Selassie I.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "In which year did Ethiopian Airlines begin revenue operations?",
+        "answer": "1946",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Regular commercial flights began in April 1946 with the help of TWA under a management contract.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What was the first aircraft type used by Ethiopian Airlines?",
+        "answer": "DC-3",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Douglas DC-3 was the first aircraft operated by Ethiopian Airlines on its inaugural routes.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What was the first international destination of Ethiopian Airlines?",
+        "answer": "Cairo",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Cairo, Egypt was Ethiopian's first international destination, establishing early continental connections.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What long-range widebody aircraft is a flagship in Ethiopian's fleet?",
+        "answer": "A350",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Airbus A350 XWB is Ethiopian's primary ultra-long-range aircraft used on intercontinental routes.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the Dreamliner aircraft type in Ethiopian's fleet?",
+        "answer": "B787",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Boeing 787 Dreamliner is a fuel-efficient widebody used by Ethiopian on medium to long-haul routes.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What aircraft does Ethiopian mainly use for regional African flights?",
+        "answer": "Q400",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Bombardier Q400 turboprop serves Ethiopian's regional network across shorter African routes.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the main cargo aircraft type used by Ethiopian Airlines?",
+        "answer": "B777F",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Boeing 777 Freighter is used extensively by Ethiopian Cargo for intercontinental freight operations.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What aircraft type is used for pilot ab-initio training at Ethiopian Aviation Academy?",
+        "answer": "DA40",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Diamond DA40 is the primary single-engine trainer aircraft at the Ethiopian Aviation Academy.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What single word completes 'Ethiopian Aviation ___'?",
+        "answer": "Academy",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Ethiopian Aviation Academy (EAA) in Addis Ababa trains pilots, engineers, and aviation professionals.",
+        "acceptable_answers": ["EAA"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What single word completes 'Ethiopian Aviation ___' for the degree-granting school?",
+        "answer": "University",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Ethiopian Aviation University (EAU) is the degree-granting institution attached to the training academy.",
+        "acceptable_answers": ["EAU"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the abbreviation of the Ethiopian Aviation Academy?",
+        "answer": "EAA",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "EAA stands for Ethiopian Aviation Academy, the premier aviation training institution in Africa.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "Where is the main campus of the Ethiopian Aviation Academy located?",
+        "answer": "Addis Ababa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The main EAA campus is in Addis Ababa, adjacent to Bole International Airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the second campus city of the Ethiopian Aviation Academy?",
+        "answer": "Hawassa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Hawassa hosts EAA's second campus to expand capacity for training Ethiopian aviation professionals.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "Which global airline alliance is Ethiopian Airlines a member of?",
+        "answer": "Star Alliance",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines joined Star Alliance in 2011, the world's largest airline alliance.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "Who is the primary owner of Ethiopian Airlines?",
+        "answer": "government",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines is 100% state-owned by the Federal Democratic Republic of Ethiopia.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the approximate fleet size of Ethiopian Airlines?",
+        "answer": "170",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines operates approximately 170 aircraft, making it one of Africa's largest fleets.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What is the name of Ethiopian Airlines' cargo and logistics arm?",
+        "answer": "Ethiopian Cargo",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Cargo & Logistics Services is one of Africa's largest cargo airlines by volume.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What Ethiopian Airlines strategic plan is referenced for 2025 growth targets?",
+        "answer": "Vision 2025",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Vision 2025 is Ethiopian Airlines' strategic growth plan targeting 18 million passengers and major cargo expansion.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What airport serves as Ethiopian Airlines' main hub?",
+        "answer": "Bole",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["ADD", "HAAB"],
+        "explanation": "Addis Ababa Bole International Airport is Ethiopian Airlines' main hub.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "Which Ethiopian city is home to Bole International Airport?",
+        "answer": "Addis Ababa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Addis"],
+        "explanation": "Bole International Airport is located in Addis Ababa, Ethiopia's capital city.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What continent is Ethiopian Airlines based in?",
+        "answer": "Africa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines is based in Ethiopia, in East Africa.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What airline alliance uses Ethiopian Airlines as a member carrier?",
+        "answer": "Star Alliance",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Star"],
+        "explanation": "Ethiopian Airlines is a member of Star Alliance.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is the country code top-level domain for Ethiopia?",
+        "answer": ".et",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": ".et is the internet country code top-level domain for Ethiopia.",
+        "difficulty": "hard"
+    },
+    {
+        "question": "What city is Ethiopian Airlines headquartered in?",
+        "answer": "Addis Ababa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Addis"],
+        "explanation": "Ethiopian Airlines is headquartered in Addis Ababa.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What airport code is used for Addis Ababa in tickets?",
+        "answer": "ADD",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ADD is the IATA airport code used in passenger systems for Addis Ababa Bole International Airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What airport code is used for Bole in flight plans?",
+        "answer": "HAAB",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "HAAB is the ICAO location indicator for Addis Ababa Bole International Airport.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What airline code appears before Ethiopian flight numbers?",
+        "answer": "ET",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ET is Ethiopian Airlines' two-letter IATA airline code.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What three-letter ICAO airline code identifies Ethiopian Airlines?",
+        "answer": "ETH",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "ETH is Ethiopian Airlines' ICAO airline designator.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What word is used as Ethiopian Airlines' radio callsign?",
+        "answer": "Ethiopian",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The radio callsign used in voice communication is Ethiopian.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What Ethiopian Airlines aircraft type is nicknamed Dreamliner?",
+        "answer": "B787",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["787"],
+        "explanation": "The Boeing 787 is marketed as the Dreamliner.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What Ethiopian widebody Airbus type starts with 'A350'?",
+        "answer": "A350",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Airbus A350 is one of Ethiopian Airlines' long-range aircraft types.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What Ethiopian turboprop type is common on regional routes?",
+        "answer": "Q400",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Q400 is used on shorter regional routes.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What freighter suffix marks the cargo Boeing 777?",
+        "answer": "F",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["freighter"],
+        "explanation": "The F suffix in B777F stands for freighter.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What training aircraft model starts with 'DA40'?",
+        "answer": "DA40",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Diamond DA40 is used for ab-initio pilot training.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What abbreviation is used for Ethiopian Aviation Academy?",
+        "answer": "EAA",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "EAA stands for Ethiopian Aviation Academy.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What abbreviation is used for Ethiopian Aviation University?",
+        "answer": "EAU",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "EAU stands for Ethiopian Aviation University.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What city hosts the academy's second campus?",
+        "answer": "Hawassa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Hawassa hosts a second Ethiopian Aviation Academy campus.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What word completes 'Star ___'?",
+        "answer": "Alliance",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines is part of Star Alliance.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What ownership type describes Ethiopian Airlines?",
+        "answer": "state-owned",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["government"],
+        "explanation": "Ethiopian Airlines is state-owned by Ethiopia.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What word completes 'Vision 2025'?",
+        "answer": "Vision",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Vision 2025 is Ethiopian Airlines' strategic growth plan.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What city was Ethiopian Airlines' first international destination?",
+        "answer": "Cairo",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Cairo was Ethiopian Airlines' first international destination.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What aircraft type did Ethiopian Airlines first operate?",
+        "answer": "DC-3",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The Douglas DC-3 was Ethiopian Airlines' first aircraft type.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What airport word follows 'Addis Ababa ___ International'?",
+        "answer": "Bole",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "The full airport name is Addis Ababa Bole International Airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What capital city is abbreviated ADD?",
+        "answer": "Addis Ababa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Addis"],
+        "explanation": "ADD is the IATA code for Addis Ababa Bole International Airport.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What region of Africa is Ethiopia in?",
+        "answer": "East Africa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["east"],
+        "explanation": "Ethiopia is located in East Africa.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What word describes Ethiopian Airlines' cargo branch?",
+        "answer": "Cargo",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Cargo is the airline's cargo and logistics operation.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What year was Ethiopian Airlines established?",
+        "answer": "1945",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines was established in 1945.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What year did Ethiopian begin operations?",
+        "answer": "1946",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Ethiopian Airlines began revenue operations in 1946.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What international airline alliance is abbreviated SA?",
+        "answer": "Star Alliance",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Star"],
+        "explanation": "Star Alliance is the global alliance Ethiopian Airlines joined.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What airport city lies beside the EAA main campus?",
+        "answer": "Addis Ababa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "acceptable_answers": ["Addis"],
+        "explanation": "The Ethiopian Aviation Academy main campus is in Addis Ababa.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What continent is Addis Ababa Bole located in?",
+        "answer": "Africa",
+        "category": "Ethiopian Airlines & Bole Airport",
+        "explanation": "Addis Ababa Bole International Airport is in Africa.",
+        "difficulty": "easy"
+    }
+]

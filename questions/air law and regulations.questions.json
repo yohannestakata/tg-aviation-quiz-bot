@@ -1,0 +1,155 @@
+[
+    {
+        "question": "What is the international aviation emergency radio frequency?",
+        "answer": "121.5",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["121.5 mhz"],
+        "explanation": "121.5 MHz is the internationally designated VHF guard (emergency) frequency monitored by all aircraft and ATC.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does squawk 7700 indicate?",
+        "answer": "emergency",
+        "category": "Air Law & Regulations",
+        "explanation": "Transponder code 7700 signals a general emergency to ATC. The aircraft receives immediate priority handling.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does squawk 7600 indicate?",
+        "answer": "radio failure",
+        "category": "Air Law & Regulations",
+        "explanation": "Code 7600 informs ATC of a complete radio communication failure. Pilots follow lost comms procedures.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What does squawk 7500 indicate?",
+        "answer": "unlawful interference",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["hijack", "hijacking"],
+        "explanation": "Code 7500 covertly signals to ATC that the aircraft is subject to unlawful interference (hijacking).",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What aviation service is abbreviated ATC?",
+        "answer": "air traffic control",
+        "category": "Air Law & Regulations",
+        "explanation": "Air Traffic Control (ATC) provides safe, orderly, and expeditious flow of air traffic using separation standards.",
+        "acceptable_answers": ["ATC"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What global civil aviation agency is abbreviated ICAO?",
+        "answer": "International Civil Aviation Organization",
+        "category": "Air Law & Regulations",
+        "explanation": "ICAO is the UN specialised agency that sets global standards and regulations for international civil aviation.",
+        "acceptable_answers": ["ICAO"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What airline industry association is abbreviated IATA?",
+        "answer": "International Air Transport Association",
+        "category": "Air Law & Regulations",
+        "explanation": "IATA represents the airline industry globally, setting commercial standards like codes, ticketing, and safety audits.",
+        "acceptable_answers": ["IATA"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What aviation notice is abbreviated NOTAM?",
+        "answer": "Notice to Airmen",
+        "category": "Air Law & Regulations",
+        "explanation": "A NOTAM contains essential information about changes to airspace, navigation aids, or procedures not yet reflected in charts.",
+        "acceptable_answers": ["NOTAM", "notice"],
+        "difficulty": "easy"
+    },
+    {
+        "question": "What visual weather condition is abbreviated VMC?",
+        "answer": "visual meteorological conditions",
+        "category": "Air Law & Regulations",
+        "explanation": "VMC means weather conditions meet the minimum flight visibility and cloud clearance for visual flight rules (VFR).",
+        "acceptable_answers": ["VMC"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What instrument weather condition is abbreviated IMC?",
+        "answer": "instrument meteorological conditions",
+        "category": "Air Law & Regulations",
+        "explanation": "IMC means weather is below VMC minima; flight requires adherence to instrument flight rules (IFR).",
+        "acceptable_answers": ["IMC"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "What is a go-around?",
+        "answer": "missed approach",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["aborted landing", "go around"],
+        "explanation": "A go-around (missed approach) is the procedure of abandoning an approach to land and climbing away to try again.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What aviation safety framework is abbreviated TEM?",
+        "answer": "Threat and Error Management",
+        "category": "Air Law & Regulations",
+        "explanation": "TEM is a safety framework used in crew resource management (CRM) training to identify, avoid, and recover from threats and errors.",
+        "acceptable_answers": ["TEM"],
+        "difficulty": "medium"
+    },
+    {
+        "question": "In what magnetic direction does runway 09 point?",
+        "answer": "090",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["090 degrees", "90", "east"],
+        "explanation": "Runway designators are the first two digits of the magnetic heading divided by 10; runway 09 faces approximately 090° magnetic.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "In what magnetic direction does runway 27 point?",
+        "answer": "270",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["270 degrees", "west"],
+        "explanation": "Runway 27 faces approximately 270° magnetic (west), the reciprocal of runway 09.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What rule set is used for visual flying?",
+        "answer": "VFR",
+        "category": "Air Law & Regulations",
+        "explanation": "VFR stands for Visual Flight Rules.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What rule set is used for instrument flying?",
+        "answer": "IFR",
+        "category": "Air Law & Regulations",
+        "explanation": "IFR stands for Instrument Flight Rules.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What transponder code means emergency?",
+        "answer": "7700",
+        "category": "Air Law & Regulations",
+        "explanation": "Squawk 7700 indicates a general emergency.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What transponder code means radio failure?",
+        "answer": "7600",
+        "category": "Air Law & Regulations",
+        "explanation": "Squawk 7600 indicates radio communication failure.",
+        "difficulty": "easy"
+    },
+    {
+        "question": "What transponder code means hijacking?",
+        "answer": "7500",
+        "category": "Air Law & Regulations",
+        "explanation": "Squawk 7500 indicates unlawful interference or hijacking.",
+        "difficulty": "medium"
+    },
+    {
+        "question": "What aviation phrase means landing clearance is cancelled?",
+        "answer": "go around",
+        "category": "Air Law & Regulations",
+        "acceptable_answers": ["missed approach"],
+        "explanation": "A go-around means the aircraft abandons the landing and climbs away.",
+        "difficulty": "medium"
+    }
+]
