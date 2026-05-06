@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ArchiveIcon,
@@ -454,6 +454,18 @@ function QuestionsPanel({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [editing, setEditing] = useState<Question | null>(null)
+  const [loadingQuestionId, setLoadingQuestionId] = useState<string | null>(null)
+
+  async function editQuestion(question: Question) {
+    setLoadingQuestionId(question.id)
+    try {
+      const response = await adminApi.question(question.id)
+      setEditing(response.question)
+      setIsOpen(true)
+    } finally {
+      setLoadingQuestionId(null)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -534,12 +546,10 @@ function QuestionsPanel({
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        setEditing(question)
-                        setIsOpen(true)
-                      }}
+                      disabled={loadingQuestionId === question.id}
+                      onClick={() => void editQuestion(question)}
                     >
-                      Edit
+                      {loadingQuestionId === question.id ? "Loading" : "Edit"}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -575,6 +585,7 @@ function QuestionDialog({
   const [form, setForm] = useState<QuestionPayload>(emptyQuestion)
   const [isSaving, setIsSaving] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     if (!open) return
@@ -626,6 +637,7 @@ function QuestionDialog({
       })
     } finally {
       setIsUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ""
     }
   }
 
@@ -734,17 +746,23 @@ function QuestionDialog({
                 }
                 placeholder="Optional"
               />
-              <Button asChild variant="outline" disabled={isUploading}>
-                <label>
-                  <UploadIcon />
-                  {isUploading ? "Uploading" : "Upload"}
-                  <input
-                    className="sr-only"
-                    type="file"
-                    accept="image/*"
-                    onChange={(event) => void upload(event.target.files?.[0] ?? null)}
-                  />
-                </label>
+              <input
+                ref={fileInputRef}
+                className="sr-only"
+                type="file"
+                accept="image/*"
+                onChange={(event) =>
+                  void upload(event.target.files?.[0] ?? null)
+                }
+              />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <UploadIcon />
+                {isUploading ? "Uploading" : "Upload"}
               </Button>
             </div>
             {form.imageUrl ? (
