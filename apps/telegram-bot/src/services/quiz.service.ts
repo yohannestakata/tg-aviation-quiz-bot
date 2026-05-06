@@ -292,7 +292,7 @@ export async function sendCurrentQuestion(ctx: BotContext) {
   const header = `Question ${active.currentIndex + 1} of ${active.totalQuestions}`;
   const audience =
     active.playMode === "teams"
-      ? `Teams: ${active.teamNames.join(", ")}`
+      ? `Team turn: ${currentTeam(active) ?? "Unknown"}`
       : active.playMode === "free_form"
         ? "Free Form: anyone can answer."
         : "Individual: only the quiz creator can answer.";
@@ -347,11 +347,9 @@ export async function answerMultipleChoice(ctx: BotContext, optionIndex: number)
   active.answeredUserIds.add(ctx.from!.id);
 
   if (active.playMode === "teams") {
-    await ctx.answerCallbackQuery("Answer recorded.");
-    if (active.answeredUserIds.size >= Object.keys(active.teamMembers).length) {
-      await ctx.reply(formatFeedback(true, question.correctAnswerText, question.explanation));
-      await moveNext(ctx, active);
-    }
+    await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
+    await ctx.reply(`${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation)}`);
+    await moveNext(ctx, active);
     return;
   }
 
@@ -391,11 +389,8 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   active.answeredUserIds.add(ctx.from!.id);
 
   if (active.playMode === "teams") {
-    await ctx.reply(`${displayName(ctx)} answered for ${permission.teamName}.`);
-    if (active.answeredUserIds.size >= Object.keys(active.teamMembers).length) {
-      await ctx.reply(formatFeedback(true, question.correctAnswerText, question.explanation));
-      await moveNext(ctx, active);
-    }
+    await ctx.reply(`${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation)}`);
+    await moveNext(ctx, active);
     return true;
   }
 
@@ -513,6 +508,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
     teamNames: draft.teamNames,
     teamMembers: draft.teamMembers,
     answeredUserIds: new Set(),
+    currentTeamIndex: 0,
     categoryId: draft.categoryId,
     questionType: draft.questionType,
     totalQuestions,
@@ -535,6 +531,8 @@ async function resolveAnswerer(ctx: BotContext, active: ActiveQuiz) {
   if (active.playMode === "teams") {
     const member = active.teamMembers[ctx.from.id];
     if (!member) return { allowed: false as const, reason: "Join a team before answering." };
+    const teamTurn = currentTeam(active);
+    if (member.teamName !== teamTurn) return { allowed: false as const, reason: `It is ${teamTurn}'s turn.` };
     return { allowed: true as const, userId: user.id, teamName: member.teamName };
   }
 
@@ -550,6 +548,9 @@ async function moveNext(ctx: BotContext, active: ActiveQuiz) {
 
   active.currentIndex = nextIndex;
   active.answeredUserIds = new Set();
+  if (active.playMode === "teams" && active.teamNames.length) {
+    active.currentTeamIndex = (active.currentTeamIndex + 1) % active.teamNames.length;
+  }
   await advanceQuizSession(active.sessionId, nextIndex);
   await sendCurrentQuestion(ctx);
 }
@@ -586,6 +587,10 @@ function smallestTeam(draft: DraftQuiz) {
       count: Object.values(draft.teamMembers).filter((member) => member.teamName === teamName).length
     }))
     .sort((a, b) => a.count - b.count)[0]?.teamName;
+}
+
+function currentTeam(active: ActiveQuiz) {
+  return active.teamNames[active.currentTeamIndex % Math.max(active.teamNames.length, 1)];
 }
 
 function formatTeams(teamMembers: Record<number, TeamMember>, teamNames: string[]) {
