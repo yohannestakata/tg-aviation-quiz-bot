@@ -13,24 +13,27 @@ export function registerStartHandlers(bot: Bot<BotContext>) {
         "",
         "Practice aviation topics, test your knowledge, and compare results with others.",
         "",
-        "Choose an option below:"
+        "Choose an option below:",
       ].join("\n"),
-      { reply_markup: mainMenuKeyboard() }
+      { reply_markup: mainMenuKeyboard() },
     );
   });
 
   bot.command("help", async (ctx) => {
     await ctx.reply(
       [
-        "🧭 Commands",
+        "🧭 How to use this bot",
+        "Use these commands anytime:",
         "/quiz - Start a quiz",
-        "/categories - Show categories",
-        "/leaderboard - Show leaderboard",
-        "/mystats - Show personal stats",
-        "/cancel - Cancel current quiz",
+        "/categories - Browse quiz categories",
+        "/leaderboard - See top scores",
+        "/mystats - Check your progress",
+        "/cancel - Stop your current quiz",
         "",
-        "In groups, you can answer without replying to the bot if BotFather group privacy is turned off."
-      ].join("\n")
+        "Group tip: if answers are not being picked up in a group, ask your group admin to enable full message access for the bot.",
+        "",
+        "Made by @teddy444 and @yohannestakata.",
+      ].join("\n"),
     );
   });
 }

@@ -79,7 +79,7 @@ function displayName(ctx: BotContext) {
 
 export async function showQuizCategories(ctx: BotContext) {
   if (!ctx.from) {
-    await ctx.reply("👤 I need a Telegram user to start a quiz.");
+    await ctx.reply("👤 I couldn't identify your account. Please send /start and try again.");
     return;
   }
 
@@ -569,7 +569,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
   const key = requireKey(ctx);
   const user = await ensureTelegramUser(ctx);
   if (!user || !ctx.from) {
-    await ctx.reply("👤 I need a Telegram user to start a quiz.");
+    await ctx.reply("👤 I couldn't identify your account. Please send /start and try again.");
     return;
   }
 

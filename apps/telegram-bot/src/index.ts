@@ -5,7 +5,10 @@ import { registerQuizHandlers } from "./handlers/quiz.handler";
 import { registerStartHandlers } from "./handlers/start.handler";
 
 const BOT_COMMANDS = [
-  { command: "start", description: "Start the bot and see the welcome message" },
+  {
+    command: "start",
+    description: "Start the bot and see the welcome message",
+  },
   { command: "help", description: "Show help and available commands" },
   { command: "quiz", description: "Start a private quiz" },
   { command: "groupquiz", description: "Start a quiz in a group" },
@@ -13,7 +16,7 @@ const BOT_COMMANDS = [
   { command: "mystats", description: "View your quiz statistics" },
   { command: "leaderboard", description: "View the global leaderboard" },
   { command: "groupleaderboard", description: "View group leaderboard" },
-  { command: "cancel", description: "Cancel your current quiz" }
+  { command: "cancel", description: "Cancel your current quiz" },
 ] as const;
 
 export function createAviationBot(token = process.env.TELEGRAM_BOT_TOKEN) {
@@ -34,7 +37,13 @@ export function createAviationBot(token = process.env.TELEGRAM_BOT_TOKEN) {
 
   bot.callbackQuery("menu:help", async (ctx) => {
     await ctx.answerCallbackQuery();
-    await ctx.reply("Use /quiz to start, /mystats for your stats, and /leaderboard to compare scores.");
+    await ctx.reply(
+      [
+        "Use /quiz to start, /mystats to check your progress, and /leaderboard to compare scores.",
+        "",
+        "Made by @teddy444 and @yohannestakata.",
+      ].join("\n"),
+    );
   });
 
   return bot;
