@@ -71,16 +71,14 @@ export function answerKeyboard(options: Array<{ optionText: string }>) {
     keyboard.text(option.optionText, `answer:${index}`);
     keyboard.row();
   });
+  keyboard.text("💡 Hint", "question:hint").text("🚩 Report", "question:report");
   return keyboard;
 }
 
-export function teamAnswerKeyboard(teamNames: string[], options: Array<{ optionText: string }>) {
-  const keyboard = new InlineKeyboard();
-  teamNames.forEach((teamName, teamIndex) => {
-    options.forEach((option, optionIndex) => {
-      keyboard.text(`${teamName}: ${option.optionText}`, `answer:${teamIndex}:${optionIndex}`);
-      keyboard.row();
-    });
-  });
-  return keyboard;
+export function questionActionsKeyboard() {
+  return new InlineKeyboard().text("💡 Hint", "question:hint").text("🚩 Report", "question:report");
+}
+
+export function reportNoteKeyboard() {
+  return new InlineKeyboard().text("Skip note", "report:skip");
 }

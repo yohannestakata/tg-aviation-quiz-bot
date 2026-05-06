@@ -5,6 +5,7 @@ import {
   answerMultipleChoice,
   answerShortText,
   cancelQuiz,
+  handleReportNoteText,
   handleTeamNameText,
   joinTeam,
   setPlayMode,
@@ -14,6 +15,9 @@ import {
   setTeamJoinMode,
   setQuizTypeAndStart,
   showQuizCategories,
+  showHint,
+  skipReportNote,
+  startQuestionReport,
   startTeamQuiz
 } from "../services/quiz.service";
 import type { QuizPlayMode, TeamJoinMode } from "../types";
@@ -44,8 +48,13 @@ export function registerQuizHandlers(bot: Bot<BotContext>) {
   bot.callbackQuery("quiz:start", startTeamQuiz);
 
   bot.callbackQuery(/^answer:(\d+)$/, async (ctx) => answerMultipleChoice(ctx, Number(ctx.match[1]!)));
+  bot.callbackQuery("question:hint", showHint);
+  bot.callbackQuery("question:report", startQuestionReport);
+  bot.callbackQuery("report:skip", skipReportNote);
 
   bot.on("message:text", async (ctx, next) => {
+    const handledReport = await handleReportNoteText(ctx, ctx.message.text);
+    if (handledReport) return;
     const handledTeamName = await handleTeamNameText(ctx, ctx.message.text);
     if (handledTeamName) return;
     const handled = await answerShortText(ctx, ctx.message.text);

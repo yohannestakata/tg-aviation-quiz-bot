@@ -1,6 +1,7 @@
 import {
   advanceQuizSession,
   cancelActiveQuizForUser,
+  createQuestionReport,
   createQuizSession,
   getPersonalStats,
   getQuizScore,
@@ -19,6 +20,8 @@ import {
   categoriesKeyboard,
   countKeyboard,
   playModeKeyboard,
+  questionActionsKeyboard,
+  reportNoteKeyboard,
   teamCountKeyboard,
   teamJoinModeKeyboard,
   teamLobbyKeyboard,
@@ -39,8 +42,15 @@ type DraftQuiz = {
   teamMembers: Record<number, TeamMember>;
 };
 
+type PendingReport = {
+  questionId: string;
+  quizSessionId: string;
+  userId: string;
+};
+
 const drafts = new Map<number, DraftQuiz>();
 const activeQuizzes = new Map<number, ActiveQuiz>();
+const pendingReports = new Map<string, PendingReport>();
 
 function chatKey(ctx: BotContext) {
   return ctx.chat?.id ?? ctx.from?.id;
@@ -296,7 +306,7 @@ export async function sendCurrentQuestion(ctx: BotContext) {
         ? "🙋 Free Form: anyone can answer."
         : "👤 Individual: only the quiz creator can answer.";
   const text = `${header}\n${audience}\n\n${question.questionText}`;
-  const replyMarkup = question.questionType === "multiple_choice" ? answerKeyboard(question.options) : undefined;
+  const replyMarkup = question.questionType === "multiple_choice" ? answerKeyboard(question.options) : questionActionsKeyboard();
 
   if (question.imageUrl) {
     await ctx.replyWithPhoto(question.imageUrl, { caption: text, reply_markup: replyMarkup });
@@ -304,6 +314,72 @@ export async function sendCurrentQuestion(ctx: BotContext) {
   }
 
   await ctx.reply(text, { reply_markup: replyMarkup });
+}
+
+export async function showHint(ctx: BotContext) {
+  const key = requireKey(ctx);
+  const active = activeQuizzes.get(key);
+  if (!active) {
+    await ctx.answerCallbackQuery("No active question.");
+    return;
+  }
+
+  const question = await getSessionQuestion(active.sessionId, active.currentIndex);
+  if (!question) {
+    await ctx.answerCallbackQuery("No active question.");
+    return;
+  }
+
+  await ctx.answerCallbackQuery("Hint ready");
+  await ctx.reply(buildHint(question.correctAnswerText, question.questionType, question.options));
+}
+
+export async function startQuestionReport(ctx: BotContext) {
+  const key = requireKey(ctx);
+  const active = activeQuizzes.get(key);
+  const user = await ensureTelegramUser(ctx);
+  if (!active || !user) {
+    await ctx.answerCallbackQuery("No active question.");
+    return;
+  }
+
+  const question = await getSessionQuestion(active.sessionId, active.currentIndex);
+  if (!question) {
+    await ctx.answerCallbackQuery("No active question.");
+    return;
+  }
+
+  pendingReports.set(reportKey(ctx), {
+    questionId: question.id,
+    quizSessionId: active.sessionId,
+    userId: user.id
+  });
+  await ctx.answerCallbackQuery("Report started");
+  await ctx.reply("🚩 Send an optional note about this question, or skip.", { reply_markup: reportNoteKeyboard() });
+}
+
+export async function skipReportNote(ctx: BotContext) {
+  const pending = pendingReports.get(reportKey(ctx));
+  if (!pending) {
+    await ctx.answerCallbackQuery("No report note pending.");
+    return;
+  }
+
+  await createQuestionReport(pending);
+  pendingReports.delete(reportKey(ctx));
+  await ctx.answerCallbackQuery("Report saved");
+  await ctx.reply("🚩 Report saved. Thanks for helping improve the quiz.");
+}
+
+export async function handleReportNoteText(ctx: BotContext, note: string) {
+  const key = reportKey(ctx);
+  const pending = pendingReports.get(key);
+  if (!pending) return false;
+
+  await createQuestionReport({ ...pending, note });
+  pendingReports.delete(key);
+  await ctx.reply("🚩 Report saved with your note. Thanks for helping improve the quiz.");
+  return true;
 }
 
 export async function answerMultipleChoice(ctx: BotContext, optionIndex: number) {
@@ -423,6 +499,7 @@ export async function cancelQuiz(ctx: BotContext) {
   }
 
   activeQuizzes.delete(key);
+  pendingReports.delete(reportKey(ctx));
   await advanceQuizSession(active.sessionId, active.currentIndex, true);
   await ctx.reply("🛑 Quiz cancelled.");
 }
@@ -607,6 +684,24 @@ function smallestTeam(draft: DraftQuiz) {
 
 function currentTeam(active: ActiveQuiz) {
   return active.teamNames[active.currentTeamIndex % Math.max(active.teamNames.length, 1)];
+}
+
+function reportKey(ctx: BotContext) {
+  return `${ctx.chat?.id ?? "private"}:${ctx.from?.id ?? "unknown"}`;
+}
+
+function buildHint(correctAnswer: string | null, questionType: "multiple_choice" | "short_answer", options: Array<{ optionText: string }>) {
+  if (!correctAnswer) return "💡 Hint: No hint is available for this question.";
+  const trimmed = correctAnswer.trim();
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const firstLetter = trimmed[0]?.toUpperCase() ?? "?";
+
+  if (questionType === "multiple_choice") {
+    return `💡 Hint: The correct option starts with "${firstLetter}". There are ${options.length} options.`;
+  }
+
+  const shape = words.map((word) => `${word[0]?.toUpperCase() ?? "?"}${"_".repeat(Math.max(word.length - 1, 0))}`).join(" ");
+  return `💡 Hint: ${words.length} word${words.length === 1 ? "" : "s"}, starts with "${firstLetter}".\n${shape}`;
 }
 
 function parseOptionIndex(answerText: string, options: Array<{ optionText: string }>) {

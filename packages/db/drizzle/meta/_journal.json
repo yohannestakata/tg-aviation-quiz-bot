@@ -15,6 +15,13 @@
       "when": 1778059058430,
       "tag": "0001_wealthy_chat",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778084145863,
+      "tag": "0002_silky_the_santerians",
+      "breakpoints": true
     }
   ]
 }

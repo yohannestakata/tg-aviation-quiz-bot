@@ -145,6 +145,23 @@ export const quizAnswers = pgTable(
   })
 );
 
+export const questionReports = pgTable(
+  "question_reports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    questionId: uuid("question_id").references(() => questions.id, { onDelete: "restrict" }).notNull(),
+    quizSessionId: uuid("quiz_session_id").references(() => quizSessions.id, { onDelete: "set null" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    note: text("note"),
+    status: text("status").default("open").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => ({
+    questionReportsQuestionIdx: index("question_reports_question_idx").on(table.questionId),
+    questionReportsStatusIdx: index("question_reports_status_idx").on(table.status)
+  })
+);
+
 export const admins = pgTable("admins", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: text("email").notNull().unique(),
@@ -169,5 +186,6 @@ export type NewCategory = typeof categories.$inferInsert;
 export type Question = typeof questions.$inferSelect;
 export type NewQuestion = typeof questions.$inferInsert;
 export type QuestionOption = typeof questionOptions.$inferSelect;
+export type QuestionReport = typeof questionReports.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Admin = typeof admins.$inferSelect;

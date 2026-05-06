@@ -2,6 +2,7 @@ import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   questionOptions,
+  questionReports,
   questions,
   quizAnswers,
   quizSessionQuestions,
@@ -200,4 +201,22 @@ export async function getSessionParticipantScores(sessionId: string) {
     .where(eq(quizAnswers.quizSessionId, sessionId))
     .groupBy(users.id)
     .orderBy(desc(sql`coalesce(sum(${quizAnswers.pointsAwarded}), 0)`));
+}
+
+export async function createQuestionReport(input: {
+  questionId: string;
+  quizSessionId?: string | null;
+  userId?: string | null;
+  note?: string | null;
+}) {
+  const [report] = await db
+    .insert(questionReports)
+    .values({
+      questionId: input.questionId,
+      quizSessionId: input.quizSessionId ?? null,
+      userId: input.userId ?? null,
+      note: input.note?.trim() || null
+    })
+    .returning();
+  return report;
 }
