@@ -3,12 +3,12 @@ import type { Category } from "@aviation/db";
 
 export function mainMenuKeyboard() {
   return new InlineKeyboard()
-    .text("Start Quiz", "menu:quiz")
+    .text("🛫 Start Quiz", "menu:quiz")
     .row()
-    .text("My Stats", "menu:stats")
-    .text("Leaderboard", "menu:leaderboard")
+    .text("📊 My Stats", "menu:stats")
+    .text("🏆 Leaderboard", "menu:leaderboard")
     .row()
-    .text("Help", "menu:help");
+    .text("❓ Help", "menu:help");
 }
 
 export function categoriesKeyboard(categories: Category[]) {
@@ -23,11 +23,11 @@ export function categoriesKeyboard(categories: Category[]) {
 
 export function playModeKeyboard() {
   return new InlineKeyboard()
-    .text("Individual", "quiz:mode:individual")
+    .text("👤 Individual", "quiz:mode:individual")
     .row()
-    .text("Free Form", "quiz:mode:free_form")
+    .text("🙋 Free Form", "quiz:mode:free_form")
     .row()
-    .text("Teams", "quiz:mode:teams");
+    .text("👥 Teams", "quiz:mode:teams");
 }
 
 export function teamCountKeyboard() {
@@ -35,20 +35,20 @@ export function teamCountKeyboard() {
 }
 
 export function teamJoinModeKeyboard() {
-  return new InlineKeyboard().text("Manual Join", "quiz:joinmode:manual").row().text("Auto Balance", "quiz:joinmode:auto_balance");
+  return new InlineKeyboard().text("✋ Manual Join", "quiz:joinmode:manual").row().text("⚖️ Auto Balance", "quiz:joinmode:auto_balance");
 }
 
 export function teamLobbyKeyboard(teamNames: string[], joinMode: "manual" | "auto_balance") {
   const keyboard = new InlineKeyboard();
   if (joinMode === "auto_balance") {
-    keyboard.text("Join Game", "teamjoin:auto").row();
+    keyboard.text("🎮 Join Game", "teamjoin:auto").row();
   } else {
     teamNames.forEach((teamName, index) => {
-      keyboard.text(`Join ${teamName}`, `teamjoin:${index}`);
+      keyboard.text(`➕ Join ${teamName}`, `teamjoin:${index}`);
       keyboard.row();
     });
   }
-  keyboard.text("Start Quiz", "quiz:start");
+  keyboard.text("🚀 Start Quiz", "quiz:start");
   return keyboard;
 }
 
@@ -58,11 +58,11 @@ export function countKeyboard() {
 
 export function typeKeyboard() {
   return new InlineKeyboard()
-    .text("Multiple Choice", "quiz:type:multiple_choice")
+    .text("✅ Multiple Choice", "quiz:type:multiple_choice")
     .row()
-    .text("Short Answer", "quiz:type:short_answer")
+    .text("✍️ Short Answer", "quiz:type:short_answer")
     .row()
-    .text("Mixed", "quiz:type:mixed");
+    .text("🔀 Mixed", "quiz:type:mixed");
 }
 
 export function answerKeyboard(options: Array<{ optionText: string }>) {

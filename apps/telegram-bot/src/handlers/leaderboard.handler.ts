@@ -14,16 +14,15 @@ export function registerLeaderboardHandlers(bot: Bot<BotContext>) {
 async function showLeaderboard(ctx: BotContext) {
   const rows = await getGlobalLeaderboard(10);
   if (!rows.length) {
-    await ctx.reply("No leaderboard entries yet. Complete a quiz first.");
+    await ctx.reply("🏆 No leaderboard entries yet. Complete a quiz first.");
     return;
   }
 
   await ctx.reply(
-    rows
-      .map((row, index) => {
-        const displayName = row.username ? `@${row.username}` : [row.firstName, row.lastName].filter(Boolean).join(" ") || "Unknown";
-        return `${index + 1}. ${displayName} - ${row.points} pts`;
-      })
-      .join("\n")
+    ["🏆 Leaderboard", "", ...rows.map((row, index) => `${index + 1}. ${displayUserName(row)} - ${row.points} pts`)].join("\n")
   );
+}
+
+function displayUserName(row: { username: string | null; firstName: string | null; lastName: string | null }) {
+  return [row.firstName, row.lastName].filter(Boolean).join(" ") || (row.username ? `@${row.username}` : "Unknown");
 }

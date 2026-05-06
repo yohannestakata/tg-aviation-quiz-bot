@@ -9,6 +9,7 @@ export function registerStartHandlers(bot: Bot<BotContext>) {
     await ctx.reply(
       [
         "Welcome to Aviation Quiz Bot.",
+        "✈️",
         "",
         "Practice aviation topics, test your knowledge, and compare results with others.",
         "",
@@ -21,12 +22,14 @@ export function registerStartHandlers(bot: Bot<BotContext>) {
   bot.command("help", async (ctx) => {
     await ctx.reply(
       [
-        "Commands",
+        "🧭 Commands",
         "/quiz - Start a quiz",
         "/categories - Show categories",
         "/leaderboard - Show leaderboard",
         "/mystats - Show personal stats",
-        "/cancel - Cancel current quiz"
+        "/cancel - Cancel current quiz",
+        "",
+        "In groups, you can answer without replying to the bot if BotFather group privacy is turned off."
       ].join("\n")
     );
   });
