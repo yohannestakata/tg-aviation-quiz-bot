@@ -324,13 +324,20 @@ export async function showHint(ctx: BotContext) {
     return;
   }
 
+  const permission = await resolveAnswerer(ctx, active);
+  if (!permission.allowed) {
+    await ctx.answerCallbackQuery(permission.reason);
+    return;
+  }
+
   const question = await getSessionQuestion(active.sessionId, active.currentIndex);
   if (!question) {
     await ctx.answerCallbackQuery("No active question.");
     return;
   }
 
-  await ctx.answerCallbackQuery("Hint ready");
+  active.hintedQuestionIndexes.add(active.currentIndex);
+  await ctx.answerCallbackQuery("Hint ready. Correct answers are worth 0.5 pts now.");
   await ctx.reply(buildHint(question.correctAnswerText, question.questionType, question.options));
 }
 
@@ -415,6 +422,7 @@ async function recordMultipleChoiceSelection(ctx: BotContext, optionIndex: numbe
   }
 
   const isCorrect = selected.isCorrect;
+  const pointsAwarded = answerPoints(active, isCorrect);
   await recordAnswer({
     quizSessionId: active.sessionId,
     questionId: question.id,
@@ -422,20 +430,21 @@ async function recordMultipleChoiceSelection(ctx: BotContext, optionIndex: numbe
     selectedOptionId: selected.id,
     answerText: selected.optionText,
     teamName: permission.teamName,
-    isCorrect
+    isCorrect,
+    pointsAwarded
   });
 
   active.answeredUserIds.add(ctx.from!.id);
 
   if (active.playMode === "teams") {
     if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
-    await ctx.reply(`👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation)}`);
+    await ctx.reply(`👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded)}`);
     await moveNext(ctx, active);
     return;
   }
 
   if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
-  await ctx.reply(formatFeedback(isCorrect, question.correctAnswerText, question.explanation));
+  await ctx.reply(formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded));
   await moveNext(ctx, active);
 }
 
@@ -467,24 +476,26 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   }
 
   const isCorrect = isShortAnswerCorrect(answerText, question.correctAnswerText, question.acceptedKeywords);
+  const pointsAwarded = answerPoints(active, isCorrect);
   await recordAnswer({
     quizSessionId: active.sessionId,
     questionId: question.id,
     userId: permission.userId,
     answerText,
     teamName: permission.teamName,
-    isCorrect
+    isCorrect,
+    pointsAwarded
   });
 
   active.answeredUserIds.add(ctx.from!.id);
 
   if (active.playMode === "teams") {
-    await ctx.reply(`👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation)}`);
+    await ctx.reply(`👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded)}`);
     await moveNext(ctx, active);
     return true;
   }
 
-  await ctx.reply(formatFeedback(isCorrect, question.correctAnswerText, question.explanation));
+  await ctx.reply(formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded));
   await moveNext(ctx, active);
   return true;
 }
@@ -601,6 +612,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
     teamNames: draft.teamNames,
     teamMembers: draft.teamMembers,
     answeredUserIds: new Set(),
+    hintedQuestionIndexes: new Set(),
     currentTeamIndex: 0,
     categoryId: draft.categoryId,
     questionType: draft.questionType,
@@ -658,13 +670,13 @@ async function finishQuiz(ctx: BotContext) {
 
   if (active.playMode === "teams") {
     const scores = await getTeamScores(active.sessionId);
-    await ctx.reply(["🏁 Quiz complete.", "", "👥 Team scores:", ...scores.map((score, index) => `${index + 1}. ${score.teamName ?? "Unknown"} - ${score.points} pts`)].join("\n"));
+    await ctx.reply(["🏁 Quiz complete.", "", "👥 Team scores:", ...scores.map((score, index) => `${index + 1}. ${score.teamName ?? "Unknown"} - ${formatPoints(score.points)} pts`)].join("\n"));
     return;
   }
 
   if (active.playMode === "free_form") {
     const scores = await getSessionParticipantScores(active.sessionId);
-    await ctx.reply(["🏁 Quiz complete.", "", "🙋 Player scores:", ...scores.map((score, index) => `${index + 1}. ${displayScoreName(score)} - ${score.points} pts`)].join("\n"));
+    await ctx.reply(["🏁 Quiz complete.", "", "🙋 Player scores:", ...scores.map((score, index) => `${index + 1}. ${displayScoreName(score)} - ${formatPoints(score.points)} pts`)].join("\n"));
     return;
   }
 
@@ -735,8 +747,18 @@ function formatTeams(teamMembers: Record<number, TeamMember>, teamNames: string[
     .join("\n");
 }
 
-function formatFeedback(isCorrect: boolean, correctAnswer?: string | null, explanation?: string | null) {
+function answerPoints(active: ActiveQuiz, isCorrect: boolean) {
+  if (!isCorrect) return 0;
+  return active.hintedQuestionIndexes.has(active.currentIndex) ? 0.5 : 1;
+}
+
+function formatPoints(points: number) {
+  return Number.isInteger(points) ? String(points) : points.toFixed(1);
+}
+
+function formatFeedback(isCorrect: boolean, correctAnswer?: string | null, explanation?: string | null, pointsAwarded?: number) {
   const lines = [isCorrect ? "✅ Correct." : "❌ Not quite."];
+  if (typeof pointsAwarded === "number") lines.push(`🏅 Points: ${formatPoints(pointsAwarded)}`);
   if (!isCorrect && correctAnswer) lines.push(`✅ Correct answer: ${correctAnswer}`);
   if (explanation) lines.push(`💡 Explanation: ${explanation}`);
   return lines.join("\n\n");

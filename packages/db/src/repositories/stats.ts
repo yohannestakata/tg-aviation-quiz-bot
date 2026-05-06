@@ -27,7 +27,7 @@ export async function getGlobalLeaderboard(limit = 10) {
       username: users.username,
       firstName: users.firstName,
       lastName: users.lastName,
-      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::int`,
+      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::float8`,
       answered: sql<number>`count(${quizAnswers.id})::int`,
       correct: sql<number>`coalesce(sum(case when ${quizAnswers.isCorrect} then 1 else 0 end), 0)::int`
     })

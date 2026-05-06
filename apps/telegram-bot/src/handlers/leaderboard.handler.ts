@@ -19,10 +19,14 @@ async function showLeaderboard(ctx: BotContext) {
   }
 
   await ctx.reply(
-    ["🏆 Leaderboard", "", ...rows.map((row, index) => `${index + 1}. ${displayUserName(row)} - ${row.points} pts`)].join("\n")
+    ["🏆 Leaderboard", "", ...rows.map((row, index) => `${index + 1}. ${displayUserName(row)} - ${formatPoints(row.points)} pts`)].join("\n")
   );
 }
 
 function displayUserName(row: { username: string | null; firstName: string | null; lastName: string | null }) {
   return [row.firstName, row.lastName].filter(Boolean).join(" ") || (row.username ? `@${row.username}` : "Unknown");
+}
+
+function formatPoints(points: number) {
+  return Number.isInteger(points) ? String(points) : points.toFixed(1);
 }

@@ -126,6 +126,7 @@ export async function recordAnswer(input: {
   answerText?: string | null;
   teamName?: string | null;
   isCorrect: boolean;
+  pointsAwarded?: number;
 }) {
   const [answer] = await db
     .insert(quizAnswers)
@@ -137,7 +138,7 @@ export async function recordAnswer(input: {
       answerText: input.answerText ?? null,
       teamName: input.teamName ?? null,
       isCorrect: input.isCorrect,
-      pointsAwarded: input.isCorrect ? 1 : 0
+      pointsAwarded: input.pointsAwarded ?? (input.isCorrect ? 1 : 0)
     })
     .returning();
   return answer;
@@ -178,7 +179,7 @@ export async function getTeamScores(sessionId: string) {
   return db
     .select({
       teamName: quizAnswers.teamName,
-      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::int`,
+      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::float8`,
       answered: sql<number>`count(${quizAnswers.id})::int`
     })
     .from(quizAnswers)
@@ -193,7 +194,7 @@ export async function getSessionParticipantScores(sessionId: string) {
       username: users.username,
       firstName: users.firstName,
       lastName: users.lastName,
-      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::int`,
+      points: sql<number>`coalesce(sum(${quizAnswers.pointsAwarded}), 0)::float8`,
       answered: sql<number>`count(${quizAnswers.id})::int`
     })
     .from(quizAnswers)

@@ -3,6 +3,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -136,7 +137,7 @@ export const quizAnswers = pgTable(
     answerText: text("answer_text"),
     teamName: text("team_name"),
     isCorrect: boolean("is_correct").notNull(),
-    pointsAwarded: integer("points_awarded").default(0).notNull(),
+    pointsAwarded: numeric("points_awarded", { precision: 5, scale: 2, mode: "number" }).default(0).notNull(),
     answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull()
   },
   (table) => ({
