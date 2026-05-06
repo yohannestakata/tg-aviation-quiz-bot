@@ -308,28 +308,34 @@ export async function sendCurrentQuestion(ctx: BotContext) {
 }
 
 export async function answerMultipleChoice(ctx: BotContext, optionIndex: number) {
+  await recordMultipleChoiceSelection(ctx, optionIndex, "callback");
+}
+
+async function recordMultipleChoiceSelection(ctx: BotContext, optionIndex: number, source: "callback" | "message") {
   const key = requireKey(ctx);
   const active = activeQuizzes.get(key);
   if (!active) {
-    await ctx.answerCallbackQuery("No active quiz.");
+    if (source === "callback") await ctx.answerCallbackQuery("No active quiz.");
     return;
   }
 
   const permission = await resolveAnswerer(ctx, active);
   if (!permission.allowed) {
-    await ctx.answerCallbackQuery(permission.reason);
+    if (source === "callback") await ctx.answerCallbackQuery(permission.reason);
+    else await ctx.reply(permission.reason);
     return;
   }
 
   const question = await getSessionQuestion(active.sessionId, active.currentIndex);
   const selected = question?.options[optionIndex] as QuestionOption | undefined;
   if (!question || !selected) {
-    await ctx.answerCallbackQuery("That answer is no longer available.");
+    if (source === "callback") await ctx.answerCallbackQuery("That answer is no longer available.");
     return;
   }
 
   if (active.answeredUserIds.has(ctx.from!.id)) {
-    await ctx.answerCallbackQuery("Your answer is already recorded.");
+    if (source === "callback") await ctx.answerCallbackQuery("Your answer is already recorded.");
+    else await ctx.reply("Your answer is already recorded.");
     return;
   }
 
@@ -347,13 +353,13 @@ export async function answerMultipleChoice(ctx: BotContext, optionIndex: number)
   active.answeredUserIds.add(ctx.from!.id);
 
   if (active.playMode === "teams") {
-    await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
+    if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
     await ctx.reply(`${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation)}`);
     await moveNext(ctx, active);
     return;
   }
 
-  await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
+  if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
   await ctx.reply(formatFeedback(isCorrect, question.correctAnswerText, question.explanation));
   await moveNext(ctx, active);
 }
@@ -364,7 +370,16 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   if (!active) return false;
 
   const question = await getSessionQuestion(active.sessionId, active.currentIndex);
-  if (!question || question.questionType !== "short_answer") return false;
+  if (!question) return false;
+
+  if (question.questionType === "multiple_choice") {
+    const optionIndex = parseOptionIndex(answerText, question.options);
+    if (optionIndex === null) return false;
+    await recordMultipleChoiceSelection(ctx, optionIndex, "message");
+    return true;
+  }
+
+  if (question.questionType !== "short_answer") return false;
 
   const permission = await resolveAnswerer(ctx, active);
   if (!permission.allowed) {
@@ -591,6 +606,26 @@ function smallestTeam(draft: DraftQuiz) {
 
 function currentTeam(active: ActiveQuiz) {
   return active.teamNames[active.currentTeamIndex % Math.max(active.teamNames.length, 1)];
+}
+
+function parseOptionIndex(answerText: string, options: Array<{ optionText: string }>) {
+  const normalized = answerText.trim().toLowerCase();
+  if (!normalized) return null;
+
+  const letterMatch = normalized.match(/^([a-z])(?:[).:\s]|$)/);
+  if (letterMatch) {
+    const index = letterMatch[1]!.charCodeAt(0) - "a".charCodeAt(0);
+    if (index >= 0 && index < options.length) return index;
+  }
+
+  const numberMatch = normalized.match(/^(\d+)(?:[).:\s]|$)/);
+  if (numberMatch) {
+    const index = Number(numberMatch[1]) - 1;
+    if (index >= 0 && index < options.length) return index;
+  }
+
+  const exactIndex = options.findIndex((option) => option.optionText.trim().toLowerCase() === normalized);
+  return exactIndex >= 0 ? exactIndex : null;
 }
 
 function formatTeams(teamMembers: Record<number, TeamMember>, teamNames: string[]) {
