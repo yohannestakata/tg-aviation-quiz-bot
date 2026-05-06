@@ -487,7 +487,8 @@ async function startConfiguredQuiz(ctx: BotContext) {
 
   const group = await ensureTelegramGroup(ctx);
   const draft = drafts.get(key) ?? baseDraft(ctx);
-  const totalQuestions = draft.count ?? 5;
+  const requestedQuestions = draft.count ?? 5;
+  const totalQuestions = draft.playMode === "teams" ? requestedQuestions * draft.teamNames.length : requestedQuestions;
   const selectedQuestions = await listQuestionsForQuiz({
     categoryId: draft.categoryId,
     questionType: draft.questionType,
@@ -495,7 +496,8 @@ async function startConfiguredQuiz(ctx: BotContext) {
   });
 
   if (selectedQuestions.length < totalQuestions) {
-    await ctx.reply(`📭 Only ${selectedQuestions.length} matching questions are available. Try another category or question type.`);
+    const unit = draft.playMode === "teams" ? ` (${requestedQuestions} per team)` : "";
+    await ctx.reply(`📭 Only ${selectedQuestions.length} matching questions are available. This quiz needs ${totalQuestions}${unit}. Try another category or question type.`);
     return;
   }
 
@@ -530,7 +532,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
   });
   drafts.delete(key);
 
-  await ctx.reply("🚀 Quiz started.");
+  await ctx.reply(draft.playMode === "teams" ? `🚀 Quiz started. Each team gets ${requestedQuestions} questions.` : "🚀 Quiz started.");
   await sendCurrentQuestion(ctx);
 }
 
