@@ -2,7 +2,7 @@ import type { Context } from "grammy";
 
 export type BotContext = Context;
 
-export type QuizPlayMode = "individual" | "free_form" | "teams";
+export type QuizPlayMode = "individual" | "free_form" | "teams" | "race";
 export type TeamJoinMode = "manual" | "auto_balance";
 
 export type TeamMember = {
@@ -28,4 +28,6 @@ export type ActiveQuiz = {
   currentIndex: number;
   questionStartedAt: Date;
   correctStreak: number;
+  fastAnswerCount: number;
+  wrongAnswerCount: number;
 };

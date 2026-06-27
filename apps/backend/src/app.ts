@@ -6,10 +6,12 @@ import { createAviationBot } from "@aviation/telegram-bot";
 import { env } from "./config/env";
 import { errorMiddleware, notFound } from "./middleware/error.middleware";
 import { adminRouter } from "./routes/admin.routes";
+import { scheduleDailyQuestions } from "./scheduler";
 
 export function createApp() {
   const app = express();
   const bot = createAviationBot(env.TELEGRAM_BOT_TOKEN);
+  scheduleDailyQuestions(bot);
 
   app.use(helmet());
   app.use(

@@ -20,7 +20,7 @@ const timestamps = {
 export const questionTypeEnum = pgEnum("question_type", ["multiple_choice", "short_answer"]);
 export const difficultyLevelEnum = pgEnum("difficulty_level", ["easy", "medium", "hard"]);
 export const quizModeEnum = pgEnum("quiz_mode", ["private", "group"]);
-export const quizPlayModeEnum = pgEnum("quiz_play_mode", ["individual", "free_form", "teams"]);
+export const quizPlayModeEnum = pgEnum("quiz_play_mode", ["individual", "free_form", "teams", "race"]);
 export const quizStatusEnum = pgEnum("quiz_status", ["active", "completed", "cancelled"]);
 
 export const users = pgTable("users", {
@@ -40,6 +40,8 @@ export const telegramGroups = pgTable("telegram_groups", {
   telegramChatId: text("telegram_chat_id").notNull().unique(),
   title: text("title"),
   type: text("type"),
+  subscribedToDaily: boolean("subscribed_to_daily").default(false).notNull(),
+  lastDailyPostedDate: text("last_daily_posted_date"),
   ...timestamps
 });
 
@@ -163,6 +165,38 @@ export const questionReports = pgTable(
     questionReportsQuestionIdx: index("question_reports_question_idx").on(table.questionId),
     questionReportsStatusIdx: index("question_reports_status_idx").on(table.status)
   })
+);
+
+export const userBadges = pgTable(
+  "user_badges",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    badge: text("badge").notNull(),
+    awardedAt: timestamp("awarded_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    userBadgeUniqueIdx: uniqueIndex("user_badge_unique_idx").on(table.userId, table.badge),
+  }),
+);
+
+export const dailyChallengeAnswers = pgTable(
+  "daily_challenge_answers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    questionId: uuid("question_id").references(() => questions.id).notNull(),
+    challengeDate: text("challenge_date").notNull(),
+    selectedOptionId: uuid("selected_option_id").references(() => questionOptions.id),
+    answerText: text("answer_text"),
+    isCorrect: boolean("is_correct").notNull(),
+    elapsedSeconds: integer("elapsed_seconds"),
+    answeredAt: timestamp("answered_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    dailyUserDateIdx: uniqueIndex("daily_user_date_idx").on(table.userId, table.challengeDate),
+    dailyDateIdx: index("daily_date_idx").on(table.challengeDate),
+  }),
 );
 
 export const admins = pgTable("admins", {

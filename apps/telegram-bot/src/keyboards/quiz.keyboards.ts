@@ -27,6 +27,8 @@ export function playModeKeyboard() {
     .row()
     .text("🙋 Free Form", "quiz:mode:free_form")
     .row()
+    .text("🏁 Race Mode", "quiz:mode:race")
+    .row()
     .text("👥 Teams", "quiz:mode:teams");
 }
 
@@ -92,4 +94,16 @@ export function leaderboardPeriodKeyboard(active: "all" | "week" | "month" = "al
 
 export function retryWrongKeyboard(sessionId: string) {
   return new InlineKeyboard().text("🔁 Retry wrong answers", `quiz:retry:${sessionId}`);
+}
+
+export function dailyAnswerKeyboard(options: Array<{ optionText: string }>) {
+  const kb = new InlineKeyboard();
+  options.forEach((opt, i) => {
+    kb.text(opt.optionText, `daily:mc:${i}`).row();
+  });
+  return kb;
+}
+
+export function dailyResultKeyboard() {
+  return new InlineKeyboard().text("🏆 Daily Leaderboard", "daily:leaderboard");
 }

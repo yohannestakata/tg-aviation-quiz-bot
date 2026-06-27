@@ -3,12 +3,10 @@ import type { BotContext } from "./types";
 import { registerLeaderboardHandlers } from "./handlers/leaderboard.handler";
 import { registerQuizHandlers } from "./handlers/quiz.handler";
 import { registerStartHandlers } from "./handlers/start.handler";
+import { registerDailyHandlers } from "./handlers/daily.handler";
 
 const BOT_COMMANDS = [
-  {
-    command: "start",
-    description: "Start the bot and see the welcome message",
-  },
+  { command: "start", description: "Start the bot and see the welcome message" },
   { command: "help", description: "Show help and available commands" },
   { command: "quiz", description: "Start a private quiz" },
   { command: "groupquiz", description: "Start a quiz in a group" },
@@ -16,6 +14,9 @@ const BOT_COMMANDS = [
   { command: "mystats", description: "View your quiz statistics" },
   { command: "leaderboard", description: "View the global leaderboard" },
   { command: "groupleaderboard", description: "View group leaderboard" },
+  { command: "daily", description: "Answer today's daily aviation challenge" },
+  { command: "subscribe", description: "Subscribe this group to the daily challenge (group only)" },
+  { command: "unsubscribe", description: "Unsubscribe this group from the daily challenge (group only)" },
   { command: "cancel", description: "Cancel your current quiz" },
 ] as const;
 
@@ -32,6 +33,7 @@ export function createAviationBot(token = process.env.TELEGRAM_BOT_TOKEN) {
 
   registerStartHandlers(bot);
   registerLeaderboardHandlers(bot);
+  registerDailyHandlers(bot);
   registerQuizHandlers(bot);
   void syncTelegramCommandMenu(bot);
 

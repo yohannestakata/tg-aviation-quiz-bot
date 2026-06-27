@@ -1,6 +1,7 @@
 import {
   advanceQuizSession,
   cancelActiveQuizForUser,
+  checkAndAwardBadges,
   createQuestionReport,
   createQuizSession,
   getCategoryMasteryForUser,
@@ -11,6 +12,7 @@ import {
   getSessionQuestion,
   getTeamScores,
   getTotalPointsForUser,
+  getUserBadges,
   getWrongQuestionIds,
   listCategories,
   listQuestionsForQuiz,
@@ -20,6 +22,7 @@ import {
   type QuestionOption,
 } from "@aviation/db";
 import { rankFromPoints } from "../utils/rank";
+import { formatBadgeAnnouncement, formatBadgeList } from "../utils/badge-meta";
 import { retryWrongKeyboard } from "../keyboards/quiz.keyboards";
 import type {
   ActiveQuiz,
@@ -336,6 +339,7 @@ export async function sendCurrentQuestion(ctx: BotContext) {
 
   active.answeredUserIds = new Set();
   active.questionStartedAt = new Date();
+  active.wrongAnswerCount = 0;
   const question = await getSessionQuestion(
     active.sessionId,
     active.currentIndex,
@@ -351,7 +355,9 @@ export async function sendCurrentQuestion(ctx: BotContext) {
       ? `👥 Team turn: ${currentTeam(active) ?? "Unknown"}`
       : active.playMode === "free_form"
         ? "🙋 Free Form: anyone can answer."
-        : "👤 Individual: only the quiz creator can answer.";
+        : active.playMode === "race"
+          ? "🏁 Race: first correct answer wins the point!"
+          : "👤 Individual: only the quiz creator can answer.";
   const text = `${header}\n${audience}\n\n${question.questionText}`;
   const replyMarkup =
     question.questionType === "multiple_choice"
@@ -518,8 +524,24 @@ async function recordMultipleChoiceSelection(
   });
 
   active.answeredUserIds.add(ctx.from!.id);
+  if (isCorrect && elapsedSeconds <= 10) active.fastAnswerCount++;
   active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
   const streak = isCorrect ? streakMessage(active.correctStreak) : null;
+
+  if (active.playMode === "race") {
+    if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct!" : "Wrong!");
+    if (!isCorrect) {
+      active.wrongAnswerCount++;
+      const hint = active.wrongAnswerCount >= 3 ? " Quiz creator can /cancel if everyone is stuck." : "";
+      await ctx.reply(`❌ ${displayName(ctx)} guessed wrong.${hint}`);
+      return;
+    }
+    await ctx.reply(
+      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+    );
+    await moveNext(ctx, active);
+    return;
+  }
 
   if (active.playMode === "teams") {
     if (source === "callback")
@@ -586,8 +608,23 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   });
 
   active.answeredUserIds.add(ctx.from!.id);
+  if (isCorrect && elapsedSeconds <= 10) active.fastAnswerCount++;
   active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
   const streak = isCorrect ? streakMessage(active.correctStreak) : null;
+
+  if (active.playMode === "race") {
+    if (!isCorrect) {
+      active.wrongAnswerCount++;
+      const hint = active.wrongAnswerCount >= 3 ? " Quiz creator can /cancel if everyone is stuck." : "";
+      await ctx.reply(`❌ ${displayName(ctx)} guessed wrong.${hint}`);
+      return true;
+    }
+    await ctx.reply(
+      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+    );
+    await moveNext(ctx, active);
+    return true;
+  }
 
   if (active.playMode === "teams") {
     await ctx.reply(
@@ -677,13 +714,15 @@ export async function showMyStats(ctx: BotContext) {
   const user = await ensureTelegramUser(ctx);
   if (!user) return;
 
-  const [stats, totalPoints, mastery] = await Promise.all([
+  const [stats, totalPoints, mastery, badges] = await Promise.all([
     getPersonalStats(user.id),
     getTotalPointsForUser(user.id),
     getCategoryMasteryForUser(user.id),
+    getUserBadges(user.id),
   ]);
 
   const rank = rankFromPoints(totalPoints);
+  const badgeLine = badges.length ? `🏅 Badges: ${formatBadgeList(badges)}` : null;
   const masteryLines = mastery.slice(0, 6).map((cat) => {
     const pct = cat.answered ? Math.round((cat.correct / cat.answered) * 100) : 0;
     const filled = Math.round(pct / 10);
@@ -702,6 +741,7 @@ export async function showMyStats(ctx: BotContext) {
       "📊 Your Stats",
       `🏅 Rank: ${rank}`,
       `⭐ Total points: ${formatPoints(totalPoints)}`,
+      ...(badgeLine ? [badgeLine] : []),
       ...(streakLine ? [streakLine] : []),
       "",
       `Quizzes completed: ${stats.quizzesCompleted}`,
@@ -817,6 +857,8 @@ async function startConfiguredQuiz(ctx: BotContext) {
     currentIndex: 0,
     questionStartedAt: new Date(),
     correctStreak: 0,
+    fastAnswerCount: 0,
+    wrongAnswerCount: 0,
   });
   drafts.delete(key);
 
@@ -922,20 +964,29 @@ async function finishQuiz(ctx: BotContext) {
     return;
   }
 
-  const [score, newStreak, wrongIds] = await Promise.all([
+  const [score, newStreak, wrongIds, stats, mastery, totalPoints] = await Promise.all([
     getQuizScore(active.sessionId),
     updatePlayStreak(active.userId),
     getWrongQuestionIds(active.sessionId, active.userId),
+    getPersonalStats(active.userId),
+    getCategoryMasteryForUser(active.userId),
+    getTotalPointsForUser(active.userId),
   ]);
   const accuracy = active.totalQuestions
     ? Math.round((score.correct / active.totalQuestions) * 100)
     : 0;
-  await sendCelebrationForSinglePlayer(
-    ctx,
-    active,
-    score.correct,
-    active.totalQuestions,
-  );
+
+  const newBadges = await checkAndAwardBadges(active.userId, {
+    correct: score.correct,
+    answered: active.totalQuestions,
+    playStreak: newStreak,
+    fastAnswerCount: active.fastAnswerCount,
+    totalQuestionsAnswered: stats.questionsAnswered,
+    accuracy: stats.accuracy,
+    categoriesAnswered: mastery.length,
+  });
+
+  await sendCelebrationForSinglePlayer(ctx, active, score.correct, active.totalQuestions);
 
   const streakLine = newStreak >= 2 ? `🗓️ ${newStreak}-day streak! Keep it up!` : null;
   const summaryLines = [
@@ -948,7 +999,7 @@ async function finishQuiz(ctx: BotContext) {
     "─────────────────",
     "✈️ Aviation Quiz Result",
     `📊 ${score.correct}/${active.totalQuestions} | ${accuracy}% accuracy`,
-    `🏅 Rank: ${rankFromPoints(await getTotalPointsForUser(active.userId))}`,
+    `🏅 Rank: ${rankFromPoints(totalPoints)}`,
     "─────────────────",
   ];
 
@@ -959,6 +1010,10 @@ async function finishQuiz(ctx: BotContext) {
   } else {
     summaryLines.push("", "Perfect score! Use /quiz to try another topic.");
     await ctx.reply(summaryLines.join("\n"));
+  }
+
+  for (const badge of newBadges) {
+    await ctx.reply(formatBadgeAnnouncement(badge));
   }
 }
 

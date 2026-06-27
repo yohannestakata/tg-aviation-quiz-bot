@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ne, or, isNull, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   questionOptions,
@@ -35,6 +35,39 @@ export async function upsertTelegramUser(input: {
   return user;
 }
 
+export async function subscribeGroupToDaily(telegramChatId: string) {
+  await db
+    .update(telegramGroups)
+    .set({ subscribedToDaily: true, updatedAt: sql`now()` })
+    .where(eq(telegramGroups.telegramChatId, telegramChatId));
+}
+
+export async function unsubscribeGroupFromDaily(telegramChatId: string) {
+  await db
+    .update(telegramGroups)
+    .set({ subscribedToDaily: false, updatedAt: sql`now()` })
+    .where(eq(telegramGroups.telegramChatId, telegramChatId));
+}
+
+export async function getSubscribedGroupsPendingToday(today: string) {
+  return db
+    .select({ id: telegramGroups.id, telegramChatId: telegramGroups.telegramChatId })
+    .from(telegramGroups)
+    .where(
+      and(
+        eq(telegramGroups.subscribedToDaily, true),
+        or(isNull(telegramGroups.lastDailyPostedDate), ne(telegramGroups.lastDailyPostedDate, today)),
+      ),
+    );
+}
+
+export async function markGroupDailyPosted(groupId: string, date: string) {
+  await db
+    .update(telegramGroups)
+    .set({ lastDailyPostedDate: date, updatedAt: sql`now()` })
+    .where(eq(telegramGroups.id, groupId));
+}
+
 export async function upsertTelegramGroup(input: {
   telegramChatId: string;
   title?: string | null;
@@ -60,7 +93,7 @@ export async function createQuizSession(input: {
   groupId?: string | null;
   categoryId?: string | null;
   questionType?: "multiple_choice" | "short_answer" | null;
-  playMode?: "individual" | "free_form" | "teams";
+  playMode?: "individual" | "free_form" | "teams" | "race";
   teamNames?: string[];
   teamJoinMode?: "manual" | "auto_balance" | null;
   teamMembers?: unknown;
