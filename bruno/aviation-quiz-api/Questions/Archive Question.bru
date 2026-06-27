@@ -1,0 +1,15 @@
+meta {
+  name: Archive Question
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/api/admin/questions/{{questionId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

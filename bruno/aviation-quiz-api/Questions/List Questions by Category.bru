@@ -1,0 +1,15 @@
+meta {
+  name: List Questions by Category
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/admin/questions?categoryId={{categoryId}}&isActive=true
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,1 +1,10 @@
-.env    
+node_modules
+dist
+.next
+.env
+.env.*
+!.env.example
+bun.lockb
+*.log
+*.tsbuildinfo
+.DS_Store

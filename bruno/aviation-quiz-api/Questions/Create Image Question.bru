@@ -1,0 +1,61 @@
+meta {
+  name: Create Image Question
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/admin/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "categoryId": "{{categoryId}}",
+    "questionText": "Identify the aviation sign or instrument shown in the image.",
+    "questionType": "multiple_choice",
+    "difficulty": "medium",
+    "imageUrl": "https://res.cloudinary.com/example/image/upload/sample.jpg",
+    "cloudinaryPublicId": "aviation-quiz/questions/sample",
+    "correctAnswerText": "Runway holding position sign",
+    "explanation": "The sign marks a holding position before entering a runway.",
+    "isActive": true,
+    "options": [
+      {
+        "optionText": "Runway holding position sign",
+        "isCorrect": true,
+        "displayOrder": 0
+      },
+      {
+        "optionText": "Taxiway location sign",
+        "isCorrect": false,
+        "displayOrder": 1
+      },
+      {
+        "optionText": "VOR checkpoint sign",
+        "isCorrect": false,
+        "displayOrder": 2
+      },
+      {
+        "optionText": "ILS critical area sign",
+        "isCorrect": false,
+        "displayOrder": 3
+      }
+    ]
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.question && res.body.question.id) {
+    bru.setEnvVar("questionId", res.body.question.id);
+  }
+}

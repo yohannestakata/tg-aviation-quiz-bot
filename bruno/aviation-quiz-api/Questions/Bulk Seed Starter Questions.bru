@@ -1,0 +1,586 @@
+meta {
+  name: Bulk Seed Starter Questions
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/admin/questions/bulk
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "questions": [
+      {
+        "categorySlug": "aerodynamics",
+        "questionText": "What force opposes thrust in flight?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Drag",
+        "explanation": "Drag acts opposite to the direction of motion and opposes thrust.",
+        "options": [
+          { "optionText": "Lift", "isCorrect": false },
+          { "optionText": "Weight", "isCorrect": false },
+          { "optionText": "Drag", "isCorrect": true },
+          { "optionText": "Torque", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aerodynamics",
+        "questionText": "What usually happens when angle of attack increases beyond the critical angle?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "The wing stalls",
+        "explanation": "Beyond the critical angle, airflow separates and lift decreases sharply.",
+        "options": [
+          { "optionText": "The wing stalls", "isCorrect": true },
+          { "optionText": "Drag disappears", "isCorrect": false },
+          { "optionText": "Weight decreases", "isCorrect": false },
+          { "optionText": "The aircraft enters ground effect", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aerodynamics",
+        "questionText": "Which axis does the elevator primarily control?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Lateral axis",
+        "explanation": "The elevator controls pitch, which is movement around the lateral axis.",
+        "options": [
+          { "optionText": "Vertical axis", "isCorrect": false },
+          { "optionText": "Lateral axis", "isCorrect": true },
+          { "optionText": "Longitudinal axis", "isCorrect": false },
+          { "optionText": "Normal axis only", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aerodynamics",
+        "questionText": "What is ground effect?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Reduced induced drag near the ground",
+        "explanation": "Ground effect reduces wingtip vortices and induced drag close to the surface.",
+        "options": [
+          { "optionText": "Increased parasite drag at altitude", "isCorrect": false },
+          { "optionText": "Reduced induced drag near the ground", "isCorrect": true },
+          { "optionText": "Loss of lift in clouds", "isCorrect": false },
+          { "optionText": "A change in compass deviation", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aerodynamics",
+        "questionText": "Which control surface primarily controls yaw?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Rudder",
+        "explanation": "The rudder controls yaw around the vertical axis.",
+        "options": [
+          { "optionText": "Aileron", "isCorrect": false },
+          { "optionText": "Elevator", "isCorrect": false },
+          { "optionText": "Rudder", "isCorrect": true },
+          { "optionText": "Flap", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "meteorology",
+        "questionText": "What does a METAR report describe?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Current aerodrome weather",
+        "explanation": "A METAR is an aviation routine weather report for current conditions at an aerodrome.",
+        "options": [
+          { "optionText": "Current aerodrome weather", "isCorrect": true },
+          { "optionText": "A 24-hour flight plan", "isCorrect": false },
+          { "optionText": "A runway inspection report", "isCorrect": false },
+          { "optionText": "Aircraft maintenance status", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "meteorology",
+        "questionText": "What type of fog forms when moist air moves over a colder surface?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Advection fog",
+        "explanation": "Advection fog forms when moist air is cooled by moving over a colder surface.",
+        "options": [
+          { "optionText": "Radiation fog", "isCorrect": false },
+          { "optionText": "Advection fog", "isCorrect": true },
+          { "optionText": "Steam fog", "isCorrect": false },
+          { "optionText": "Frontal fog", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "meteorology",
+        "questionText": "What does a TAF provide?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Aerodrome weather forecast",
+        "explanation": "A TAF is a terminal aerodrome forecast.",
+        "options": [
+          { "optionText": "Aerodrome weather forecast", "isCorrect": true },
+          { "optionText": "Current fuel prices", "isCorrect": false },
+          { "optionText": "Aircraft loading data", "isCorrect": false },
+          { "optionText": "Engine performance table", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "meteorology",
+        "questionText": "Which cloud is most associated with heavy showers and thunderstorms?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Cumulonimbus",
+        "explanation": "Cumulonimbus clouds are deep convective clouds associated with thunderstorms.",
+        "options": [
+          { "optionText": "Cirrostratus", "isCorrect": false },
+          { "optionText": "Cumulonimbus", "isCorrect": true },
+          { "optionText": "Altocumulus", "isCorrect": false },
+          { "optionText": "Stratus", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "meteorology",
+        "questionText": "In the Northern Hemisphere, wind around a low pressure system generally flows how?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Counterclockwise and inward",
+        "explanation": "Surface wind around lows in the Northern Hemisphere generally flows counterclockwise and inward.",
+        "options": [
+          { "optionText": "Clockwise and outward", "isCorrect": false },
+          { "optionText": "Counterclockwise and inward", "isCorrect": true },
+          { "optionText": "Straight outward", "isCorrect": false },
+          { "optionText": "Clockwise and inward", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "navigation",
+        "questionText": "What is magnetic variation?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "The angle between true north and magnetic north",
+        "explanation": "Variation is the angular difference between true north and magnetic north.",
+        "options": [
+          { "optionText": "The angle between true north and magnetic north", "isCorrect": true },
+          { "optionText": "The error caused by aircraft metal", "isCorrect": false },
+          { "optionText": "The distance between two meridians", "isCorrect": false },
+          { "optionText": "The difference between IAS and TAS", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "navigation",
+        "questionText": "What does VOR stand for?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "VHF Omnidirectional Range",
+        "explanation": "VOR means VHF Omnidirectional Range.",
+        "options": [
+          { "optionText": "Variable Operating Route", "isCorrect": false },
+          { "optionText": "VHF Omnidirectional Range", "isCorrect": true },
+          { "optionText": "Visual Obstacle Reference", "isCorrect": false },
+          { "optionText": "Vertical Offset Radial", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "navigation",
+        "questionText": "What is a track?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "The aircraft path over the ground",
+        "explanation": "Track is the actual path the aircraft follows over the ground.",
+        "options": [
+          { "optionText": "The direction the nose points", "isCorrect": false },
+          { "optionText": "The aircraft path over the ground", "isCorrect": true },
+          { "optionText": "The compass correction card", "isCorrect": false },
+          { "optionText": "The selected transponder code", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "navigation",
+        "questionText": "What does GPS primarily use to determine position?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Satellite signals",
+        "explanation": "GPS determines position from timing signals received from satellites.",
+        "options": [
+          { "optionText": "Satellite signals", "isCorrect": true },
+          { "optionText": "Runway lights", "isCorrect": false },
+          { "optionText": "Pitot pressure", "isCorrect": false },
+          { "optionText": "Magneto timing", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "navigation",
+        "questionText": "What is dead reckoning?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Estimating position from heading, speed, time, and wind",
+        "explanation": "Dead reckoning estimates position using heading, speed, elapsed time, and wind correction.",
+        "options": [
+          { "optionText": "Following only radio vectors", "isCorrect": false },
+          { "optionText": "Estimating position from heading, speed, time, and wind", "isCorrect": true },
+          { "optionText": "Reading altitude from QNH", "isCorrect": false },
+          { "optionText": "Setting the transponder to standby", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "air-law",
+        "questionText": "Who has final authority for the safe operation of an aircraft in flight?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Pilot in command",
+        "explanation": "The pilot in command is responsible for, and has final authority over, the flight.",
+        "options": [
+          { "optionText": "Airline dispatcher", "isCorrect": false },
+          { "optionText": "Pilot in command", "isCorrect": true },
+          { "optionText": "Ground handler", "isCorrect": false },
+          { "optionText": "Weather observer", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "air-law",
+        "questionText": "What does controlled airspace usually require for entry?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Compliance with ATC requirements for that airspace",
+        "explanation": "Controlled airspace has communication, clearance, equipment, or procedural requirements depending on class.",
+        "options": [
+          { "optionText": "No radio contact ever", "isCorrect": false },
+          { "optionText": "Compliance with ATC requirements for that airspace", "isCorrect": true },
+          { "optionText": "Only a landing light", "isCorrect": false },
+          { "optionText": "A tailwind component", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "air-law",
+        "questionText": "What is the purpose of a transponder code?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "To help identify aircraft on radar/surveillance systems",
+        "explanation": "Transponder codes help ATC identify aircraft on surveillance displays.",
+        "options": [
+          { "optionText": "To tune the VHF radio", "isCorrect": false },
+          { "optionText": "To help identify aircraft on radar/surveillance systems", "isCorrect": true },
+          { "optionText": "To start the engine", "isCorrect": false },
+          { "optionText": "To calculate fuel burn", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "air-law",
+        "questionText": "What should a pilot do if an ATC clearance cannot be complied with safely?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Advise ATC and request an amended clearance",
+        "explanation": "The pilot should tell ATC and request a clearance that can be followed safely.",
+        "options": [
+          { "optionText": "Ignore all further radio calls", "isCorrect": false },
+          { "optionText": "Advise ATC and request an amended clearance", "isCorrect": true },
+          { "optionText": "Turn off the transponder", "isCorrect": false },
+          { "optionText": "Continue without comment", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "air-law",
+        "questionText": "What is a NOTAM used for?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "To publish time-sensitive aeronautical information",
+        "explanation": "NOTAMs communicate temporary or time-sensitive aviation information.",
+        "options": [
+          { "optionText": "To publish time-sensitive aeronautical information", "isCorrect": true },
+          { "optionText": "To calculate stall speed", "isCorrect": false },
+          { "optionText": "To test magnetos", "isCorrect": false },
+          { "optionText": "To replace the altimeter", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aircraft-systems",
+        "questionText": "What is the main purpose of a magneto in a piston aircraft engine?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "To provide ignition spark",
+        "explanation": "A magneto generates electrical energy for spark plugs independently of the aircraft battery.",
+        "options": [
+          { "optionText": "To provide ignition spark", "isCorrect": true },
+          { "optionText": "To cool the oil", "isCorrect": false },
+          { "optionText": "To measure fuel quantity", "isCorrect": false },
+          { "optionText": "To operate the flaps", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aircraft-systems",
+        "questionText": "What does the pitot tube measure?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Ram air pressure",
+        "explanation": "The pitot tube senses ram air pressure for the airspeed indicator.",
+        "options": [
+          { "optionText": "Static pressure only", "isCorrect": false },
+          { "optionText": "Ram air pressure", "isCorrect": true },
+          { "optionText": "Oil pressure", "isCorrect": false },
+          { "optionText": "Cabin temperature", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aircraft-systems",
+        "questionText": "Which instrument uses both pitot and static pressure?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Airspeed indicator",
+        "explanation": "The airspeed indicator compares pitot pressure with static pressure.",
+        "options": [
+          { "optionText": "Altimeter", "isCorrect": false },
+          { "optionText": "Vertical speed indicator", "isCorrect": false },
+          { "optionText": "Airspeed indicator", "isCorrect": true },
+          { "optionText": "Magnetic compass", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aircraft-systems",
+        "questionText": "What is carburetor heat used for?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "To prevent or remove carburetor ice",
+        "explanation": "Carburetor heat directs warm air to help prevent or clear carburetor icing.",
+        "options": [
+          { "optionText": "To increase tire pressure", "isCorrect": false },
+          { "optionText": "To prevent or remove carburetor ice", "isCorrect": true },
+          { "optionText": "To cool cylinder heads", "isCorrect": false },
+          { "optionText": "To calibrate the compass", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "aircraft-systems",
+        "questionText": "What does an alternator normally supply?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Electrical power and battery charging",
+        "explanation": "The alternator supplies electrical power and charges the battery while the engine runs.",
+        "options": [
+          { "optionText": "Hydraulic pressure only", "isCorrect": false },
+          { "optionText": "Electrical power and battery charging", "isCorrect": true },
+          { "optionText": "Fuel pressure only", "isCorrect": false },
+          { "optionText": "Cabin oxygen", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "human-performance",
+        "questionText": "What is hypoxia?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "A deficiency of oxygen in body tissues",
+        "explanation": "Hypoxia occurs when body tissues do not receive enough oxygen.",
+        "options": [
+          { "optionText": "A deficiency of oxygen in body tissues", "isCorrect": true },
+          { "optionText": "An excess of fuel vapor", "isCorrect": false },
+          { "optionText": "A compass turning error", "isCorrect": false },
+          { "optionText": "A runway lighting failure", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "human-performance",
+        "questionText": "What is one common symptom of spatial disorientation?",
+        "questionType": "multiple_choice",
+        "difficulty": "medium",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "A false sensation of aircraft attitude or motion",
+        "explanation": "Spatial disorientation can create misleading sensations about aircraft attitude or motion.",
+        "options": [
+          { "optionText": "A false sensation of aircraft attitude or motion", "isCorrect": true },
+          { "optionText": "Improved night vision", "isCorrect": false },
+          { "optionText": "Lower fuel consumption", "isCorrect": false },
+          { "optionText": "More accurate compass readings", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "human-performance",
+        "questionText": "What does IMSAFE help pilots assess?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Personal fitness to fly",
+        "explanation": "IMSAFE is a personal checklist covering illness, medication, stress, alcohol, fatigue, and emotion/eating.",
+        "options": [
+          { "optionText": "Personal fitness to fly", "isCorrect": true },
+          { "optionText": "Runway slope", "isCorrect": false },
+          { "optionText": "Magnetic variation", "isCorrect": false },
+          { "optionText": "Fuel octane", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "human-performance",
+        "questionText": "What is the safest response to fatigue before a flight?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Delay or cancel if fitness is impaired",
+        "explanation": "Fatigue impairs judgment and performance, so pilots should delay or cancel when unfit.",
+        "options": [
+          { "optionText": "Ignore it", "isCorrect": false },
+          { "optionText": "Delay or cancel if fitness is impaired", "isCorrect": true },
+          { "optionText": "Fly lower than planned", "isCorrect": false },
+          { "optionText": "Use less radio communication", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "human-performance",
+        "questionText": "Why is alcohol hazardous before flying?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "It impairs judgment, coordination, and reaction time",
+        "explanation": "Alcohol degrades pilot performance and can interact badly with altitude effects.",
+        "options": [
+          { "optionText": "It improves night vision", "isCorrect": false },
+          { "optionText": "It impairs judgment, coordination, and reaction time", "isCorrect": true },
+          { "optionText": "It increases lift", "isCorrect": false },
+          { "optionText": "It prevents carburetor ice", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "ethiopian-airlines",
+        "questionText": "When was Ethiopian Airlines founded?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "December 21, 1945",
+        "explanation": "Ethiopian Airlines' official overview lists its founding date as December 21, 1945.",
+        "options": [
+          { "optionText": "December 21, 1945", "isCorrect": true },
+          { "optionText": "April 8, 1946", "isCorrect": false },
+          { "optionText": "December 1, 1955", "isCorrect": false },
+          { "optionText": "May 25, 1963", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "ethiopian-airlines",
+        "questionText": "When did Ethiopian Airlines start operations?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "April 8, 1946",
+        "explanation": "The airline's official overview lists April 8, 1946 as the starting date of operation.",
+        "options": [
+          { "optionText": "December 21, 1945", "isCorrect": false },
+          { "optionText": "April 8, 1946", "isCorrect": true },
+          { "optionText": "January 1, 1950", "isCorrect": false },
+          { "optionText": "September 12, 1974", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "ethiopian-airlines",
+        "questionText": "What is Ethiopian Airlines' main hub?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Addis Ababa Bole International Airport",
+        "explanation": "Ethiopian identifies Addis Ababa, Ethiopia as its main hub, with its head office at Bole International Airport.",
+        "options": [
+          { "optionText": "Addis Ababa Bole International Airport", "isCorrect": true },
+          { "optionText": "Jomo Kenyatta International Airport", "isCorrect": false },
+          { "optionText": "Cairo International Airport", "isCorrect": false },
+          { "optionText": "Kotoka International Airport", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "ethiopian-airlines",
+        "questionText": "Which global airline alliance did Ethiopian Airlines join in December 2011?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "Star Alliance",
+        "explanation": "Ethiopian Airlines joined Star Alliance in December 2011.",
+        "options": [
+          { "optionText": "oneworld", "isCorrect": false },
+          { "optionText": "SkyTeam", "isCorrect": false },
+          { "optionText": "Star Alliance", "isCorrect": true },
+          { "optionText": "Vanilla Alliance", "isCorrect": false }
+        ]
+      },
+      {
+        "categorySlug": "ethiopian-airlines",
+        "questionText": "What is Ethiopian Airlines' frequent flyer program called?",
+        "questionType": "multiple_choice",
+        "difficulty": "easy",
+        "imageUrl": null,
+        "cloudinaryPublicId": null,
+        "correctAnswerText": "ShebaMiles",
+        "explanation": "ShebaMiles is Ethiopian Airlines' frequent flyer program.",
+        "options": [
+          { "optionText": "ShebaMiles", "isCorrect": true },
+          { "optionText": "Cloud Rewards", "isCorrect": false },
+          { "optionText": "Bole Miles", "isCorrect": false },
+          { "optionText": "Aksum Club", "isCorrect": false }
+        ]
+      }
+    ]
+  }
+}

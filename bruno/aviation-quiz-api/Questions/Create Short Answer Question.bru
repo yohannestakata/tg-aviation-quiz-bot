@@ -1,0 +1,40 @@
+meta {
+  name: Create Short Answer Question
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/admin/questions
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "categoryId": "{{categoryId}}",
+    "questionText": "Name the four forces of flight.",
+    "questionType": "short_answer",
+    "difficulty": "easy",
+    "imageUrl": null,
+    "cloudinaryPublicId": null,
+    "correctAnswerText": "lift weight thrust drag",
+    "acceptedKeywords": ["lift", "weight", "thrust", "drag"],
+    "explanation": "The four forces acting on an aircraft are lift, weight, thrust, and drag.",
+    "isActive": true
+  }
+}
+
+script:post-response {
+  if (res.body && res.body.question && res.body.question.id) {
+    bru.setEnvVar("questionId", res.body.question.id);
+  }
+}
