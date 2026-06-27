@@ -11,6 +11,11 @@ import {
   users,
 } from "../schema";
 
+export async function findUserByTelegramId(telegramUserId: string) {
+  const [user] = await db.select().from(users).where(eq(users.telegramUserId, telegramUserId));
+  return user ?? null;
+}
+
 export async function upsertTelegramUser(input: {
   telegramUserId: string;
   username?: string | null;

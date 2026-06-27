@@ -52,6 +52,8 @@ export function registerStartHandlers(bot: Bot<BotContext>) {
         "/leaderboard - See top scores",
         "/mystats - Check your progress",
         "/cancel - Stop your current quiz",
+        "/duel - Challenge someone to a 1v1 (reply to their message in a group)",
+        "/daily - Answer today's aviation challenge",
         "",
         "Group tip: if answers are not being picked up in a group, ask your group admin to enable full message access for the bot.",
         "",
