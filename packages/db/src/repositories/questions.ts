@@ -190,6 +190,24 @@ function stripUndefined<T extends Record<string, unknown>>(value: T) {
   return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined)) as T;
 }
 
+export async function getQuestionsByIds(ids: string[]) {
+  if (!ids.length) return [];
+  const selected = await db
+    .select()
+    .from(questions)
+    .where(and(inArray(questions.id, ids), eq(questions.isActive, true)));
+  if (!selected.length) return [];
+  const options = await db
+    .select()
+    .from(questionOptions)
+    .where(inArray(questionOptions.questionId, selected.map((q) => q.id)))
+    .orderBy(asc(questionOptions.displayOrder));
+  return selected.map((q) => ({
+    ...q,
+    options: options.filter((o) => o.questionId === q.id),
+  }));
+}
+
 export async function archiveQuestion(id: string) {
   return updateQuestion(id, { isActive: false });
 }
@@ -207,7 +225,10 @@ export async function listQuestionsForQuiz(input: {
     .select()
     .from(questions)
     .where(and(...filters))
-    .orderBy(sql`random()`)
+    .orderBy(
+      sql`CASE ${questions.difficulty} WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 WHEN 'hard' THEN 3 END`,
+      sql`random()`,
+    )
     .limit(input.limit);
 
   if (!selected.length) return [];

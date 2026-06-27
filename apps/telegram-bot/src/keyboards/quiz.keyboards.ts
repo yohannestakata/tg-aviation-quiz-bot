@@ -82,3 +82,14 @@ export function questionActionsKeyboard() {
 export function reportNoteKeyboard() {
   return new InlineKeyboard().text("Skip note", "report:skip");
 }
+
+export function leaderboardPeriodKeyboard(active: "all" | "week" | "month" = "all") {
+  return new InlineKeyboard()
+    .text(active === "all" ? "⏳ All Time ✓" : "⏳ All Time", "leaderboard:period:all")
+    .text(active === "week" ? "📅 This Week ✓" : "📅 This Week", "leaderboard:period:week")
+    .text(active === "month" ? "🗓️ This Month ✓" : "🗓️ This Month", "leaderboard:period:month");
+}
+
+export function retryWrongKeyboard(sessionId: string) {
+  return new InlineKeyboard().text("🔁 Retry wrong answers", `quiz:retry:${sessionId}`);
+}

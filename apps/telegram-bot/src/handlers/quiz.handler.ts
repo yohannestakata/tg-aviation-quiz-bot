@@ -18,6 +18,7 @@ import {
   showHint,
   skipReportNote,
   startQuestionReport,
+  startRetryQuiz,
   startTeamQuiz
 } from "../services/quiz.service";
 import type { QuizPlayMode, TeamJoinMode } from "../types";
@@ -47,6 +48,7 @@ export function registerQuizHandlers(bot: Bot<BotContext>) {
   bot.callbackQuery(/^teamjoin:(auto|\d+)$/, async (ctx) => joinTeam(ctx, ctx.match[1]!));
   bot.callbackQuery("quiz:start", startTeamQuiz);
 
+  bot.callbackQuery(/^quiz:retry:(.+)$/, async (ctx) => startRetryQuiz(ctx, ctx.match[1]!));
   bot.callbackQuery(/^answer:(\d+)$/, async (ctx) => answerMultipleChoice(ctx, Number(ctx.match[1]!)));
   bot.callbackQuery("question:hint", showHint);
   bot.callbackQuery("question:report", startQuestionReport);

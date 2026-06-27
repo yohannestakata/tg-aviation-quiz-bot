@@ -3,17 +3,24 @@ import {
   cancelActiveQuizForUser,
   createQuestionReport,
   createQuizSession,
+  getCategoryMasteryForUser,
   getPersonalStats,
+  getQuestionsByIds,
   getQuizScore,
   getSessionParticipantScores,
   getSessionQuestion,
   getTeamScores,
+  getTotalPointsForUser,
+  getWrongQuestionIds,
   listCategories,
   listQuestionsForQuiz,
   recordAnswer,
+  updatePlayStreak,
   type Category,
   type QuestionOption,
 } from "@aviation/db";
+import { rankFromPoints } from "../utils/rank";
+import { retryWrongKeyboard } from "../keyboards/quiz.keyboards";
 import type {
   ActiveQuiz,
   BotContext,
@@ -328,6 +335,7 @@ export async function sendCurrentQuestion(ctx: BotContext) {
   }
 
   active.answeredUserIds = new Set();
+  active.questionStartedAt = new Date();
   const question = await getSessionQuestion(
     active.sessionId,
     active.currentIndex,
@@ -337,7 +345,7 @@ export async function sendCurrentQuestion(ctx: BotContext) {
     return;
   }
 
-  const header = `✈️ Question ${active.currentIndex + 1} of ${active.totalQuestions}`;
+  const header = `✈️ Q${active.currentIndex + 1}/${active.totalQuestions}  [${progressBar(active.currentIndex, active.totalQuestions)}]`;
   const audience =
     active.playMode === "teams"
       ? `👥 Team turn: ${currentTeam(active) ?? "Unknown"}`
@@ -497,7 +505,7 @@ async function recordMultipleChoiceSelection(
   }
 
   const isCorrect = selected.isCorrect;
-  const pointsAwarded = answerPoints(active, isCorrect);
+  const { points: pointsAwarded, elapsedSeconds } = answerPoints(active, isCorrect);
   await recordAnswer({
     quizSessionId: active.sessionId,
     questionId: question.id,
@@ -510,12 +518,14 @@ async function recordMultipleChoiceSelection(
   });
 
   active.answeredUserIds.add(ctx.from!.id);
+  active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
+  const streak = isCorrect ? streakMessage(active.correctStreak) : null;
 
   if (active.playMode === "teams") {
     if (source === "callback")
       await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
     await ctx.reply(
-      `👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded)}`,
+      `👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
     );
     await moveNext(ctx, active);
     return;
@@ -524,12 +534,7 @@ async function recordMultipleChoiceSelection(
   if (source === "callback")
     await ctx.answerCallbackQuery(isCorrect ? "Correct" : "Not quite");
   await ctx.reply(
-    formatFeedback(
-      isCorrect,
-      question.correctAnswerText,
-      question.explanation,
-      pointsAwarded,
-    ),
+    `${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
   );
   await moveNext(ctx, active);
 }
@@ -569,7 +574,7 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
     question.correctAnswerText,
     question.acceptedKeywords,
   );
-  const pointsAwarded = answerPoints(active, isCorrect);
+  const { points: pointsAwarded, elapsedSeconds } = answerPoints(active, isCorrect);
   await recordAnswer({
     quizSessionId: active.sessionId,
     questionId: question.id,
@@ -581,25 +586,76 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   });
 
   active.answeredUserIds.add(ctx.from!.id);
+  active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
+  const streak = isCorrect ? streakMessage(active.correctStreak) : null;
 
   if (active.playMode === "teams") {
     await ctx.reply(
-      `👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded)}`,
+      `👥 ${permission.teamName} answered.\n\n${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
     );
     await moveNext(ctx, active);
     return true;
   }
 
   await ctx.reply(
-    formatFeedback(
-      isCorrect,
-      question.correctAnswerText,
-      question.explanation,
-      pointsAwarded,
-    ),
+    `${formatFeedback(isCorrect, question.correctAnswerText, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
   );
   await moveNext(ctx, active);
   return true;
+}
+
+export async function startRetryQuiz(ctx: BotContext, sessionId: string) {
+  const user = await ensureTelegramUser(ctx);
+  if (!user || !ctx.from) {
+    await ctx.answerCallbackQuery("Unable to identify your account.");
+    return;
+  }
+
+  const wrongIds = await getWrongQuestionIds(sessionId, user.id);
+  if (!wrongIds.length) {
+    await ctx.answerCallbackQuery("No wrong answers to retry!");
+    return;
+  }
+
+  const questionObjects = await getQuestionsByIds(wrongIds);
+  if (!questionObjects.length) {
+    await ctx.answerCallbackQuery("Could not load those questions.");
+    return;
+  }
+
+  await ctx.answerCallbackQuery();
+  const key = requireKey(ctx);
+  const group = await ensureTelegramGroup(ctx);
+  await cancelActiveQuizForUser(user.id);
+  const session = await createQuizSession({
+    userId: user.id,
+    groupId: group?.id ?? null,
+    playMode: "individual",
+    totalQuestions: questionObjects.length,
+    questionIds: questionObjects.map((q) => q.id),
+    mode: group ? "group" : "private",
+  });
+
+  activeQuizzes.set(key, {
+    sessionId: session.id,
+    userId: user.id,
+    starterTelegramUserId: ctx.from.id,
+    playMode: "individual",
+    teamNames: [],
+    teamMembers: {},
+    answeredUserIds: new Set(),
+    hintedQuestionIndexes: new Set(),
+    currentTeamIndex: 0,
+    totalQuestions: questionObjects.length,
+    currentIndex: 0,
+    questionStartedAt: new Date(),
+    correctStreak: 0,
+  });
+
+  await ctx.reply(
+    `🔁 Retry session started — ${questionObjects.length} question${questionObjects.length === 1 ? "" : "s"} you got wrong.`,
+  );
+  await sendCurrentQuestion(ctx);
 }
 
 export async function cancelQuiz(ctx: BotContext) {
@@ -620,14 +676,41 @@ export async function cancelQuiz(ctx: BotContext) {
 export async function showMyStats(ctx: BotContext) {
   const user = await ensureTelegramUser(ctx);
   if (!user) return;
-  const stats = await getPersonalStats(user.id);
+
+  const [stats, totalPoints, mastery] = await Promise.all([
+    getPersonalStats(user.id),
+    getTotalPointsForUser(user.id),
+    getCategoryMasteryForUser(user.id),
+  ]);
+
+  const rank = rankFromPoints(totalPoints);
+  const masteryLines = mastery.slice(0, 6).map((cat) => {
+    const pct = cat.answered ? Math.round((cat.correct / cat.answered) * 100) : 0;
+    const filled = Math.round(pct / 10);
+    const bar = "█".repeat(filled) + "░".repeat(10 - filled);
+    return `${cat.categoryName}\n[${bar}] ${pct}% (${cat.correct}/${cat.answered})`;
+  });
+
+  const streakLine = stats.playStreak >= 2
+    ? `🗓️ Daily streak: ${stats.playStreak} days`
+    : stats.playStreak === 1
+      ? `🗓️ Daily streak: 1 day — come back tomorrow to keep it going!`
+      : null;
+
   await ctx.reply(
     [
-      "📊 Your stats",
+      "📊 Your Stats",
+      `🏅 Rank: ${rank}`,
+      `⭐ Total points: ${formatPoints(totalPoints)}`,
+      ...(streakLine ? [streakLine] : []),
+      "",
       `Quizzes completed: ${stats.quizzesCompleted}`,
       `Questions answered: ${stats.questionsAnswered}`,
       `Correct answers: ${stats.correctAnswers}`,
       `Accuracy: ${stats.accuracy}%`,
+      ...(masteryLines.length
+        ? ["", "📚 Category Mastery:", ...masteryLines]
+        : []),
     ].join("\n"),
   );
 }
@@ -732,6 +815,8 @@ async function startConfiguredQuiz(ctx: BotContext) {
     questionType: draft.questionType,
     totalQuestions,
     currentIndex: 0,
+    questionStartedAt: new Date(),
+    correctStreak: 0,
   });
   drafts.delete(key);
 
@@ -837,7 +922,11 @@ async function finishQuiz(ctx: BotContext) {
     return;
   }
 
-  const score = await getQuizScore(active.sessionId);
+  const [score, newStreak, wrongIds] = await Promise.all([
+    getQuizScore(active.sessionId),
+    updatePlayStreak(active.userId),
+    getWrongQuestionIds(active.sessionId, active.userId),
+  ]);
   const accuracy = active.totalQuestions
     ? Math.round((score.correct / active.totalQuestions) * 100)
     : 0;
@@ -847,14 +936,30 @@ async function finishQuiz(ctx: BotContext) {
     score.correct,
     active.totalQuestions,
   );
-  await ctx.reply(
-    [
-      `🏁 Quiz complete`,
-      `Score: ${score.correct}/${active.totalQuestions}`,
-      `Accuracy: ${accuracy}%`,
-      "Use /quiz to practice again.",
-    ].join("\n"),
-  );
+
+  const streakLine = newStreak >= 2 ? `🗓️ ${newStreak}-day streak! Keep it up!` : null;
+  const summaryLines = [
+    "🏁 Quiz Complete!",
+    "",
+    `Score: ${score.correct}/${active.totalQuestions}`,
+    `Accuracy: ${accuracy}%`,
+    ...(streakLine ? [streakLine] : []),
+    "",
+    "─────────────────",
+    "✈️ Aviation Quiz Result",
+    `📊 ${score.correct}/${active.totalQuestions} | ${accuracy}% accuracy`,
+    `🏅 Rank: ${rankFromPoints(await getTotalPointsForUser(active.userId))}`,
+    "─────────────────",
+  ];
+
+  if (wrongIds.length > 0) {
+    await ctx.reply(summaryLines.join("\n"), {
+      reply_markup: retryWrongKeyboard(active.sessionId),
+    });
+  } else {
+    summaryLines.push("", "Perfect score! Use /quiz to try another topic.");
+    await ctx.reply(summaryLines.join("\n"));
+  }
 }
 
 async function sendCelebrationForSinglePlayer(
@@ -1083,9 +1188,26 @@ function formatTeams(
     .join("\n");
 }
 
-function answerPoints(active: ActiveQuiz, isCorrect: boolean) {
-  if (!isCorrect) return 0;
-  return active.hintedQuestionIndexes.has(active.currentIndex) ? 0.5 : 1;
+function answerPoints(active: ActiveQuiz, isCorrect: boolean): { points: number; elapsedSeconds: number } {
+  const elapsedSeconds = Math.round((Date.now() - active.questionStartedAt.getTime()) / 1000);
+  if (!isCorrect) return { points: 0, elapsedSeconds };
+
+  const hinted = active.hintedQuestionIndexes.has(active.currentIndex);
+  const basePoints = elapsedSeconds <= 10 ? 3 : elapsedSeconds <= 25 ? 2 : 1;
+  return { points: hinted ? basePoints * 0.5 : basePoints, elapsedSeconds };
+}
+
+function progressBar(current: number, total: number): string {
+  const filled = Math.round((current / total) * 10);
+  return "█".repeat(filled) + "░".repeat(10 - filled);
+}
+
+function streakMessage(streak: number): string | null {
+  if (streak === 3) return "🔥 3 in a row!";
+  if (streak === 5) return "🔥🔥 5 in a row! You're on fire!";
+  if (streak === 10) return "🔥🔥🔥 10 in a row! Unstoppable!";
+  if (streak > 10 && streak % 5 === 0) return `🔥🔥🔥 ${streak} in a row! Legendary!`;
+  return null;
 }
 
 function formatPoints(points: number) {
@@ -1097,13 +1219,18 @@ function formatFeedback(
   correctAnswer?: string | null,
   explanation?: string | null,
   pointsAwarded?: number,
+  elapsedSeconds?: number,
 ) {
   const lines = [isCorrect ? "✅ Correct." : "❌ Not quite."];
-  if (typeof pointsAwarded === "number")
-    lines.push(`🏅 Points: ${formatPoints(pointsAwarded)}`);
+  if (typeof pointsAwarded === "number") {
+    const speedTag = elapsedSeconds !== undefined
+      ? elapsedSeconds <= 10 ? " ⚡ Fast!" : elapsedSeconds <= 25 ? " 👍 Good" : ""
+      : "";
+    lines.push(`🏅 +${formatPoints(pointsAwarded)} pts${speedTag}`);
+  }
   if (!isCorrect && correctAnswer)
     lines.push(`✅ Correct answer: ${correctAnswer}`);
-  if (explanation) lines.push(`💡 Explanation: ${explanation}`);
+  if (explanation) lines.push(`💡 ${explanation}`);
   return lines.join("\n\n");
 }
 

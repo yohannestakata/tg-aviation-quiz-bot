@@ -26,4 +26,6 @@ export type ActiveQuiz = {
   questionType?: "multiple_choice" | "short_answer";
   totalQuestions: number;
   currentIndex: number;
+  questionStartedAt: Date;
+  correctStreak: number;
 };

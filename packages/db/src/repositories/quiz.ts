@@ -220,6 +220,20 @@ export async function getSessionParticipantScores(sessionId: string) {
     .orderBy(desc(sql`coalesce(sum(${quizAnswers.pointsAwarded}), 0)`));
 }
 
+export async function getWrongQuestionIds(sessionId: string, userId: string): Promise<string[]> {
+  const rows = await db
+    .select({ questionId: quizAnswers.questionId })
+    .from(quizAnswers)
+    .where(
+      and(
+        eq(quizAnswers.quizSessionId, sessionId),
+        eq(quizAnswers.userId, userId),
+        eq(quizAnswers.isCorrect, false),
+      ),
+    );
+  return rows.map((r) => r.questionId);
+}
+
 export async function createQuestionReport(input: {
   questionId: string;
   quizSessionId?: string | null;
