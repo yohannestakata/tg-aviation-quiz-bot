@@ -1,6 +1,6 @@
-import { and, asc, desc, eq, ilike, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, inArray, notInArray, sql } from "drizzle-orm";
 import { db } from "../client";
-import { categories, questionOptions, questions, type NewQuestion } from "../schema";
+import { categories, questionOptions, questions, quizAnswers, type NewQuestion } from "../schema";
 
 export type QuestionType = "multiple_choice" | "short_answer";
 export type DifficultyLevel = "easy" | "medium" | "hard";
@@ -216,36 +216,87 @@ export async function listQuestionsForQuiz(input: {
   categoryId?: string;
   questionType?: QuestionType;
   limit: number;
+  userId?: string;
 }) {
-  const filters = [eq(questions.isActive, true)];
-  if (input.categoryId) filters.push(eq(questions.categoryId, input.categoryId));
-  if (input.questionType) filters.push(eq(questions.questionType, input.questionType));
+  const baseFilters = [eq(questions.isActive, true)];
+  if (input.categoryId) baseFilters.push(eq(questions.categoryId, input.categoryId));
+  if (input.questionType) baseFilters.push(eq(questions.questionType, input.questionType));
 
-  const selected = await db
+  let srIds: string[] = [];       // previously wrong — interleave for spaced repetition
+  let excludeIds: string[] = [];  // recently correct — skip to avoid boring repeats
+
+  if (input.userId) {
+    const recent = await db
+      .select({ questionId: quizAnswers.questionId, isCorrect: quizAnswers.isCorrect })
+      .from(quizAnswers)
+      .where(eq(quizAnswers.userId, input.userId))
+      .orderBy(desc(quizAnswers.answeredAt))
+      .limit(60);
+
+    excludeIds = [...new Set(recent.filter((a) => a.isCorrect).map((a) => a.questionId))].slice(0, 40);
+
+    const wrongIds = [...new Set(recent.filter((a) => !a.isCorrect).map((a) => a.questionId))];
+    const srTarget = Math.min(Math.floor(input.limit * 0.4), wrongIds.length);
+    if (srTarget > 0) {
+      const srRows = await db
+        .select({ id: questions.id })
+        .from(questions)
+        .where(and(...baseFilters, inArray(questions.id, wrongIds)))
+        .orderBy(sql`random()`)
+        .limit(srTarget);
+      srIds = srRows.map((r) => r.id);
+    }
+  }
+
+  // Fetch fresh questions — exclude recently-correct and already-picked SR questions
+  const freshExclude = [...new Set([...excludeIds, ...srIds])];
+  const freshFilters = [...baseFilters, ...(freshExclude.length ? [notInArray(questions.id, freshExclude)] : [])];
+  const freshLimit = input.limit - srIds.length;
+
+  let fresh = await db
     .select()
     .from(questions)
-    .where(and(...filters))
+    .where(and(...freshFilters))
     .orderBy(
       sql`CASE ${questions.difficulty} WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 WHEN 'hard' THEN 3 END`,
       sql`random()`,
     )
-    .limit(input.limit);
+    .limit(freshLimit);
 
-  if (!selected.length) return [];
+  // Fallback: if category is small and we excluded too many, pull from recently-correct
+  if (fresh.length < freshLimit && excludeIds.length > 0) {
+    const alreadyPicked = new Set([...srIds, ...fresh.map((q) => q.id)]);
+    const fallbackFilters = [...baseFilters, ...(alreadyPicked.size ? [notInArray(questions.id, [...alreadyPicked])] : [])];
+    const fallback = await db
+      .select()
+      .from(questions)
+      .where(and(...fallbackFilters))
+      .orderBy(sql`random()`)
+      .limit(freshLimit - fresh.length);
+    fresh = [...fresh, ...fallback];
+  }
 
-  const options = await db
+  // Fetch full rows for SR questions and interleave them randomly into the fresh set
+  let allSelected = fresh;
+  if (srIds.length > 0) {
+    const srFull = await db.select().from(questions).where(inArray(questions.id, srIds));
+    const combined = [...fresh];
+    for (const srQ of srFull) {
+      combined.splice(Math.floor(Math.random() * (combined.length + 1)), 0, srQ);
+    }
+    allSelected = combined;
+  }
+
+  if (!allSelected.length) return [];
+
+  const opts = await db
     .select()
     .from(questionOptions)
-    .where(
-      inArray(
-        questionOptions.questionId,
-        selected.map((question) => question.id)
-      )
-    )
+    .where(inArray(questionOptions.questionId, allSelected.map((q) => q.id)))
     .orderBy(asc(questionOptions.displayOrder));
 
-  return selected.map((question) => ({
+  return allSelected.map((question) => ({
     ...question,
-    options: options.filter((option) => option.questionId === question.id)
+    options: opts.filter((o) => o.questionId === question.id),
   }));
 }

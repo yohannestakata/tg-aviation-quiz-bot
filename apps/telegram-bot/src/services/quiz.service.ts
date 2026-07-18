@@ -398,17 +398,17 @@ export async function showHint(ctx: BotContext) {
     return;
   }
 
-  active.hintedQuestionIndexes.add(active.currentIndex);
-  await ctx.answerCallbackQuery(
-    "Hint ready. Correct answers are worth 0.5 pts now.",
-  );
-  await ctx.reply(
-    buildHint(
-      question.correctAnswerText,
-      question.questionType,
-      question.options,
-    ),
-  );
+  const currentLevel = active.hintLevels.get(active.currentIndex) ?? 0;
+  if (currentLevel >= 3) {
+    await ctx.answerCallbackQuery("No more hints for this question.");
+    return;
+  }
+  const newLevel = currentLevel + 1;
+  active.hintLevels.set(active.currentIndex, newLevel);
+
+  const penalties = ["", "−25% pts", "−50% pts", "−75% pts"];
+  await ctx.answerCallbackQuery(`Hint ${newLevel}/3 · ${penalties[newLevel]}`);
+  await ctx.reply(buildHint(question.correctAnswerText, question.questionType, question.options, newLevel));
 }
 
 export async function startQuestionReport(ctx: BotContext) {
@@ -681,12 +681,14 @@ export async function startRetryQuiz(ctx: BotContext, sessionId: string) {
     teamNames: [],
     teamMembers: {},
     answeredUserIds: new Set(),
-    hintedQuestionIndexes: new Set(),
+    hintLevels: new Map(),
     currentTeamIndex: 0,
     totalQuestions: questionObjects.length,
     currentIndex: 0,
     questionStartedAt: new Date(),
     correctStreak: 0,
+    fastAnswerCount: 0,
+    wrongAnswerCount: 0,
   });
 
   await ctx.reply(
@@ -815,6 +817,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
     categoryId: draft.categoryId,
     questionType: draft.questionType,
     limit: totalQuestions,
+    userId: draft.playMode === "individual" ? user.id : undefined,
   });
 
   if (selectedQuestions.length < totalQuestions) {
@@ -849,7 +852,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
     teamNames: draft.teamNames,
     teamMembers: draft.teamMembers,
     answeredUserIds: new Set(),
-    hintedQuestionIndexes: new Set(),
+    hintLevels: new Map(),
     currentTeamIndex: 0,
     categoryId: draft.categoryId,
     questionType: draft.questionType,
@@ -1184,24 +1187,44 @@ function reportKey(ctx: BotContext) {
 function buildHint(
   correctAnswer: string | null,
   questionType: "multiple_choice" | "short_answer",
-  options: Array<{ optionText: string }>,
-) {
-  if (!correctAnswer) return "💡 Hint: No hint is available for this question.";
+  options: Array<{ optionText: string; isCorrect: boolean }>,
+  level: number,
+): string {
+  if (!correctAnswer) return "💡 No hint available for this question.";
+
   const trimmed = correctAnswer.trim();
   const words = trimmed.split(/\s+/).filter(Boolean);
   const firstLetter = trimmed[0]?.toUpperCase() ?? "?";
+  const VOWELS = new Set("aeiouAEIOU");
 
   if (questionType === "multiple_choice") {
-    return `💡 Hint: The correct option starts with "${firstLetter}". There are ${options.length} options.`;
+    const wrong = [...options.filter((o) => !o.isCorrect)].sort(() => Math.random() - 0.5);
+    const base = `💡 Hint ${level}/3: Answer starts with "${firstLetter}".`;
+    if (level === 2 && wrong[0]) return `${base}\n❌ Not: ${wrong[0].optionText}`;
+    if (level >= 3 && wrong[0] && wrong[1]) return `${base}\n❌ Not: ${wrong[0].optionText}\n❌ Not: ${wrong[1].optionText}`;
+    return base;
   }
 
-  const shape = words
-    .map(
-      (word) =>
-        `${word[0]?.toUpperCase() ?? "?"}${"_".repeat(Math.max(word.length - 1, 0))}`,
-    )
-    .join(" ");
-  return `💡 Hint: ${words.length} word${words.length === 1 ? "" : "s"}, starts with "${firstLetter}".\n${shape}`;
+  // Short answer — each character is revealed progressively
+  function maskWord(word: string): string {
+    return word
+      .split("")
+      .map((c, i) => {
+        if (i === 0) return c.toUpperCase();                    // always: first letter
+        if (level >= 2 && VOWELS.has(c)) return c.toUpperCase(); // level 2+: vowels
+        if (level >= 3 && i % 2 === 0) return c.toUpperCase();   // level 3: alternating
+        return "_";
+      })
+      .join(" "); // space between every character so letter count is clear
+  }
+
+  const shape = words.map(maskWord).join("   ");
+  const desc = level === 1 ? "letter count" : level === 2 ? "+ vowels" : "+ alternating letters";
+  return [
+    `💡 Hint ${level}/3 (${desc}): ${words.length} word${words.length > 1 ? "s" : ""}, starts with "${firstLetter}"`,
+    "",
+    shape,
+  ].join("\n");
 }
 
 function parseOptionIndex(
@@ -1247,9 +1270,10 @@ function answerPoints(active: ActiveQuiz, isCorrect: boolean): { points: number;
   const elapsedSeconds = Math.round((Date.now() - active.questionStartedAt.getTime()) / 1000);
   if (!isCorrect) return { points: 0, elapsedSeconds };
 
-  const hinted = active.hintedQuestionIndexes.has(active.currentIndex);
+  const hintLevel = active.hintLevels.get(active.currentIndex) ?? 0;
+  const multiplier = ([1, 0.75, 0.5, 0.25] as const)[hintLevel] ?? 0.25;
   const basePoints = elapsedSeconds <= 10 ? 3 : elapsedSeconds <= 25 ? 2 : 1;
-  return { points: hinted ? basePoints * 0.5 : basePoints, elapsedSeconds };
+  return { points: basePoints * multiplier, elapsedSeconds };
 }
 
 function progressBar(current: number, total: number): string {

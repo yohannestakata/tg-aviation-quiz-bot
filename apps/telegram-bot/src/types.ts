@@ -20,7 +20,7 @@ export type ActiveQuiz = {
   teamNames: string[];
   teamMembers: Record<number, TeamMember>;
   answeredUserIds: Set<number>;
-  hintedQuestionIndexes: Set<number>;
+  hintLevels: Map<number, number>;
   currentTeamIndex: number;
   categoryId?: string;
   questionType?: "multiple_choice" | "short_answer";
