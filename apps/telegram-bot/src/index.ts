@@ -20,6 +20,7 @@ const BOT_COMMANDS = [
   { command: "duel", description: "Challenge another player to a duel (reply to their message)" },
   { command: "duelstats", description: "View your all-time duel statistics" },
   { command: "duelboard", description: "View the all-time duel leaderboard" },
+  { command: "duelh2h", description: "See head-to-head record with someone (reply to their message)" },
   { command: "subscribe", description: "Subscribe this group to the daily challenge (group only)" },
   { command: "unsubscribe", description: "Unsubscribe this group from the daily challenge (group only)" },
   { command: "cancel", description: "Cancel your current quiz" },
