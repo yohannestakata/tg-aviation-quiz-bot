@@ -1,7 +1,12 @@
 import { randomUUID } from "crypto";
 import type { Bot } from "grammy";
 import { InlineKeyboard } from "grammy";
-import { findUserByTelegramId, listQuestionsForQuiz } from "@aviation/db";
+import {
+  findUserByTelegramId,
+  listQuestionsForQuiz,
+  recordDuelResult,
+  getHeadToHead,
+} from "@aviation/db";
 import type { BotContext } from "../types";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -43,8 +48,10 @@ type DuelState = {
   duelId: string;
   challengerTgId: number;
   challengerName: string;
+  challengerUserId: string | null;
   targetTgId: number;
   targetName: string;
+  targetUserId: string | null;
   groupChatId: number;
   questions: QuestionData[];
   currentIndex: number;
@@ -54,6 +61,7 @@ type DuelState = {
   timeoutHandle: ReturnType<typeof setTimeout> | null;
   correctCount: Record<number, number>;
   fastestSecs: Partial<Record<number, number>>;
+  finished: boolean;
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -221,7 +229,7 @@ async function handleDuelCommand(ctx: BotContext, bot: Bot<BotContext>) {
 // ── Count selection ───────────────────────────────────────────────────────────
 
 async function handleDuelCount(ctx: BotContext, bot: Bot<BotContext>) {
-  if (!ctx.from) { await ctx.answerCallbackQuery(); return; }
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
 
   const duelId = ctx.match[1]!;
   const count = Number(ctx.match[2]);
@@ -251,7 +259,7 @@ async function handleDuelCount(ctx: BotContext, bot: Bot<BotContext>) {
 
   await ctx.answerCallbackQuery(`${count} questions — let's go!`);
 
-  const edited = await ctx.editMessageText(
+  await ctx.editMessageText(
     [
       `⚔️ ${setup.challengerName} challenges ${setup.targetName} to a duel!`,
       "",
@@ -287,7 +295,7 @@ async function handleDuelCount(ctx: BotContext, bot: Bot<BotContext>) {
 // ── Accept / Decline ──────────────────────────────────────────────────────────
 
 async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
-  if (!ctx.from) { await ctx.answerCallbackQuery(); return; }
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
 
   const duelId = ctx.match[1]!;
   const invite = pendingInvites.get(duelId);
@@ -301,16 +309,37 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
   await ctx.answerCallbackQuery("Duel accepted! Check your DMs ⚔️");
   pendingInvites.delete(duelId);
 
+  // Look up DB user IDs and fetch any existing H2H record
+  const [cUser, tUser] = await Promise.all([
+    findUserByTelegramId(String(invite.challengerTgId)).catch(() => null),
+    findUserByTelegramId(String(invite.targetTgId)).catch(() => null),
+  ]);
+  const challengerUserId = cUser?.id ?? null;
+  const targetUserId = tUser?.id ?? null;
+
+  let h2hLine = "✨ First time these two have faced off!";
+  if (challengerUserId && targetUserId) {
+    const h2h = await getHeadToHead(challengerUserId, targetUserId).catch(() => null);
+    if (h2h && h2h.total > 0) {
+      h2hLine = `🔁 H2H history: ${shortName(invite.challengerName)} ${h2h.aWins} – ${h2h.bWins} ${shortName(invite.targetName)} (${h2h.total} duels)`;
+    }
+  }
+
   await ctx.editMessageText(
-    `⚔️ ${invite.challengerName} vs ${invite.targetName} — Duel on! Check your DMs.`,
+    [
+      `⚔️ ${invite.challengerName} vs ${invite.targetName} — Duel on! Check your DMs.`,
+      h2hLine,
+    ].join("\n"),
   ).catch(() => {});
 
   const duel: DuelState = {
     duelId,
     challengerTgId: invite.challengerTgId,
     challengerName: invite.challengerName,
+    challengerUserId,
     targetTgId: invite.targetTgId,
     targetName: invite.targetName,
+    targetUserId,
     groupChatId: invite.groupChatId,
     questions: invite.questions,
     currentIndex: 0,
@@ -320,6 +349,7 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
     timeoutHandle: null,
     correctCount: { [invite.challengerTgId]: 0, [invite.targetTgId]: 0 },
     fastestSecs: {},
+    finished: false,
   };
 
   activeDuels.set(duelId, duel);
@@ -349,7 +379,7 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
 }
 
 async function handleDuelDecline(ctx: BotContext) {
-  if (!ctx.from) { await ctx.answerCallbackQuery(); return; }
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
 
   const duelId = ctx.match[1]!;
   const invite = pendingInvites.get(duelId);
@@ -368,7 +398,7 @@ async function handleDuelDecline(ctx: BotContext) {
 // ── Answer ────────────────────────────────────────────────────────────────────
 
 async function handleDuelAnswer(ctx: BotContext, bot: Bot<BotContext>) {
-  if (!ctx.from) { await ctx.answerCallbackQuery(); return; }
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
 
   const duelId = ctx.match[1]!;
   const optionIndex = Number(ctx.match[2]);
@@ -400,17 +430,15 @@ async function handleDuelAnswer(ctx: BotContext, bot: Bot<BotContext>) {
   const prev = duel.fastestSecs[ctx.from.id];
   if (prev === undefined || elapsed < prev) duel.fastestSecs[ctx.from.id] = elapsed;
 
-  // Toast with result
   await ctx.answerCallbackQuery(
     isCorrect ? `✅ Correct! +${formatPts(points)} pts (${elapsed}s)` : `❌ Wrong. (${elapsed}s)`,
   );
 
-  // Transform the question message into a "locked in" status
   const opponentName = ctx.from.id === duel.challengerTgId
     ? shortName(duel.targetName)
     : shortName(duel.challengerName);
-  const msgId = ctx.callbackQuery.message?.message_id;
-  const chatId = ctx.callbackQuery.message?.chat.id;
+  const msgId = ctx.callbackQuery?.message?.message_id;
+  const chatId = ctx.callbackQuery?.message?.chat.id;
   if (msgId && chatId) {
     const lockLine = isCorrect
       ? `✅ Locked in! +${formatPts(points)} pts · ${elapsed}s`
@@ -482,9 +510,11 @@ async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<
     bot.api.sendMessage(duel.targetTgId, text, { reply_markup: keyboard }).catch(() => {}),
   ]);
 
+  // Capture index now so stale timeout callbacks can self-abort
+  const questionIndex = duel.currentIndex;
   duel.timeoutHandle = setTimeout(async () => {
     const current = activeDuels.get(duel.duelId);
-    if (!current) return;
+    if (!current || current.currentIndex !== questionIndex || current.finished) return;
     for (const tgId of [duel.challengerTgId, duel.targetTgId]) {
       if (current.roundAnswers[tgId] === undefined) {
         current.roundAnswers[tgId] = { isCorrect: false, elapsedSeconds: QUESTION_TIMEOUT_MS / 1000, points: 0 };
@@ -496,6 +526,8 @@ async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<
 }
 
 async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
+  if (duel.finished) return;
+
   const q = duel.questions[duel.currentIndex]!;
   const correctOption = q.options.find((o) => o.isCorrect);
   const cAns = duel.roundAnswers[duel.challengerTgId];
@@ -529,7 +561,6 @@ async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void
     return;
   }
 
-  // Halftime summary for 10+ question duels
   const half = Math.floor(duel.questions.length / 2);
   if (duel.questions.length >= 10 && duel.currentIndex === half) {
     await pause(800);
@@ -575,6 +606,10 @@ async function sendHalftimeSummary(bot: Bot<BotContext>, duel: DuelState): Promi
 // ── Finish ────────────────────────────────────────────────────────────────────
 
 async function finishDuel(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
+  // Guard: single-execution guarantee (race condition fix)
+  if (duel.finished) return;
+  duel.finished = true;
+
   activeDuels.delete(duel.duelId);
   userToDuelId.delete(duel.challengerTgId);
   userToDuelId.delete(duel.targetTgId);
@@ -587,47 +622,111 @@ async function finishDuel(bot: Bot<BotContext>, duel: DuelState): Promise<void> 
   const cFastest = duel.fastestSecs[duel.challengerTgId];
   const tFastest = duel.fastestSecs[duel.targetTgId];
   const bar = scoreBar(cScore, tScore);
+  const cAccuracy = Math.round((cCorrect / total) * 100);
+  const tAccuracy = Math.round((tCorrect / total) * 100);
+  const cFastestLine = cFastest !== undefined ? ` · fastest ${cFastest}s` : "";
+  const tFastestLine = tFastest !== undefined ? ` · fastest ${tFastest}s` : "";
 
-  let headline: string;
+  let winnerLine: string;
+  let winnerCelebration: string;
   let cTag = "", tTag = "";
-  if (cScore > tScore) { headline = `🏆 ${duel.challengerName} wins!`; cTag = " 🏆"; }
-  else if (tScore > cScore) { headline = `🏆 ${duel.targetName} wins!`; tTag = " 🏆"; }
-  else headline = "🤝 A perfectly matched duel — it's a tie!";
+  let winnerId: string | null = null;
 
-  const statLine = (name: string, score: number, correct: number, fastest?: number, tag = "") =>
-    [
-      `${name}${tag}`,
-      `  Score: ${score} pts`,
-      `  Accuracy: ${correct}/${total} correct`,
-      fastest !== undefined ? `  Fastest answer: ${fastest}s` : "",
-    ].filter(Boolean).join("\n");
+  if (cScore > tScore) {
+    winnerLine = `🥇 ${duel.challengerName.toUpperCase()} WINS! 🥇`;
+    winnerCelebration = "      🎊   🏆   🎊";
+    cTag = " 🏆";
+    winnerId = duel.challengerUserId;
+  } else if (tScore > cScore) {
+    winnerLine = `🥇 ${duel.targetName.toUpperCase()} WINS! 🥇`;
+    winnerCelebration = "      🎊   🏆   🎊";
+    tTag = " 🏆";
+    winnerId = duel.targetUserId;
+  } else {
+    winnerLine = "🤝 IT'S A TIE! 🤝";
+    winnerCelebration = "       ⚖️   🎖️   ⚖️";
+  }
 
-  const dmResult = (isChallengerDm: boolean) => [
-    "⚔️ Duel complete!",
+  // Record to DB and fetch updated H2H
+  let h2hText: string | null = null;
+  if (duel.challengerUserId && duel.targetUserId) {
+    try {
+      await recordDuelResult({
+        challengerId: duel.challengerUserId,
+        targetId: duel.targetUserId,
+        winnerId,
+        challengerScore: cScore,
+        targetScore: tScore,
+        challengerCorrect: cCorrect,
+        targetCorrect: tCorrect,
+        totalQuestions: total,
+        challengerFastestSecs: cFastest ?? null,
+        targetFastestSecs: tFastest ?? null,
+      });
+      const h2h = await getHeadToHead(duel.challengerUserId, duel.targetUserId);
+      if (h2h.total > 0) {
+        h2hText = `🔁 All-time H2H: ${shortName(duel.challengerName)} ${h2h.aWins} – ${h2h.bWins} ${shortName(duel.targetName)} (${h2h.total} duels)`;
+      }
+    } catch {
+      // non-fatal — result still shown without H2H
+    }
+  }
+
+  // DM result — full stats, sent immediately
+  const dmText = [
+    "⚔️ Duel Complete!",
     "",
-    headline,
+    winnerLine,
+    winnerCelebration,
     "",
+    "📊 Final Scores",
     `${shortName(duel.challengerName)} ${cScore}  ${bar}  ${tScore} ${shortName(duel.targetName)}`,
     "",
-    statLine(duel.challengerName, cScore, cCorrect, cFastest, cTag),
+    `${duel.challengerName}${cTag}`,
+    `  ${cScore} pts · ${cCorrect}/${total} ✓ (${cAccuracy}%)${cFastestLine}`,
     "",
-    statLine(duel.targetName, tScore, tCorrect, tFastest, tTag),
-  ].join("\n");
-
-  const groupResult = [
-    `⚔️ Duel: ${duel.challengerName} vs ${duel.targetName}`,
-    "",
-    headline,
-    "",
-    `${shortName(duel.challengerName)} ${cScore}  ${bar}  ${tScore} ${shortName(duel.targetName)}`,
-    "",
-    `${duel.challengerName}: ${cScore}pts · ${cCorrect}/${total} correct`,
-    `${duel.targetName}: ${tScore}pts · ${tCorrect}/${total} correct`,
+    `${duel.targetName}${tTag}`,
+    `  ${tScore} pts · ${tCorrect}/${total} ✓ (${tAccuracy}%)${tFastestLine}`,
+    ...(h2hText ? ["", h2hText] : []),
   ].join("\n");
 
   await Promise.all([
-    bot.api.sendMessage(duel.challengerTgId, dmResult(true)).catch(() => {}),
-    bot.api.sendMessage(duel.targetTgId, dmResult(false)).catch(() => {}),
-    bot.api.sendMessage(duel.groupChatId, groupResult).catch(() => {}),
+    bot.api.sendMessage(duel.challengerTgId, dmText).catch(() => {}),
+    bot.api.sendMessage(duel.targetTgId, dmText).catch(() => {}),
   ]);
+
+  // Animated group reveal — 4 frames
+  const frame1 = `⚔️ Calculating result...\n${shortName(duel.challengerName)} vs ${shortName(duel.targetName)}`;
+
+  const frame2Lines = [
+    `⚔️ ${duel.challengerName} vs ${duel.targetName} — Final Score`,
+    "",
+    `${shortName(duel.challengerName)} ${cScore}  ${bar}  ${tScore} ${shortName(duel.targetName)}`,
+  ];
+  const frame2 = frame2Lines.join("\n");
+
+  const frame3 = [...frame2Lines, "", "🏆 And the winner is..."].join("\n");
+
+  const frame4 = [
+    `⚔️ ${duel.challengerName} vs ${duel.targetName}`,
+    "",
+    winnerLine,
+    winnerCelebration,
+    "",
+    `${shortName(duel.challengerName)} ${cScore}  ${bar}  ${tScore} ${shortName(duel.targetName)}`,
+    "",
+    `${duel.challengerName}${cTag}: ${cScore}pts · ${cCorrect}/${total} ✓ (${cAccuracy}%)${cFastestLine}`,
+    `${duel.targetName}${tTag}: ${tScore}pts · ${tCorrect}/${total} ✓ (${tAccuracy}%)${tFastestLine}`,
+    ...(h2hText ? ["", h2hText] : []),
+  ].join("\n");
+
+  const groupMsg = await bot.api.sendMessage(duel.groupChatId, frame1).catch(() => null);
+  if (groupMsg) {
+    await pause(700);
+    await bot.api.editMessageText(duel.groupChatId, groupMsg.message_id, frame2).catch(() => {});
+    await pause(900);
+    await bot.api.editMessageText(duel.groupChatId, groupMsg.message_id, frame3).catch(() => {});
+    await pause(1200);
+    await bot.api.editMessageText(duel.groupChatId, groupMsg.message_id, frame4).catch(() => {});
+  }
 }

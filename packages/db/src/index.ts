@@ -7,3 +7,4 @@ export * from "./repositories/daily";
 export * from "./repositories/questions";
 export * from "./repositories/quiz";
 export * from "./repositories/stats";
+export * from "./repositories/duel-history";

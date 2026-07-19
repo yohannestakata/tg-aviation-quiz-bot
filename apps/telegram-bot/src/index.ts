@@ -5,6 +5,7 @@ import { registerQuizHandlers } from "./handlers/quiz.handler";
 import { registerStartHandlers } from "./handlers/start.handler";
 import { registerDailyHandlers } from "./handlers/daily.handler";
 import { registerDuelHandlers } from "./handlers/duel.handler";
+import { registerDuelStatsHandlers } from "./handlers/duel-stats.handler";
 
 const BOT_COMMANDS = [
   { command: "start", description: "Start the bot and see the welcome message" },
@@ -17,6 +18,8 @@ const BOT_COMMANDS = [
   { command: "groupleaderboard", description: "View group leaderboard" },
   { command: "daily", description: "Answer today's daily aviation challenge" },
   { command: "duel", description: "Challenge another player to a duel (reply to their message)" },
+  { command: "duelstats", description: "View your all-time duel statistics" },
+  { command: "duelboard", description: "View the all-time duel leaderboard" },
   { command: "subscribe", description: "Subscribe this group to the daily challenge (group only)" },
   { command: "unsubscribe", description: "Unsubscribe this group from the daily challenge (group only)" },
   { command: "cancel", description: "Cancel your current quiz" },
@@ -37,6 +40,7 @@ export function createAviationBot(token = process.env.TELEGRAM_BOT_TOKEN) {
   registerLeaderboardHandlers(bot);
   registerDailyHandlers(bot);
   registerDuelHandlers(bot);
+  registerDuelStatsHandlers(bot);
   registerQuizHandlers(bot);
   void syncTelegramCommandMenu(bot);
 

@@ -199,6 +199,29 @@ export const dailyChallengeAnswers = pgTable(
   }),
 );
 
+export const duels = pgTable(
+  "duels",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    challengerId: uuid("challenger_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    targetId: uuid("target_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    winnerId: uuid("winner_id").references(() => users.id, { onDelete: "set null" }),
+    challengerScore: integer("challenger_score").default(0).notNull(),
+    targetScore: integer("target_score").default(0).notNull(),
+    challengerCorrect: integer("challenger_correct").default(0).notNull(),
+    targetCorrect: integer("target_correct").default(0).notNull(),
+    totalQuestions: integer("total_questions").notNull(),
+    challengerFastestSecs: integer("challenger_fastest_secs"),
+    targetFastestSecs: integer("target_fastest_secs"),
+    playedAt: timestamp("played_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    duelsChallengerIdx: index("duels_challenger_idx").on(table.challengerId),
+    duelsTargetIdx: index("duels_target_idx").on(table.targetId),
+    duelsPlayedAtIdx: index("duels_played_at_idx").on(table.playedAt),
+  }),
+);
+
 export const admins = pgTable("admins", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: text("email").notNull().unique(),
@@ -226,3 +249,5 @@ export type QuestionOption = typeof questionOptions.$inferSelect;
 export type QuestionReport = typeof questionReports.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
+export type Duel = typeof duels.$inferSelect;
+export type NewDuel = typeof duels.$inferInsert;

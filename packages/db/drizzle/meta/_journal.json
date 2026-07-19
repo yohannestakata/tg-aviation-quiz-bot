@@ -43,6 +43,13 @@
       "when": 1782560604837,
       "tag": "0005_fair_texas_twister",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784465566460,
+      "tag": "0006_outgoing_annihilus",
+      "breakpoints": true
     }
   ]
 }
