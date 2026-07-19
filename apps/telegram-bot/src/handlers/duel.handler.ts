@@ -67,7 +67,7 @@ const usersInSetup = new Set<number>();
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const COUNT_OPTIONS = [5, 10, 15, 20, 30] as const;
-const QUESTION_TIMEOUT_MS = 30_000;
+const QUESTION_TIMEOUT_MS = 60_000;
 const INVITE_EXPIRY_MS = 5 * 60 * 1000;
 const SETUP_EXPIRY_MS = 2 * 60 * 1000;
 
@@ -431,8 +431,12 @@ async function handleDuelAnswer(ctx: BotContext, bot: Bot<BotContext>) {
 // ── Question flow ─────────────────────────────────────────────────────────────
 
 async function sendCountdown(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
-  const steps = ["3️⃣", "2️⃣", "1️⃣", "🚀 GO!"];
-  const intro = `⚔️ ${shortName(duel.challengerName)} vs ${shortName(duel.targetName)}\n${duel.questions.length} questions · speed scoring\n\n`;
+  const steps = ["🔟", "9️⃣", "8️⃣", "7️⃣", "6️⃣", "5️⃣", "4️⃣", "3️⃣", "2️⃣", "1️⃣", "🚀 GO!"];
+  const intro = [
+    `⚔️ ${shortName(duel.challengerName)} vs ${shortName(duel.targetName)}`,
+    `${duel.questions.length} questions · speed scoring · 60s per question`,
+    "",
+  ].join("\n");
 
   const [cMsg, tMsg] = await Promise.all([
     bot.api.sendMessage(duel.challengerTgId, intro + steps[0]!).catch(() => null),
@@ -446,7 +450,7 @@ async function sendCountdown(bot: Bot<BotContext>, duel: DuelState): Promise<voi
       tMsg ? bot.api.editMessageText(duel.targetTgId, tMsg.message_id, intro + steps[i]!).catch(() => {}) : Promise.resolve(),
     ]);
   }
-  await pause(700);
+  await pause(600);
 }
 
 async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
@@ -484,7 +488,7 @@ async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<
     for (const tgId of [duel.challengerTgId, duel.targetTgId]) {
       if (current.roundAnswers[tgId] === undefined) {
         current.roundAnswers[tgId] = { isCorrect: false, elapsedSeconds: QUESTION_TIMEOUT_MS / 1000, points: 0 };
-        await bot.api.sendMessage(tgId, "⏱️ Time's up for that question!").catch(() => {});
+        await bot.api.sendMessage(tgId, "⏱️ Time's up! (60s elapsed — no answer recorded)").catch(() => {});
       }
     }
     await processRound(bot, current);
