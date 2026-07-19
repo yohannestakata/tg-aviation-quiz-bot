@@ -796,6 +796,84 @@ async function showTeamLobby(ctx: BotContext) {
   );
 }
 
+// ── Team question grouping ────────────────────────────────────────────────────
+// Orders questions so that within each "round" (one question per team) all
+// questions share the same questionType and difficulty. This gives both/all
+// teams a fair, comparable challenge every turn.
+function groupIntoTeamRounds(
+  pool: Array<{ id: string; questionType: string; difficulty: string }>,
+  rounds: number,
+  teamCount: number,
+): string[] {
+  // Bucket by "questionType:difficulty" — shuffle within each bucket for variety
+  const buckets = new Map<string, Array<{ id: string; questionType: string; difficulty: string }>>();
+  for (const q of pool) {
+    const key = `${q.questionType}:${q.difficulty}`;
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key)!.push(q);
+  }
+  for (const bucket of buckets.values()) {
+    for (let i = bucket.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [bucket[i], bucket[j]] = [bucket[j]!, bucket[i]!];
+    }
+  }
+
+  const used = new Set<string>();
+  const result: string[] = [];
+
+  const tryPick = (candidates: Array<{ id: string }>): boolean => {
+    const available = candidates.filter((q) => !used.has(q.id));
+    if (available.length < teamCount) return false;
+    for (const q of available.slice(0, teamCount)) {
+      used.add(q.id);
+      result.push(q.id);
+    }
+    return true;
+  };
+
+  for (let round = 0; round < rounds; round++) {
+    // Pass 1: exact match — type + difficulty bucket with most unused questions
+    let picked = false;
+    let bestBucket: Array<{ id: string; questionType: string; difficulty: string }> | null = null;
+    let bestCount = 0;
+    for (const bucket of buckets.values()) {
+      const avail = bucket.filter((q) => !used.has(q.id)).length;
+      if (avail >= teamCount && avail > bestCount) {
+        bestBucket = bucket;
+        bestCount = avail;
+      }
+    }
+    if (bestBucket) picked = tryPick(bestBucket);
+
+    if (!picked) {
+      // Pass 2: relax difficulty — same questionType, any difficulty
+      const byType = new Map<string, Array<{ id: string }>>();
+      for (const q of pool) {
+        if (used.has(q.id)) continue;
+        if (!byType.has(q.questionType)) byType.set(q.questionType, []);
+        byType.get(q.questionType)!.push(q);
+      }
+      let bestType: Array<{ id: string }> | null = null;
+      let bestTypeCount = 0;
+      for (const bucket of byType.values()) {
+        if (bucket.length >= teamCount && bucket.length > bestTypeCount) {
+          bestType = bucket;
+          bestTypeCount = bucket.length;
+        }
+      }
+      if (bestType) picked = tryPick(bestType);
+    }
+
+    if (!picked) {
+      // Pass 3: final fallback — any remaining unused questions
+      tryPick(pool.filter((q) => !used.has(q.id)));
+    }
+  }
+
+  return result;
+}
+
 async function startConfiguredQuiz(ctx: BotContext) {
   const key = requireKey(ctx);
   const user = await ensureTelegramUser(ctx);
@@ -813,21 +891,33 @@ async function startConfiguredQuiz(ctx: BotContext) {
     draft.playMode === "teams"
       ? requestedQuestions * draft.teamNames.length
       : requestedQuestions;
-  const selectedQuestions = await listQuestionsForQuiz({
+  // For teams mode fetch a larger pool so groupIntoTeamRounds has room to pair
+  // questions by type and difficulty. For other modes fetch exactly what's needed.
+  const fetchLimit =
+    draft.playMode === "teams"
+      ? Math.min(totalQuestions * 2, 200)
+      : totalQuestions;
+
+  const pool = await listQuestionsForQuiz({
     categoryId: draft.categoryId,
     questionType: draft.questionType,
-    limit: totalQuestions,
+    limit: fetchLimit,
     userId: draft.playMode === "individual" ? user.id : undefined,
   });
 
-  if (selectedQuestions.length < totalQuestions) {
+  if (pool.length < totalQuestions) {
     const unit =
       draft.playMode === "teams" ? ` (${requestedQuestions} per team)` : "";
     await ctx.reply(
-      `📭 Only ${selectedQuestions.length} matching questions are available. This quiz needs ${totalQuestions}${unit}. Try another category or question type.`,
+      `📭 Only ${pool.length} matching questions are available. This quiz needs ${totalQuestions}${unit}. Try another category or question type.`,
     );
     return;
   }
+
+  const questionIds =
+    draft.playMode === "teams" && draft.teamNames.length >= 2
+      ? groupIntoTeamRounds(pool, requestedQuestions, draft.teamNames.length)
+      : pool.slice(0, totalQuestions).map((q) => q.id);
 
   await cancelActiveQuizForUser(user.id);
   const session = await createQuizSession({
@@ -840,7 +930,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
     teamJoinMode: draft.teamJoinMode ?? null,
     teamMembers: draft.teamMembers,
     totalQuestions,
-    questionIds: selectedQuestions.map((question) => question.id),
+    questionIds,
     mode: group ? "group" : "private",
   });
 
