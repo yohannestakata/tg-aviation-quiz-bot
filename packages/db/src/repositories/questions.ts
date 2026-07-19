@@ -212,6 +212,22 @@ export async function archiveQuestion(id: string) {
   return updateQuestion(id, { isActive: false });
 }
 
+export async function getRandomShortAnswerQuestion(excludeIds: string[] = [], categoryId?: string) {
+  const filters = [
+    eq(questions.questionType, "short_answer"),
+    eq(questions.isActive, true),
+    ...(excludeIds.length ? [notInArray(questions.id, excludeIds)] : []),
+    ...(categoryId ? [eq(questions.categoryId, categoryId)] : []),
+  ];
+  const [q] = await db
+    .select()
+    .from(questions)
+    .where(and(...filters))
+    .orderBy(sql`random()`)
+    .limit(1);
+  return q ?? null;
+}
+
 export async function listQuestionsForQuiz(input: {
   categoryId?: string;
   questionType?: QuestionType;

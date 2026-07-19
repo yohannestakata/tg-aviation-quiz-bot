@@ -39,9 +39,9 @@ export function createAviationBot(token = process.env.TELEGRAM_BOT_TOKEN) {
 
   registerStartHandlers(bot);
   registerLeaderboardHandlers(bot);
-  registerDailyHandlers(bot);
   registerDuelHandlers(bot);
   registerDuelStatsHandlers(bot);
+  registerDailyHandlers(bot);
   registerQuizHandlers(bot);
   void syncTelegramCommandMenu(bot);
 
