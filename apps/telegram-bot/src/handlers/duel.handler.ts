@@ -3,6 +3,7 @@ import type { Bot } from "grammy";
 import { InlineKeyboard } from "grammy";
 import {
   findUserByTelegramId,
+  findUserByUsername,
   listQuestionsForQuiz,
   recordDuelResult,
   getHeadToHead,
@@ -165,19 +166,62 @@ export function registerDuelHandlers(bot: Bot<BotContext>) {
 
 // ── Command: /duel ────────────────────────────────────────────────────────────
 
+type PartialUser = { id: number; first_name: string; last_name?: string | null; username?: string | null; is_bot?: boolean };
+
+async function resolveDuelTarget(ctx: BotContext): Promise<PartialUser | "not_found" | "show_help"> {
+  // Priority 1: reply to a message
+  const replyFrom = ctx.message?.reply_to_message?.from;
+  if (replyFrom) return replyFrom;
+
+  // Priority 2: text_mention (mention UI — works for users without @username)
+  // Priority 3: @mention (works when user has a username)
+  const entities = ctx.message?.entities ?? [];
+  const text = ctx.message?.text ?? "";
+  for (const entity of entities) {
+    if (entity.type === "text_mention" && entity.user) {
+      return entity.user;
+    }
+    if (entity.type === "mention") {
+      const username = text.slice(entity.offset + 1, entity.offset + entity.length);
+      const found = await findUserByUsername(username);
+      if (!found) return "not_found";
+      return {
+        id: Number(found.telegramUserId),
+        first_name: found.firstName ?? username,
+        last_name: found.lastName,
+        username: found.username,
+      };
+    }
+  }
+
+  return "show_help";
+}
+
 async function handleDuelCommand(ctx: BotContext, bot: Bot<BotContext>) {
   const chat = ctx.chat;
   if (!chat || chat.type === "private") {
-    await ctx.reply("Use /duel in a group by replying to another player's message.");
+    await ctx.reply("Use /duel in a group by replying to or mentioning another player.");
     return;
   }
   if (!ctx.from) return;
 
-  const replyTarget = ctx.message?.reply_to_message?.from;
-  if (!replyTarget) {
-    await ctx.reply("Reply to someone's message and send /duel to challenge them.");
+  const resolved = await resolveDuelTarget(ctx);
+
+  if (resolved === "show_help") {
+    await ctx.reply(
+      "How to challenge someone:\n" +
+      "• Reply to their message and type /duel\n" +
+      "• Type /duel @username\n" +
+      "• Type /duel then tap @ to pick anyone from the group list (works even without a username)",
+    );
     return;
   }
+  if (resolved === "not_found") {
+    await ctx.reply("That player hasn't used the bot yet — ask them to send /start first.");
+    return;
+  }
+
+  const replyTarget = resolved;
   if (replyTarget.id === ctx.from.id) { await ctx.reply("You can't duel yourself."); return; }
   if (replyTarget.is_bot) { await ctx.reply("You can't challenge a bot."); return; }
 

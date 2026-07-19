@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ne, or, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, ne, or, isNull, sql } from "drizzle-orm";
 import { db } from "../client";
 import {
   questionOptions,
@@ -13,6 +13,15 @@ import {
 
 export async function findUserByTelegramId(telegramUserId: string) {
   const [user] = await db.select().from(users).where(eq(users.telegramUserId, telegramUserId));
+  return user ?? null;
+}
+
+export async function findUserByUsername(username: string) {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(ilike(users.username, username))
+    .limit(1);
   return user ?? null;
 }
 

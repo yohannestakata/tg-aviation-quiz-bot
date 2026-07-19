@@ -1,5 +1,5 @@
 import type { Bot } from "grammy";
-import { getDuelStats, getDuelLeaderboard, getHeadToHead, findUserByTelegramId } from "@aviation/db";
+import { getDuelStats, getDuelLeaderboard, getHeadToHead, findUserByTelegramId, findUserByUsername } from "@aviation/db";
 import type { BotContext } from "../types";
 
 function tgName(first?: string | null, last?: string | null, username?: string | null): string {
@@ -89,14 +89,55 @@ async function handleDuelBoard(ctx: BotContext) {
   }
 }
 
+async function resolveH2HTarget(ctx: BotContext): Promise<
+  { id: number; first_name: string; last_name?: string | null; username?: string | null } | "not_found" | "show_help"
+> {
+  // Priority 1: reply
+  const replyFrom = ctx.message?.reply_to_message?.from;
+  if (replyFrom && !replyFrom.is_bot) return replyFrom;
+
+  // Priority 2: text_mention (no @username needed)
+  // Priority 3: @mention
+  const entities = ctx.message?.entities ?? [];
+  const text = ctx.message?.text ?? "";
+  for (const entity of entities) {
+    if (entity.type === "text_mention" && entity.user && !entity.user.is_bot) {
+      return entity.user;
+    }
+    if (entity.type === "mention") {
+      const username = text.slice(entity.offset + 1, entity.offset + entity.length);
+      const found = await findUserByUsername(username);
+      if (!found) return "not_found";
+      return {
+        id: Number(found.telegramUserId),
+        first_name: found.firstName ?? username,
+        last_name: found.lastName,
+        username: found.username,
+      };
+    }
+  }
+
+  return "show_help";
+}
+
 async function handleDuelH2H(ctx: BotContext) {
   if (!ctx.from) return;
 
-  const replyTarget = ctx.message?.reply_to_message?.from;
-  if (!replyTarget || replyTarget.is_bot) {
-    await ctx.reply("Reply to someone's message with /duelh2h to see your head-to-head record with them.");
+  const resolved = await resolveH2HTarget(ctx);
+
+  if (resolved === "show_help") {
+    await ctx.reply(
+      "Reply to someone's message with /duelh2h, or mention them — e.g. /duelh2h @username — to see your head-to-head record.",
+    );
     return;
   }
+  if (resolved === "not_found") {
+    await ctx.reply("That player hasn't used the bot yet.");
+    return;
+  }
+
+  const replyTarget = resolved;
+
   if (replyTarget.id === ctx.from.id) {
     await ctx.reply("You can't check H2H with yourself.");
     return;
