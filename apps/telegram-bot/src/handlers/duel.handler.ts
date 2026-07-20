@@ -125,8 +125,8 @@ function shortName(full: string): string {
 }
 
 function pointsForSpeed(elapsed: number): number {
-  if (elapsed <= 10) return 3;
-  if (elapsed <= 30) return 2;
+  if (elapsed <= 15) return 3;
+  if (elapsed <= 40) return 2;
   return 1;
 }
 
@@ -929,7 +929,7 @@ async function sendCountdown(bot: Bot<BotContext>, duel: DuelState): Promise<voi
   const steps = ["🔟", "9️⃣", "8️⃣", "7️⃣", "6️⃣", "5️⃣", "4️⃣", "3️⃣", "2️⃣", "1️⃣", "🚀 GO!"];
   const intro = [
     `⚔️ ${shortName(duel.challengerName)} vs ${shortName(duel.targetName)}`,
-    `${duel.questions.length} questions · speed scoring · 60s per question`,
+    `${duel.questions.length} questions · ≤15s = 3pts · ≤40s = 2pts · else 1pt`,
     "",
   ].join("\n");
 
