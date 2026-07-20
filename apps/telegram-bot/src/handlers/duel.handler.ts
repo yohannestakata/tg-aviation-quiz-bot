@@ -227,13 +227,27 @@ function inviteKeyboard(duelId: string): InlineKeyboard {
 function answerKeyboard(duelId: string, options: QuestionData["options"]): InlineKeyboard {
   const kb = new InlineKeyboard();
   options.forEach((opt, i) => kb.text(opt.optionText, `duel:answer:${duelId}:${i}`).row());
+  kb.text("🏳️ Forfeit", `duel:quit:${duelId}`);
   return kb;
+}
+
+function saKeyboard(duelId: string): InlineKeyboard {
+  return new InlineKeyboard()
+    .text("💡 Hint", `duel:hint:${duelId}`)
+    .text("🏳️ Forfeit", `duel:quit:${duelId}`);
+}
+
+function tbKeyboard(duelId: string): InlineKeyboard {
+  return new InlineKeyboard()
+    .text("💡 Hint", `duel:tbhint:${duelId}`)
+    .text("🏳️ Forfeit", `duel:quit:${duelId}`);
 }
 
 // ── Registration ──────────────────────────────────────────────────────────────
 
 export function registerDuelHandlers(bot: Bot<BotContext>) {
   bot.command("duel", (ctx) => handleDuelCommand(ctx, bot));
+  bot.command("forfeit", (ctx) => handleForfeitCommand(ctx, bot));
   bot.callbackQuery(/^duel:count:([^:]+):(\d+)$/, (ctx) => handleDuelCount(ctx, bot));
   bot.callbackQuery(/^duel:type:([^:]+):(\w+)$/, (ctx) => handleDuelType(ctx, bot));
   bot.callbackQuery(/^duel:cat:([^:]+):(\w+)$/, (ctx) => handleDuelCategory(ctx, bot));
@@ -242,6 +256,9 @@ export function registerDuelHandlers(bot: Bot<BotContext>) {
   bot.callbackQuery(/^duel:answer:([^:]+):(\d+)$/, (ctx) => handleDuelAnswer(ctx, bot));
   bot.callbackQuery(/^duel:hint:([^:]+)$/, (ctx) => handleDuelHint(ctx, bot));
   bot.callbackQuery(/^duel:tbhint:([^:]+)$/, (ctx) => handleTiebreakerHint(ctx, bot));
+  bot.callbackQuery(/^duel:quit:([^:]+)$/, (ctx) => handleForfeitRequest(ctx, bot));
+  bot.callbackQuery(/^duel:quit:yes:(.+)$/, (ctx) => handleForfeitConfirm(ctx, bot));
+  bot.callbackQuery(/^duel:quit:no:(.+)$/, handleForfeitCancel);
 
   bot.on("message:text", async (ctx, next) => {
     if (!ctx.from || ctx.chat?.type !== "private") { await next(); return; }
@@ -770,8 +787,7 @@ async function handleDuelHint(ctx: BotContext, bot: Bot<BotContext>) {
     const isSecondHalf = total >= 10 && num === Math.floor(total / 2) + 1;
     const prefix = isLast ? `🔔 FINAL QUESTION! (${num}/${total})` : isSecondHalf ? `⚔️ Second half! Q${num}/${total}` : `⚔️ Q${num} / ${total}`;
     const newText = [prefix, scoreHeader, "", q.questionText, "", "📝 Type your answer in chat · 60s", "", hintText].join("\n");
-    const hintKb = new InlineKeyboard().text("💡 Hint", `duel:hint:${duelId}`);
-    await bot.api.editMessageText(chatId, msgId, newText, { reply_markup: hintKb }).catch(() => {});
+    await bot.api.editMessageText(chatId, msgId, newText, { reply_markup: saKeyboard(duelId) }).catch(() => {});
   }
 }
 
@@ -804,7 +820,6 @@ async function handleTiebreakerHint(ctx: BotContext, bot: Bot<BotContext>) {
   const msgId = ctx.callbackQuery?.message?.message_id;
   const chatId = ctx.callbackQuery?.message?.chat.id;
   if (msgId && chatId) {
-    const tbKb = new InlineKeyboard().text("💡 Hint", `duel:tbhint:${duelId}`);
     const newText = [
       `🔥 TIEBREAKER — Round ${tb.round}/3`,
       "",
@@ -815,7 +830,7 @@ async function handleTiebreakerHint(ctx: BotContext, bot: Bot<BotContext>) {
       "",
       hintText,
     ].join("\n");
-    await bot.api.editMessageText(chatId, msgId, newText, { reply_markup: tbKb }).catch(() => {});
+    await bot.api.editMessageText(chatId, msgId, newText, { reply_markup: tbKeyboard(duelId) }).catch(() => {});
   }
 }
 
@@ -958,7 +973,7 @@ async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<
 
   if (q.questionType === "short_answer") {
     const saText = baseText + "\n\n📝 Type your answer in chat · 60s";
-    const hintKb = new InlineKeyboard().text("💡 Hint", `duel:hint:${duel.duelId}`);
+    const hintKb = saKeyboard(duel.duelId);
     usersInSAQuestion.set(duel.challengerTgId, duel.duelId);
     usersInSAQuestion.set(duel.targetTgId, duel.duelId);
     await Promise.all([
@@ -1134,11 +1149,10 @@ async function sendTiebreakerRound(
     "First to answer correctly wins! Type your answer.",
     "⏱️ 60 seconds",
   ].join("\n");
-  const tbKb = new InlineKeyboard().text("💡 Hint", `duel:tbhint:${duel.duelId}`);
 
   await Promise.all([
-    bot.api.sendMessage(duel.challengerTgId, tbText, { reply_markup: tbKb }).catch(() => {}),
-    bot.api.sendMessage(duel.targetTgId, tbText, { reply_markup: tbKb }).catch(() => {}),
+    bot.api.sendMessage(duel.challengerTgId, tbText, { reply_markup: tbKeyboard(duel.duelId) }).catch(() => {}),
+    bot.api.sendMessage(duel.targetTgId, tbText, { reply_markup: tbKeyboard(duel.duelId) }).catch(() => {}),
   ]);
 
   const newUsedIds = [...allUsedIds, question.id];
@@ -1182,7 +1196,7 @@ async function sendTiebreakerRound(
 async function finishDuel(
   bot: Bot<BotContext>,
   duel: DuelState,
-  opts?: { tiebreakerWinnerTgId?: number | null },
+  opts?: { tiebreakerWinnerTgId?: number | null; forfeitedByTgId?: number },
 ): Promise<void> {
   if (duel.finished) return;
   duel.finished = true;
@@ -1214,9 +1228,14 @@ async function finishDuel(
   const cFastestLine = cFastest !== undefined ? ` · fastest ${cFastest}s` : "";
   const tFastestLine = tFastest !== undefined ? ` · fastest ${tFastest}s` : "";
 
-  const tiebreakerOccurred = opts?.tiebreakerWinnerTgId !== undefined;
+  const isForfeit = opts?.forfeitedByTgId !== undefined;
+  const tiebreakerOccurred = !isForfeit && opts?.tiebreakerWinnerTgId !== undefined;
   const tbNote = tiebreakerOccurred ? " (Tiebreaker)" : "";
-  const frame3Text = tiebreakerOccurred ? "🏆 And after the tiebreaker..." : "🏆 And the winner is...";
+  const frame3Text = isForfeit
+    ? "🏳️ Forfeit recorded..."
+    : tiebreakerOccurred
+      ? "🏆 And after the tiebreaker..."
+      : "🏆 And the winner is...";
 
   let winnerLine: string;
   let winnerCelebration: string;
@@ -1225,13 +1244,20 @@ async function finishDuel(
   let isTie = false;
 
   let effectiveWinnerTgId: number | null;
-  if (tiebreakerOccurred) {
+  if (isForfeit) {
+    const f = opts!.forfeitedByTgId!;
+    effectiveWinnerTgId = f === duel.challengerTgId ? duel.targetTgId : duel.challengerTgId;
+  } else if (tiebreakerOccurred) {
     effectiveWinnerTgId = opts!.tiebreakerWinnerTgId ?? null;
   } else {
     if (cScore > tScore) effectiveWinnerTgId = duel.challengerTgId;
     else if (tScore > cScore) effectiveWinnerTgId = duel.targetTgId;
     else effectiveWinnerTgId = null;
   }
+
+  const forfeitedName = isForfeit
+    ? (opts!.forfeitedByTgId === duel.challengerTgId ? duel.challengerName : duel.targetName)
+    : null;
 
   if (effectiveWinnerTgId === null) {
     isTie = true;
@@ -1240,12 +1266,16 @@ async function finishDuel(
       : "🤝 IT'S A TIE! 🤝";
     winnerCelebration = "       ⚖️   🎖️   ⚖️";
   } else if (effectiveWinnerTgId === duel.challengerTgId) {
-    winnerLine = `🥇 ${duel.challengerName.toUpperCase()} WINS!${tbNote} 🥇`;
+    winnerLine = isForfeit
+      ? `🏳️ ${forfeitedName!.toUpperCase()} FORFEITS — ${duel.challengerName.toUpperCase()} WINS! 🏆`
+      : `🥇 ${duel.challengerName.toUpperCase()} WINS!${tbNote} 🥇`;
     winnerCelebration = "      🎊   🏆   🎊";
     cTag = " 🏆";
     winnerUserId = duel.challengerUserId;
   } else {
-    winnerLine = `🥇 ${duel.targetName.toUpperCase()} WINS!${tbNote} 🥇`;
+    winnerLine = isForfeit
+      ? `🏳️ ${forfeitedName!.toUpperCase()} FORFEITS — ${duel.targetName.toUpperCase()} WINS! 🏆`
+      : `🥇 ${duel.targetName.toUpperCase()} WINS!${tbNote} 🥇`;
     winnerCelebration = "      🎊   🏆   🎊";
     tTag = " 🏆";
     winnerUserId = duel.targetUserId;
@@ -1276,11 +1306,13 @@ async function finishDuel(
     }
   }
 
-  const tiebreakerNote = tiebreakerOccurred && !isTie
-    ? "\n🔥 Decided by tiebreaker short answer!"
-    : tiebreakerOccurred && isTie
-      ? "\n⚖️ Still tied after 3 tiebreaker rounds!"
-      : "";
+  const tiebreakerNote = isForfeit
+    ? `\n🏳️ ${forfeitedName} forfeited mid-duel.`
+    : tiebreakerOccurred && !isTie
+      ? "\n🔥 Decided by tiebreaker short answer!"
+      : tiebreakerOccurred && isTie
+        ? "\n⚖️ Still tied after 3 tiebreaker rounds!"
+        : "";
 
   const dmText = [
     "⚔️ Duel Complete!",
@@ -1337,4 +1369,77 @@ async function finishDuel(
     await pause(1200);
     await bot.api.editMessageText(duel.groupChatId, groupMsg.message_id, frame4).catch(() => {});
   }
+}
+
+// ── Forfeit ───────────────────────────────────────────────────────────────────
+
+async function handleForfeitCommand(ctx: BotContext, bot: Bot<BotContext>) {
+  if (!ctx.from) return;
+  const tgId = ctx.from.id;
+  const duelId = userToDuelId.get(tgId);
+  if (!duelId) {
+    await ctx.reply("You're not in an active duel.");
+    return;
+  }
+  const duel = activeDuels.get(duelId);
+  if (!duel || duel.finished) {
+    await ctx.reply("No active duel found.");
+    return;
+  }
+  const opponentName = tgId === duel.challengerTgId ? duel.targetName : duel.challengerName;
+  const kb = new InlineKeyboard()
+    .text("🏳️ Yes, forfeit", `duel:quit:yes:${duelId}`)
+    .text("↩️ Cancel", `duel:quit:no:${duelId}`);
+  await ctx.reply(
+    `⚠️ Forfeit the duel? ${shortName(opponentName)} will win.`,
+    { reply_markup: kb },
+  );
+}
+
+async function handleForfeitRequest(ctx: BotContext, bot: Bot<BotContext>) {
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
+  const duelId = ctx.match[1]!;
+  const tgId = ctx.from.id;
+  const duel = activeDuels.get(duelId);
+  if (!duel || duel.finished) {
+    await ctx.answerCallbackQuery("Duel is already over.");
+    return;
+  }
+  if (tgId !== duel.challengerTgId && tgId !== duel.targetTgId) {
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  const opponentName = tgId === duel.challengerTgId ? duel.targetName : duel.challengerName;
+  const kb = new InlineKeyboard()
+    .text("🏳️ Yes, forfeit", `duel:quit:yes:${duelId}`)
+    .text("↩️ Cancel", `duel:quit:no:${duelId}`);
+  await ctx.answerCallbackQuery();
+  await ctx.reply(
+    `⚠️ Forfeit the duel? ${shortName(opponentName)} will win.`,
+    { reply_markup: kb },
+  );
+}
+
+async function handleForfeitConfirm(ctx: BotContext, bot: Bot<BotContext>) {
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
+  const duelId = ctx.match[1]!;
+  const tgId = ctx.from.id;
+  const duel = activeDuels.get(duelId);
+  if (!duel || duel.finished) {
+    await ctx.answerCallbackQuery("Duel is already over.");
+    return;
+  }
+  if (tgId !== duel.challengerTgId && tgId !== duel.targetTgId) {
+    await ctx.answerCallbackQuery();
+    return;
+  }
+  await ctx.answerCallbackQuery("You forfeited.");
+  await ctx.editMessageText("🏳️ You forfeited the duel.").catch(() => {});
+  if (duel.timeoutHandle) { clearTimeout(duel.timeoutHandle); duel.timeoutHandle = null; }
+  await finishDuel(bot, duel, { forfeitedByTgId: tgId });
+}
+
+async function handleForfeitCancel(ctx: BotContext) {
+  await ctx.answerCallbackQuery("Forfeit cancelled — keep fighting!");
+  await ctx.editMessageText("↩️ Forfeit cancelled. Good luck!").catch(() => {});
 }

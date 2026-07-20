@@ -18,6 +18,7 @@ const BOT_COMMANDS = [
   { command: "groupleaderboard", description: "View group leaderboard" },
   { command: "daily", description: "Answer today's daily aviation challenge" },
   { command: "duel", description: "Challenge another player to a duel (reply to their message)" },
+  { command: "forfeit", description: "Quit your current duel" },
   { command: "duelstats", description: "View your all-time duel statistics" },
   { command: "duelboard", description: "View the all-time duel leaderboard" },
   { command: "duelh2h", description: "See head-to-head record with someone (reply to their message)" },
