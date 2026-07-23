@@ -92,6 +92,7 @@ type DuelState = {
   correctCount: Record<number, number>;
   fastestSecs: Partial<Record<number, number>>;
   finished: boolean;
+  processingRound: boolean;
   saHintLevels: Record<number, number>;
   tiebreaker?: TiebreakerState;
 };
@@ -582,8 +583,9 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
     return;
   }
 
-  await ctx.answerCallbackQuery("Duel accepted! Check your DMs ⚔️");
+  // Delete before any await — prevents double-accept race if button is tapped twice
   pendingInvites.delete(duelId);
+  await ctx.answerCallbackQuery("Duel accepted! Check your DMs ⚔️");
 
   const [cUser, tUser] = await Promise.all([
     findUserByTelegramId(String(invite.challengerTgId)).catch(() => null),
@@ -631,6 +633,7 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
     correctCount: { [invite.challengerTgId]: 0, [invite.targetTgId]: 0 },
     fastestSecs: {},
     finished: false,
+    processingRound: false,
     saHintLevels: {},
   };
 
@@ -713,6 +716,16 @@ async function handleDuelAnswer(ctx: BotContext, bot: Bot<BotContext>) {
     if (prev === undefined || elapsed < prev) duel.fastestSecs[ctx.from.id] = elapsed;
   }
 
+  // Check bothAnswered synchronously before any await — prevents concurrent processRound calls
+  const bothAnswered =
+    duel.roundAnswers[duel.challengerTgId] !== undefined &&
+    duel.roundAnswers[duel.targetTgId] !== undefined;
+  let shouldProcess = false;
+  if (bothAnswered) {
+    if (duel.timeoutHandle) { clearTimeout(duel.timeoutHandle); duel.timeoutHandle = null; }
+    shouldProcess = true;
+  }
+
   await ctx.answerCallbackQuery(
     isCorrect ? `✅ Correct! +${formatPts(points)} pts (${elapsed}s)` : `❌ Wrong. (${elapsed}s)`,
   );
@@ -729,12 +742,7 @@ async function handleDuelAnswer(ctx: BotContext, bot: Bot<BotContext>) {
     await bot.api.editMessageText(chatId, msgId, `${lockLine}\n\n⏳ Waiting for ${opponentName}…`).catch(() => {});
   }
 
-  const bothAnswered =
-    duel.roundAnswers[duel.challengerTgId] !== undefined &&
-    duel.roundAnswers[duel.targetTgId] !== undefined;
-
-  if (bothAnswered) {
-    if (duel.timeoutHandle) { clearTimeout(duel.timeoutHandle); duel.timeoutHandle = null; }
+  if (shouldProcess) {
     await processRound(bot, duel);
   }
 }
@@ -907,18 +915,23 @@ async function handleSADuelText(bot: Bot<BotContext>, tgId: number, text: string
 
   usersInSAQuestion.delete(tgId);
 
+  // Check bothAnswered synchronously before any await — prevents concurrent processRound calls
+  const bothAnswered =
+    duel.roundAnswers[duel.challengerTgId] !== undefined &&
+    duel.roundAnswers[duel.targetTgId] !== undefined;
+  let shouldProcess = false;
+  if (bothAnswered) {
+    if (duel.timeoutHandle) { clearTimeout(duel.timeoutHandle); duel.timeoutHandle = null; }
+    shouldProcess = true;
+  }
+
   const opponentName = tgId === duel.challengerTgId ? shortName(duel.targetName) : shortName(duel.challengerName);
   await bot.api.sendMessage(
     tgId,
     `✅ Correct! +${formatPts(points)} pts (${elapsed}s)\n⏳ Waiting for ${opponentName}…`,
   ).catch(() => {});
 
-  const bothAnswered =
-    duel.roundAnswers[duel.challengerTgId] !== undefined &&
-    duel.roundAnswers[duel.targetTgId] !== undefined;
-
-  if (bothAnswered) {
-    if (duel.timeoutHandle) { clearTimeout(duel.timeoutHandle); duel.timeoutHandle = null; }
+  if (shouldProcess) {
     await processRound(bot, duel);
   }
 }
@@ -1009,14 +1022,16 @@ async function sendDuelQuestion(bot: Bot<BotContext>, duel: DuelState): Promise<
 }
 
 async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
-  if (duel.finished) return;
+  if (duel.finished || duel.processingRound) return;
+  duel.processingRound = true;
 
-  const q = duel.questions[duel.currentIndex]!;
+  const roundIdx = duel.currentIndex;
+  const q = duel.questions[roundIdx]!;
   const cAns = duel.roundAnswers[duel.challengerTgId];
   const tAns = duel.roundAnswers[duel.targetTgId];
   const cScore = duel.scores[duel.challengerTgId] ?? 0;
   const tScore = duel.scores[duel.targetTgId] ?? 0;
-  const questionsLeft = duel.questions.length - duel.currentIndex - 1;
+  const questionsLeft = duel.questions.length - roundIdx - 1;
 
   const correctDisplay = q.questionType === "short_answer"
     ? (q.correctAnswerText ?? null)
@@ -1026,7 +1041,7 @@ async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void
   const note = commentary(duel.challengerName, cScore, duel.targetName, tScore, questionsLeft);
 
   const summary = [
-    `📊 Q${duel.currentIndex + 1} result`,
+    `📊 Q${roundIdx + 1} result`,
     "",
     `${cAns?.isCorrect ? "✅" : "❌"} ${shortName(duel.challengerName)}: ${cAns?.elapsedSeconds ?? "—"}s${cAns?.isCorrect ? `  +${formatPts(cAns.points)}pts` : ""}`,
     `${tAns?.isCorrect ? "✅" : "❌"} ${shortName(duel.targetName)}: ${tAns?.elapsedSeconds ?? "—"}s${tAns?.isCorrect ? `  +${formatPts(tAns.points)}pts` : ""}`,
@@ -1035,14 +1050,16 @@ async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void
     note ? `\n${note}` : "",
   ].filter(Boolean).join("\n");
 
+  // Increment before the await so the timeout guard sees the new index immediately
+  duel.currentIndex = roundIdx + 1;
+
   await Promise.all([
     bot.api.sendMessage(duel.challengerTgId, summary).catch(() => {}),
     bot.api.sendMessage(duel.targetTgId, summary).catch(() => {}),
   ]);
 
-  duel.currentIndex++;
-
   if (duel.currentIndex >= duel.questions.length) {
+    duel.processingRound = false;
     const finalC = duel.scores[duel.challengerTgId] ?? 0;
     const finalT = duel.scores[duel.targetTgId] ?? 0;
     if (finalC === finalT) {
@@ -1062,6 +1079,7 @@ async function processRound(bot: Bot<BotContext>, duel: DuelState): Promise<void
     await pause(1500);
   }
 
+  duel.processingRound = false;
   await sendDuelQuestion(bot, duel);
 }
 
