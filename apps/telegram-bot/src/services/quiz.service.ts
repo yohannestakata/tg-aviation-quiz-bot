@@ -28,6 +28,7 @@ import type {
   ActiveQuiz,
   BotContext,
   QuizPlayMode,
+  RaceCandidate,
   TeamJoinMode,
   TeamMember,
 } from "../types";
@@ -618,7 +619,8 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
     return true;
   }
 
-  // Race and Free Form: anyone can try as many times as they like; only the first correct answer wins
+  // Race and Free Form: anyone can try as many times as they like. Correct answers enter a
+  // 500ms settle window; the earliest by Telegram-side submission timestamp wins the round.
   if (active.playMode === "race" || active.playMode === "free_form") {
     const isCorrect = isShortAnswerCorrect(answerText, question.correctAnswerText, question.acceptedKeywords);
     if (!isCorrect) {
@@ -627,24 +629,19 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
       return true;
     }
     const { points: pointsAwarded, elapsedSeconds } = answerPoints(active, true);
-    await recordAnswer({
-      quizSessionId: active.sessionId,
-      questionId: question.id,
+    const candidate: RaceCandidate = {
+      tgId: ctx.from!.id,
       userId: permission.userId,
+      displayName: displayName(ctx),
       answerText,
-      teamName: null,
-      isCorrect: true,
       pointsAwarded,
-    });
-    if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
-    active.fastAnswerCount++;
-    active.correctStreak++;
-    const streak = streakMessage(active.correctStreak);
-    const icon = active.playMode === "race" ? "🏁" : "🙋";
-    await ctx.reply(
-      `${icon} ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
-    );
-    await moveNext(ctx, active);
+      elapsedSeconds,
+      questionId: question.id,
+      explanation: question.explanation ?? null,
+      messageDate: ctx.message?.date ?? Math.floor(Date.now() / 1000),
+      receivedAtMs: Date.now(),
+    };
+    submitRaceCandidate(ctx, active, candidate);
     return true;
   }
 
@@ -761,6 +758,8 @@ export async function cancelQuiz(ctx: BotContext) {
   }
 
   if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
+  if (active.raceSettleTimer) { clearTimeout(active.raceSettleTimer); active.raceSettleTimer = null; }
+  active.raceCandidate = null;
   activeQuizzes.delete(key);
   clearPendingReportsForChat(ctx);
   await advanceQuizSession(active.sessionId, active.currentIndex, true);
@@ -1063,11 +1062,60 @@ async function resolveAnswerer(ctx: BotContext, active: ActiveQuiz) {
   return { allowed: true as const, userId: user.id, teamName: null };
 }
 
+const RACE_SETTLE_MS = 500;
+
+function isEarlierCandidate(a: RaceCandidate, b: RaceCandidate): boolean {
+  if (a.messageDate !== b.messageDate) return a.messageDate < b.messageDate;
+  return a.receivedAtMs < b.receivedAtMs;
+}
+
+function submitRaceCandidate(ctx: BotContext, active: ActiveQuiz, candidate: RaceCandidate): void {
+  if (!active.raceCandidate || isEarlierCandidate(candidate, active.raceCandidate)) {
+    active.raceCandidate = candidate;
+  }
+  if (active.raceSettleTimer) return;
+
+  const key = requireKey(ctx);
+  const questionIndex = active.currentIndex;
+  active.raceSettleTimer = setTimeout(async () => {
+    const current = activeQuizzes.get(key);
+    if (!current || current !== active) return;
+    if (current.currentIndex !== questionIndex) return;
+    const winner = current.raceCandidate;
+    current.raceCandidate = null;
+    current.raceSettleTimer = null;
+    if (!winner) return;
+
+    if (current.questionTimeout) { clearTimeout(current.questionTimeout); current.questionTimeout = null; }
+
+    await recordAnswer({
+      quizSessionId: current.sessionId,
+      questionId: winner.questionId,
+      userId: winner.userId,
+      answerText: winner.answerText,
+      teamName: null,
+      isCorrect: true,
+      pointsAwarded: winner.pointsAwarded,
+    });
+
+    if (winner.elapsedSeconds <= 10) current.fastAnswerCount++;
+    current.correctStreak++;
+    const streak = streakMessage(current.correctStreak);
+    const icon = current.playMode === "race" ? "🏁" : "🙋";
+    await ctx.reply(
+      `${icon} ${winner.displayName} got it!\n\n${formatFeedback(true, null, winner.explanation, winner.pointsAwarded, winner.elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+    );
+    await moveNext(ctx, current);
+  }, RACE_SETTLE_MS);
+}
+
 async function moveNext(ctx: BotContext, active: ActiveQuiz) {
   // Guard against concurrent invocations (two players answering simultaneously)
   if (active.advancing) return;
   active.advancing = true;
   if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
+  if (active.raceSettleTimer) { clearTimeout(active.raceSettleTimer); active.raceSettleTimer = null; }
+  active.raceCandidate = null;
 
   const nextIndex = active.currentIndex + 1;
   if (nextIndex >= active.totalQuestions) {
@@ -1099,6 +1147,8 @@ async function finishQuiz(ctx: BotContext) {
   if (!active) return;
 
   if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
+  if (active.raceSettleTimer) { clearTimeout(active.raceSettleTimer); active.raceSettleTimer = null; }
+  active.raceCandidate = null;
   await advanceQuizSession(active.sessionId, active.totalQuestions, true);
   activeQuizzes.delete(key);
   clearPendingReportsForChat(ctx);

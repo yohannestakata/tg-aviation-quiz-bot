@@ -12,6 +12,19 @@ export type TeamMember = {
   teamName: string;
 };
 
+export type RaceCandidate = {
+  tgId: number;
+  userId: string;
+  displayName: string;
+  answerText: string;
+  pointsAwarded: number;
+  elapsedSeconds: number;
+  questionId: string;
+  explanation: string | null;
+  messageDate: number;    // Telegram-server timestamp (seconds) — primary tiebreaker
+  receivedAtMs: number;   // Bot-server arrival (ms) — secondary tiebreaker
+};
+
 export type ActiveQuiz = {
   sessionId: string;
   userId: string;
@@ -32,4 +45,6 @@ export type ActiveQuiz = {
   wrongAnswerCount: number;
   questionTimeout?: ReturnType<typeof setTimeout> | null;
   advancing?: boolean;
+  raceCandidate?: RaceCandidate | null;
+  raceSettleTimer?: ReturnType<typeof setTimeout> | null;
 };
