@@ -116,6 +116,10 @@ export async function showQuizCategories(ctx: BotContext) {
 
   const key = requireKey(ctx);
   if (isGroupChat(ctx)) {
+    if (activeQuizzes.has(key)) {
+      await ctx.reply("⚠️ A quiz is already running in this group. Wait for it to finish before starting a new one.");
+      return;
+    }
     drafts.set(key, {
       creatorTelegramUserId: ctx.from.id,
       playMode: "individual",
@@ -663,6 +667,12 @@ export async function startRetryQuiz(ctx: BotContext, sessionId: string) {
   await ctx.answerCallbackQuery();
   const key = requireKey(ctx);
   const group = await ensureTelegramGroup(ctx);
+
+  if (isGroupChat(ctx) && activeQuizzes.has(key)) {
+    await ctx.reply("⚠️ A quiz is already running in this group. Wait for it to finish before starting a new one.");
+    return;
+  }
+
   await cancelActiveQuizForUser(user.id);
   const session = await createQuizSession({
     userId: user.id,
@@ -885,6 +895,13 @@ async function startConfiguredQuiz(ctx: BotContext) {
   }
 
   const group = await ensureTelegramGroup(ctx);
+
+  if (isGroupChat(ctx) && activeQuizzes.has(key)) {
+    await ctx.reply("⚠️ A quiz is already running in this group. Wait for it to finish before starting a new one.");
+    drafts.delete(key);
+    return;
+  }
+
   const draft = drafts.get(key) ?? baseDraft(ctx);
   const requestedQuestions = draft.count ?? 5;
   const totalQuestions =
