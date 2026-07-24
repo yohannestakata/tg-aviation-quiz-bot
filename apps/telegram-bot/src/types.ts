@@ -30,4 +30,5 @@ export type ActiveQuiz = {
   correctStreak: number;
   fastAnswerCount: number;
   wrongAnswerCount: number;
+  raceTimeout?: ReturnType<typeof setTimeout> | null;
 };

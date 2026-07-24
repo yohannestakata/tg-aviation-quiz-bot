@@ -149,7 +149,9 @@ export async function setPlayMode(ctx: BotContext, playMode: QuizPlayMode) {
     return;
   }
 
-  drafts.set(key, { ...draft, playMode });
+  // Race mode always uses short-answer questions
+  const racePatch = playMode === "race" ? { questionType: "short_answer" as const } : {};
+  drafts.set(key, { ...draft, playMode, ...racePatch });
   await ctx.answerCallbackQuery();
 
   if (playMode === "teams") {
@@ -247,8 +249,16 @@ export async function setQuizCount(ctx: BotContext, count: number) {
     return;
   }
 
-  drafts.set(key, { ...(draft ?? baseDraft(ctx)), count });
+  const updatedDraft = { ...(draft ?? baseDraft(ctx)), count };
+  drafts.set(key, updatedDraft);
   await ctx.answerCallbackQuery();
+
+  // Race mode skips the type step — SA is already forced
+  if (updatedDraft.playMode === "race") {
+    await startConfiguredQuiz(ctx);
+    return;
+  }
+
   await ctx.reply("🧩 Choose question type:", { reply_markup: typeKeyboard() });
 }
 
@@ -373,10 +383,21 @@ export async function sendCurrentQuestion(ctx: BotContext) {
       caption: text,
       reply_markup: replyMarkup,
     });
-    return;
+  } else {
+    await ctx.reply(text, { reply_markup: replyMarkup });
   }
 
-  await ctx.reply(text, { reply_markup: replyMarkup });
+  if (active.playMode === "race") {
+    if (active.raceTimeout) clearTimeout(active.raceTimeout);
+    const questionIndex = active.currentIndex;
+    active.raceTimeout = setTimeout(async () => {
+      const current = activeQuizzes.get(key);
+      if (!current || current.currentIndex !== questionIndex) return;
+      current.raceTimeout = null;
+      await ctx.reply(`⏱️ Time's up! Nobody answered.\n✅ Answer: ${question.correctAnswerText ?? "—"}`);
+      await moveNext(ctx, current);
+    }, 45_000);
+  }
 }
 
 export async function showHint(ctx: BotContext) {
@@ -590,6 +611,36 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
     await ctx.reply(permission.reason);
     return true;
   }
+
+  // Race mode: anyone can try as many times as they like; only correct answers are recorded
+  if (active.playMode === "race") {
+    const isCorrect = isShortAnswerCorrect(answerText, question.correctAnswerText, question.acceptedKeywords);
+    if (!isCorrect) {
+      active.wrongAnswerCount++;
+      await ctx.reply(`❌ ${displayName(ctx)} — not quite, keep trying!`);
+      return true;
+    }
+    const { points: pointsAwarded, elapsedSeconds } = answerPoints(active, true);
+    await recordAnswer({
+      quizSessionId: active.sessionId,
+      questionId: question.id,
+      userId: permission.userId,
+      answerText,
+      teamName: null,
+      isCorrect: true,
+      pointsAwarded,
+    });
+    if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+    active.fastAnswerCount++;
+    active.correctStreak++;
+    const streak = streakMessage(active.correctStreak);
+    await ctx.reply(
+      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+    );
+    await moveNext(ctx, active);
+    return true;
+  }
+
   if (active.answeredUserIds.has(ctx.from!.id)) {
     await ctx.reply("Your answer is already recorded.");
     return true;
@@ -615,20 +666,6 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
   if (isCorrect && elapsedSeconds <= 10) active.fastAnswerCount++;
   active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
   const streak = isCorrect ? streakMessage(active.correctStreak) : null;
-
-  if (active.playMode === "race") {
-    if (!isCorrect) {
-      active.wrongAnswerCount++;
-      const hint = active.wrongAnswerCount >= 3 ? " Quiz creator can /cancel if everyone is stuck." : "";
-      await ctx.reply(`❌ ${displayName(ctx)} guessed wrong.${hint}`);
-      return true;
-    }
-    await ctx.reply(
-      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
-    );
-    await moveNext(ctx, active);
-    return true;
-  }
 
   if (active.playMode === "teams") {
     await ctx.reply(
@@ -716,6 +753,7 @@ export async function cancelQuiz(ctx: BotContext) {
     return;
   }
 
+  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
   activeQuizzes.delete(key);
   pendingReports.delete(reportKey(ctx));
   await advanceQuizSession(active.sessionId, active.currentIndex, true);
@@ -1016,6 +1054,8 @@ async function resolveAnswerer(ctx: BotContext, active: ActiveQuiz) {
 }
 
 async function moveNext(ctx: BotContext, active: ActiveQuiz) {
+  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+
   const nextIndex = active.currentIndex + 1;
   if (nextIndex >= active.totalQuestions) {
     await finishQuiz(ctx);
@@ -1029,6 +1069,11 @@ async function moveNext(ctx: BotContext, active: ActiveQuiz) {
       (active.currentTeamIndex + 1) % active.teamNames.length;
   }
   await advanceQuizSession(active.sessionId, nextIndex);
+
+  if (active.playMode === "race") {
+    await new Promise((r) => setTimeout(r, 2500));
+  }
+
   await sendCurrentQuestion(ctx);
 }
 
@@ -1037,6 +1082,7 @@ async function finishQuiz(ctx: BotContext) {
   const active = activeQuizzes.get(key);
   if (!active) return;
 
+  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
   await advanceQuizSession(active.sessionId, active.totalQuestions, true);
   activeQuizzes.delete(key);
 
@@ -1057,14 +1103,15 @@ async function finishQuiz(ctx: BotContext) {
     return;
   }
 
-  if (active.playMode === "free_form") {
+  if (active.playMode === "free_form" || active.playMode === "race") {
     const scores = await getSessionParticipantScores(active.sessionId);
     await sendCelebrationForPlayerWinner(ctx, scores);
+    const modeLabel = active.playMode === "race" ? "🏁 Race" : "🙋 Free Form";
     await ctx.reply(
       [
         "🏁 Quiz complete.",
         "",
-        "🙋 Player scores:",
+        `${modeLabel} — Player scores:`,
         ...scores.map(
           (score, index) =>
             `${index + 1}. ${displayScoreName(score)} - ${formatPoints(score.points)} pts`,

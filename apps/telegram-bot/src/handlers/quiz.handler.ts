@@ -33,7 +33,7 @@ export function registerQuizHandlers(bot: Bot<BotContext>) {
   });
 
   bot.callbackQuery("menu:quiz", showQuizCategories);
-  bot.callbackQuery(/^quiz:mode:(individual|free_form|teams)$/, async (ctx) => {
+  bot.callbackQuery(/^quiz:mode:(individual|free_form|teams|race)$/, async (ctx) => {
     await setPlayMode(ctx, ctx.match[1]! as QuizPlayMode);
   });
   bot.callbackQuery(/^quiz:teams:(\d+)$/, async (ctx) => setTeamCount(ctx, Number(ctx.match[1]!)));
