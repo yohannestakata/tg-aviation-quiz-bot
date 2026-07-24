@@ -431,8 +431,8 @@ export async function showHint(ctx: BotContext) {
   const newLevel = currentLevel + 1;
   active.hintLevels.set(active.currentIndex, newLevel);
 
-  const penalties = ["", "−25% pts", "−50% pts", "−75% pts"];
-  await ctx.answerCallbackQuery(`Hint ${newLevel}/3 · ${penalties[newLevel]}`);
+  const toastSuffix = active.playMode === "race" ? "" : ` · ${(["", "−25% pts", "−50% pts", "−75% pts"])[newLevel]}`;
+  await ctx.answerCallbackQuery(`Hint ${newLevel}/3${toastSuffix}`);
   await ctx.reply(buildHint(question.correctAnswerText, question.questionType, question.options, newLevel));
 }
 
@@ -1424,9 +1424,10 @@ function answerPoints(active: ActiveQuiz, isCorrect: boolean): { points: number;
   const elapsedSeconds = Math.round((Date.now() - active.questionStartedAt.getTime()) / 1000);
   if (!isCorrect) return { points: 0, elapsedSeconds };
 
+  const basePoints = elapsedSeconds <= 10 ? 3 : elapsedSeconds <= 25 ? 2 : 1;
+  if (active.playMode === "race") return { points: basePoints, elapsedSeconds };
   const hintLevel = active.hintLevels.get(active.currentIndex) ?? 0;
   const multiplier = ([1, 0.75, 0.5, 0.25] as const)[hintLevel] ?? 0.25;
-  const basePoints = elapsedSeconds <= 10 ? 3 : elapsedSeconds <= 25 ? 2 : 1;
   return { points: basePoints * multiplier, elapsedSeconds };
 }
 
