@@ -85,11 +85,48 @@ export function reportNoteKeyboard() {
   return new InlineKeyboard().text("Skip note", "report:skip");
 }
 
-export function leaderboardPeriodKeyboard(active: "all" | "week" | "month" = "all") {
-  return new InlineKeyboard()
-    .text(active === "all" ? "⏳ All Time ✓" : "⏳ All Time", "leaderboard:period:all")
-    .text(active === "week" ? "📅 This Week ✓" : "📅 This Week", "leaderboard:period:week")
-    .text(active === "month" ? "🗓️ This Month ✓" : "🗓️ This Month", "leaderboard:period:month");
+type LbPeriod = "all" | "week" | "month";
+type LbMode = "all" | "solo" | "free_form" | "race" | "teams" | "duels";
+
+const MODE_LABELS: Record<LbMode, string> = {
+  all: "🌐 All",
+  solo: "👤 Solo",
+  free_form: "🙋 Free-form",
+  race: "🏁 Race",
+  teams: "👥 Teams",
+  duels: "⚔️ Duels",
+};
+
+const PERIOD_LABELS: Record<LbPeriod, string> = {
+  all: "⏳ All Time",
+  week: "📅 This Week",
+  month: "🗓️ This Month",
+};
+
+export function leaderboardKeyboard(period: LbPeriod = "all", mode: LbMode = "all") {
+  const cell = (label: string, active: boolean) => (active ? `${label} ✓` : label);
+  const kb = new InlineKeyboard();
+  // Row 1: periods
+  (["all", "week", "month"] as const).forEach((p, i) => {
+    kb.text(cell(PERIOD_LABELS[p], p === period), `leaderboard:set:${p}:${mode}`);
+    if (i < 2) { /* keep on same row */ }
+  });
+  kb.row();
+  // Row 2: All / Solo / Free-form
+  (["all", "solo", "free_form"] as const).forEach((m) => {
+    kb.text(cell(MODE_LABELS[m], m === mode), `leaderboard:set:${period}:${m}`);
+  });
+  kb.row();
+  // Row 3: Race / Teams / Duels
+  (["race", "teams", "duels"] as const).forEach((m) => {
+    kb.text(cell(MODE_LABELS[m], m === mode), `leaderboard:set:${period}:${m}`);
+  });
+  return kb;
+}
+
+/** @deprecated retained for callers still using the period-only keyboard */
+export function leaderboardPeriodKeyboard(active: LbPeriod = "all") {
+  return leaderboardKeyboard(active, "all");
 }
 
 export function retryWrongKeyboard(sessionId: string) {
