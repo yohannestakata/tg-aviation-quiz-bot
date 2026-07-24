@@ -233,6 +233,7 @@ export async function listQuestionsForQuiz(input: {
   questionType?: QuestionType;
   limit: number;
   userId?: string;
+  excludeQuestionIds?: string[];
 }) {
   const baseFilters = [eq(questions.isActive, true)];
   if (input.categoryId) baseFilters.push(eq(questions.categoryId, input.categoryId));
@@ -264,8 +265,12 @@ export async function listQuestionsForQuiz(input: {
     }
   }
 
-  // Fetch fresh questions — exclude recently-correct and already-picked SR questions
-  const freshExclude = [...new Set([...excludeIds, ...srIds])];
+  // Callers may pass an additional exclusion set (e.g. per-chat recent history) that
+  // should not affect SR — SR is per-user, this cache is per-chat/session.
+  const callerExclude = input.excludeQuestionIds ?? [];
+
+  // Fetch fresh questions — exclude recently-correct, already-picked SR, and caller exclusions
+  const freshExclude = [...new Set([...excludeIds, ...srIds, ...callerExclude])];
   const freshFilters = [...baseFilters, ...(freshExclude.length ? [notInArray(questions.id, freshExclude)] : [])];
   const freshLimit = input.limit - srIds.length;
 
@@ -279,10 +284,12 @@ export async function listQuestionsForQuiz(input: {
     )
     .limit(freshLimit);
 
-  // Fallback: if category is small and we excluded too many, pull from recently-correct
-  if (fresh.length < freshLimit && excludeIds.length > 0) {
+  // Fallback: if the pool is small and we excluded too many, pull from user's recently-correct.
+  // Still honour the caller's exclusion (per-chat recent history) unless we're totally stuck.
+  if (fresh.length < freshLimit && (excludeIds.length > 0 || callerExclude.length > 0)) {
     const alreadyPicked = new Set([...srIds, ...fresh.map((q) => q.id)]);
-    const fallbackFilters = [...baseFilters, ...(alreadyPicked.size ? [notInArray(questions.id, [...alreadyPicked])] : [])];
+    const softExclude = [...new Set([...alreadyPicked, ...callerExclude])];
+    const fallbackFilters = [...baseFilters, ...(softExclude.length ? [notInArray(questions.id, softExclude)] : [])];
     const fallback = await db
       .select()
       .from(questions)
@@ -290,6 +297,19 @@ export async function listQuestionsForQuiz(input: {
       .orderBy(sql`random()`)
       .limit(freshLimit - fresh.length);
     fresh = [...fresh, ...fallback];
+  }
+
+  // Last-resort fallback: if still short and caller exclusion is starving us, ignore it.
+  if (fresh.length < freshLimit && callerExclude.length > 0) {
+    const alreadyPicked = new Set([...srIds, ...fresh.map((q) => q.id)]);
+    const hardFilters = [...baseFilters, ...(alreadyPicked.size ? [notInArray(questions.id, [...alreadyPicked])] : [])];
+    const extra = await db
+      .select()
+      .from(questions)
+      .where(and(...hardFilters))
+      .orderBy(sql`random()`)
+      .limit(freshLimit - fresh.length);
+    fresh = [...fresh, ...extra];
   }
 
   // Fetch full rows for SR questions and interleave them randomly into the fresh set

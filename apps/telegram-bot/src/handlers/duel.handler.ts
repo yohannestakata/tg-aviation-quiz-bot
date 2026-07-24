@@ -11,6 +11,7 @@ import {
   recordDuelResult,
 } from "@aviation/db";
 import { isShortAnswerCorrect } from "../utils/normalize-answer";
+import { getRecentQuestionIds, recordRecentQuestionIds } from "../utils/recent-questions";
 import type { BotContext } from "../types";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -469,7 +470,7 @@ async function handleDuelCategory(ctx: BotContext, bot: Bot<BotContext>) {
   // Fetch questions
   let questions: QuestionData[];
   try {
-    questions = await fetchDuelQuestions(count, typeCode, categoryId);
+    questions = await fetchDuelQuestions(count, typeCode, categoryId, setup.groupChatId);
   } catch {
     await ctx.answerCallbackQuery("Failed to load questions. Try again.");
     await ctx.editMessageText("⚔️ Couldn't load questions. Try /duel again.").catch(() => {});
@@ -532,9 +533,12 @@ async function fetchDuelQuestions(
   count: number,
   typeCode: "mc" | "sa" | "mx" | "any",
   categoryId: string | null,
+  groupChatId: number | null,
 ): Promise<QuestionData[]> {
-  const base = { categoryId: categoryId ?? undefined, limit: count };
+  const excludeQuestionIds = getRecentQuestionIds(groupChatId);
+  const base = { categoryId: categoryId ?? undefined, limit: count, excludeQuestionIds };
 
+  let picked: QuestionData[];
   if (typeCode === "mx") {
     const half = Math.floor(count / 2);
     const rest = count - half;
@@ -550,12 +554,15 @@ async function fetchDuelQuestions(
       if (mc) combined.push(toQD(mc));
       if (sa) combined.push(toQD(sa));
     }
-    return combined.slice(0, count);
+    picked = combined.slice(0, count);
+  } else {
+    const qType = typeCode === "mc" ? "multiple_choice" : typeCode === "sa" ? "short_answer" : undefined;
+    const raw = await listQuestionsForQuiz({ ...base, questionType: qType });
+    picked = raw.map(toQD);
   }
 
-  const qType = typeCode === "mc" ? "multiple_choice" : typeCode === "sa" ? "short_answer" : undefined;
-  const raw = await listQuestionsForQuiz({ ...base, questionType: qType });
-  return raw.map(toQD);
+  recordRecentQuestionIds(groupChatId, picked.map((q) => q.id));
+  return picked;
 }
 
 function toQD(q: Awaited<ReturnType<typeof listQuestionsForQuiz>>[number]): QuestionData {

@@ -48,6 +48,7 @@ import {
   ensureTelegramUser,
 } from "./telegram-user.service";
 import { isShortAnswerCorrect } from "../utils/normalize-answer";
+import { getRecentQuestionIds, recordRecentQuestionIds } from "../utils/recent-questions";
 
 type DraftQuiz = {
   creatorTelegramUserId: number;
@@ -959,11 +960,13 @@ async function startConfiguredQuiz(ctx: BotContext) {
       ? Math.min(totalQuestions * 2, 200)
       : totalQuestions;
 
+  const chatId = ctx.chat?.id ?? null;
   const pool = await listQuestionsForQuiz({
     categoryId: draft.categoryId,
     questionType: draft.questionType,
     limit: fetchLimit,
-    userId: draft.playMode === "individual" ? user.id : undefined,
+    userId: user.id,
+    excludeQuestionIds: getRecentQuestionIds(chatId),
   });
 
   if (pool.length < totalQuestions) {
@@ -980,6 +983,7 @@ async function startConfiguredQuiz(ctx: BotContext) {
       ? groupIntoTeamRounds(pool, requestedQuestions, draft.teamNames.length)
       : pool.slice(0, totalQuestions).map((q) => q.id);
 
+  recordRecentQuestionIds(chatId, questionIds);
   await cancelActiveQuizForUser(user.id);
   const session = await createQuizSession({
     userId: user.id,
