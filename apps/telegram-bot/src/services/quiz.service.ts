@@ -387,14 +387,18 @@ export async function sendCurrentQuestion(ctx: BotContext) {
     await ctx.reply(text, { reply_markup: replyMarkup });
   }
 
-  if (active.playMode === "race") {
-    if (active.raceTimeout) clearTimeout(active.raceTimeout);
+  if (active.playMode === "race" || active.playMode === "free_form") {
+    if (active.questionTimeout) clearTimeout(active.questionTimeout);
     const questionIndex = active.currentIndex;
-    active.raceTimeout = setTimeout(async () => {
+    active.questionTimeout = setTimeout(async () => {
       const current = activeQuizzes.get(key);
       if (!current || current.currentIndex !== questionIndex) return;
-      current.raceTimeout = null;
-      await ctx.reply(`⏱️ Time's up! Nobody answered.\n✅ Answer: ${question.correctAnswerText ?? "—"}`);
+      current.questionTimeout = null;
+      const correctAnswer =
+        question.questionType === "multiple_choice"
+          ? (question.options.find((o) => o.isCorrect)?.optionText ?? "—")
+          : (question.correctAnswerText ?? "—");
+      await ctx.reply(`⏱️ Time's up! Nobody got it.\n✅ Answer: ${correctAnswer}`);
       await moveNext(ctx, current);
     }, 45_000);
   }
@@ -553,16 +557,17 @@ async function recordMultipleChoiceSelection(
   active.correctStreak = isCorrect ? active.correctStreak + 1 : 0;
   const streak = isCorrect ? streakMessage(active.correctStreak) : null;
 
-  if (active.playMode === "race") {
+  if (active.playMode === "race" || active.playMode === "free_form") {
     if (source === "callback") await ctx.answerCallbackQuery(isCorrect ? "Correct!" : "Wrong!");
     if (!isCorrect) {
       active.wrongAnswerCount++;
-      const hint = active.wrongAnswerCount >= 3 ? " Quiz creator can /cancel if everyone is stuck." : "";
-      await ctx.reply(`❌ ${displayName(ctx)} guessed wrong.${hint}`);
+      await ctx.reply(`❌ ${displayName(ctx)} — wrong. Others can still try!`);
       return;
     }
+    if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
+    const icon = active.playMode === "race" ? "🏁" : "🙋";
     await ctx.reply(
-      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+      `${icon} ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
     );
     await moveNext(ctx, active);
     return;
@@ -612,8 +617,8 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
     return true;
   }
 
-  // Race mode: anyone can try as many times as they like; only correct answers are recorded
-  if (active.playMode === "race") {
+  // Race and Free Form: anyone can try as many times as they like; only the first correct answer wins
+  if (active.playMode === "race" || active.playMode === "free_form") {
     const isCorrect = isShortAnswerCorrect(answerText, question.correctAnswerText, question.acceptedKeywords);
     if (!isCorrect) {
       active.wrongAnswerCount++;
@@ -630,12 +635,13 @@ export async function answerShortText(ctx: BotContext, answerText: string) {
       isCorrect: true,
       pointsAwarded,
     });
-    if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+    if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
     active.fastAnswerCount++;
     active.correctStreak++;
     const streak = streakMessage(active.correctStreak);
+    const icon = active.playMode === "race" ? "🏁" : "🙋";
     await ctx.reply(
-      `🏁 ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
+      `${icon} ${displayName(ctx)} got it!\n\n${formatFeedback(true, null, question.explanation, pointsAwarded, elapsedSeconds)}${streak ? `\n\n${streak}` : ""}`,
     );
     await moveNext(ctx, active);
     return true;
@@ -753,9 +759,9 @@ export async function cancelQuiz(ctx: BotContext) {
     return;
   }
 
-  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+  if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
   activeQuizzes.delete(key);
-  pendingReports.delete(reportKey(ctx));
+  clearPendingReportsForChat(ctx);
   await advanceQuizSession(active.sessionId, active.currentIndex, true);
   await ctx.reply("🛑 Quiz cancelled.");
 }
@@ -1054,7 +1060,10 @@ async function resolveAnswerer(ctx: BotContext, active: ActiveQuiz) {
 }
 
 async function moveNext(ctx: BotContext, active: ActiveQuiz) {
-  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+  // Guard against concurrent invocations (two players answering simultaneously)
+  if (active.advancing) return;
+  active.advancing = true;
+  if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
 
   const nextIndex = active.currentIndex + 1;
   if (nextIndex >= active.totalQuestions) {
@@ -1068,12 +1077,15 @@ async function moveNext(ctx: BotContext, active: ActiveQuiz) {
     active.currentTeamIndex =
       (active.currentTeamIndex + 1) % active.teamNames.length;
   }
+  // Clear any stale in-flight report notes so they don't swallow the next question's answers
+  clearPendingReportsForChat(ctx);
   await advanceQuizSession(active.sessionId, nextIndex);
 
-  if (active.playMode === "race") {
+  if (active.playMode === "race" || active.playMode === "free_form") {
     await new Promise((r) => setTimeout(r, 2500));
   }
 
+  active.advancing = false;
   await sendCurrentQuestion(ctx);
 }
 
@@ -1082,9 +1094,10 @@ async function finishQuiz(ctx: BotContext) {
   const active = activeQuizzes.get(key);
   if (!active) return;
 
-  if (active.raceTimeout) { clearTimeout(active.raceTimeout); active.raceTimeout = null; }
+  if (active.questionTimeout) { clearTimeout(active.questionTimeout); active.questionTimeout = null; }
   await advanceQuizSession(active.sessionId, active.totalQuestions, true);
   activeQuizzes.delete(key);
+  clearPendingReportsForChat(ctx);
 
   if (active.playMode === "teams") {
     const scores = await getTeamScores(active.sessionId);
@@ -1336,6 +1349,15 @@ function currentTeam(active: ActiveQuiz) {
 
 function reportKey(ctx: BotContext) {
   return `${ctx.chat?.id ?? "private"}:${ctx.from?.id ?? "unknown"}`;
+}
+
+function clearPendingReportsForChat(ctx: BotContext) {
+  const chatId = ctx.chat?.id;
+  if (chatId === undefined) return;
+  const prefix = `${chatId}:`;
+  for (const k of pendingReports.keys()) {
+    if (k.startsWith(prefix)) pendingReports.delete(k);
+  }
 }
 
 function buildHint(
