@@ -151,6 +151,46 @@ describe("accepted keywords", () => {
   });
 });
 
+// The matcher must work on questions that do not exist yet, in any subject.
+// Nothing below appears in the current question bank; several cases are
+// deliberately outside aviation to prove no domain knowledge is baked in.
+describe("generalises to unseen questions and other subjects", () => {
+  test.each([
+    ["the empenage", "empennage", "aviation typo + article"],
+    ["dutch role", "dutch roll", "aviation typo"],
+    ["coffin cornor", "coffin corner", "typo rescued by matching context"],
+    ["apu", "auxiliary power unit", "acronym derived, never hardcoded"],
+    ["auxilary power unit", "APU", "expansion + typo"],
+    ["mitocondria", "mitochondria", "biology"],
+    ["photosynthisis", "photosynthesis", "biology"],
+    ["the Pythagorean theorm", "Pythagorean theorem", "maths"],
+    ["sodium chlorid", "sodium chloride", "chemistry"],
+    ["Krebs cycles", "krebs cycle", "biology plural"],
+    ["william shakespere", "William Shakespeare", "proper noun"],
+    ["the french revolution", "French Revolution", "history"],
+  ])("%j matches %j (%s)", (answer, correct) => {
+    expect(ok(answer, correct)).toBe(true);
+  });
+
+  test.each([
+    ["sodium chloride", "sodium fluoride", "one wrong word in a phrase"],
+    ["nitrate", "nitrite", "oxyanion series"],
+    ["sulfate", "sulfite", "oxyanion series"],
+    ["chlorate", "chlorite", "oxyanion series, 8 letters"],
+    ["affect", "effect", "one-vowel real-word twin"],
+    ["fission", "fusion", "sound-alike"],
+    ["exothermic", "endothermic", "opposite, derived not listed"],
+    ["convergent", "divergent", "opposite, derived not listed"],
+    ["prograde", "retrograde", "opposite, derived not listed"],
+    ["soluble", "insoluble", "negating prefix, derived not listed"],
+    ["reversible", "irreversible", "negating prefix, derived not listed"],
+    ["1789", "1799", "numbers literal"],
+    ["mitochondria", "chloroplast", "different word"],
+  ])("%j does not match %j (%s)", (answer, correct) => {
+    expect(ok(answer, correct)).toBe(false);
+  });
+});
+
 describe("normalizeAnswer", () => {
   test("produces a canonical form", () => {
     // Hyphens split into separate tokens; the co-pilot/copilot equivalence is

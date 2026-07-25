@@ -273,6 +273,66 @@ function areAntonyms(a: string, b: string): boolean {
   return ANTONYM_KEYS.has(a < b ? `${a}|${b}` : `${b}|${a}`);
 }
 
+const VOWELS = new Set(["a", "e", "i", "o", "u"]);
+
+/** Index of the single differing character, or -1 if not exactly one. */
+function loneDiffIndex(a: string, b: string): number {
+  if (a.length !== b.length) return -1;
+  let found = -1;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      if (found !== -1) return -1;
+      found = i;
+    }
+  }
+  return found;
+}
+
+/**
+ * Endings that distinguish real terms rather than marking a typo — the
+ * chemistry oxyanion series above all (nitrate/nitrite, chlorate/chlorite).
+ */
+const SUFFIX_ALTERNATIONS = new Set(["ate|ite", "ate|ide", "ide|ite"]);
+
+/**
+ * A vowel swapped at the end of a word usually marks a *different word* rather
+ * than a typo. Short words are guarded outright; longer ones only when the
+ * ending is a known meaningful alternation, so "elevater" → "elevator" and
+ * "turbulance" → "turbulence" still count as typos.
+ */
+function isMeaningfulSuffixSwap(a: string, b: string): boolean {
+  const i = loneDiffIndex(a, b);
+  if (i === -1) return false;
+  if (i < a.length - 3) return false;
+  if (!VOWELS.has(a[i]!) || !VOWELS.has(b[i]!)) return false;
+  if (Math.min(a.length, b.length) <= 7) return true;
+  const endA = a.slice(-3);
+  const endB = b.slice(-3);
+  return SUFFIX_ALTERNATIONS.has(endA < endB ? `${endA}|${endB}` : `${endB}|${endA}`);
+}
+
+/**
+ * Same stem, different prefix — exothermic/endothermic, chloride/fluoride,
+ * prograde/retrograde. A prefix that is merely an extension of the other
+ * (mitoc/mitoch) is an ordinary typo and stays allowed.
+ */
+function hasDifferingMorpheme(a: string, b: string): boolean {
+  let shared = 0;
+  while (
+    shared < a.length &&
+    shared < b.length &&
+    a[a.length - 1 - shared] === b[b.length - 1 - shared]
+  ) {
+    shared++;
+  }
+  if (shared < 5) return false;
+  const prefixA = a.slice(0, a.length - shared);
+  const prefixB = b.slice(0, b.length - shared);
+  if (!prefixA || !prefixB) return false;
+  if (prefixA.startsWith(prefixB) || prefixB.startsWith(prefixA)) return false;
+  return true;
+}
+
 /** Strips light inflection so "increasing" and "increase" reduce alike. */
 function looseStem(token: string): string {
   let t = token;
@@ -283,20 +343,32 @@ function looseStem(token: string): string {
   return t;
 }
 
-/** Word-level equality with typo tolerance and meaning guards. */
-function tokensMatch(a: string, b: string): boolean {
+/**
+ * Word-level equality with typo tolerance and meaning guards.
+ * `maxOverride` tightens the edit budget for callers that compare whole
+ * phrases, where a long string would otherwise buy enough edits to hide a
+ * completely different word.
+ */
+function tokensMatch(a: string, b: string, maxOverride?: number): boolean {
   if (a === b) return true;
   // Numbers are literal: 150 is not 160, 10 is not 100.
   if (isNumeric(a) || isNumeric(b)) return false;
   if (areAntonyms(a, b) || isNegatingVariant(a, b)) return false;
+  if (hasDifferingMorpheme(a, b)) return false;
+  if (isMeaningfulSuffixSwap(a, b)) return false;
   if (looseStem(a) === looseStem(b)) return true;
 
-  const budget = maxEdits(Math.min(a.length, b.length));
+  const shorter = Math.min(a.length, b.length);
+  let budget = maxEdits(shorter);
+  if (maxOverride !== undefined) budget = Math.min(budget, maxOverride);
   if (budget === 0) return false;
-  // A different first letter is rarely a typo, so demand a near-perfect match.
-  if (a[0] !== b[0] && !(Math.min(a.length, b.length) >= 5)) return false;
-  const allowed = a[0] !== b[0] ? 1 : budget;
-  return editDistance(a, b, allowed) <= allowed;
+  // A different first letter is rarely a typo, so demand a near-perfect match
+  // on a word long enough for the rest to carry the evidence.
+  if (a[0] !== b[0]) {
+    if (shorter < 7) return false;
+    budget = Math.min(budget, 1);
+  }
+  return editDistance(a, b, budget) <= budget;
 }
 
 // ───────────────────────────── Answer matching ─────────────────────────────
@@ -345,8 +417,9 @@ function answersMatch(userTokens: string[], targetTokens: string[]): boolean {
 
   if (userTokens.join(" ") === targetTokens.join(" ")) return true;
   if (multisetMatch(userTokens, targetTokens)) return true;
-  // Spacing/hyphen differences: "air speed" vs "airspeed".
-  if (tokensMatch(userTokens.join(""), targetTokens.join(""))) return true;
+  // Spacing/hyphen differences: "air speed" vs "airspeed". Budget is capped at
+  // one edit — this path exists to undo tokenization, not to forgive a word.
+  if (tokensMatch(userTokens.join(""), targetTokens.join(""), 1)) return true;
   if (acronymMatch(userTokens, targetTokens)) return true;
   if (acronymMatch(targetTokens, userTokens)) return true;
   return false;
