@@ -187,28 +187,68 @@ function singularize(token: string): string {
   return token;
 }
 
-/** Canonical form of a single word. May expand into several words. */
-function canonicalTokens(token: string): string[] {
+/**
+ * Dictionary lookup tolerant of typos in the *key* itself — so misspelling
+ * the full word "hectopascals" as "hetopasals" still resolves to "hpa"
+ * instead of silently skipping straight to a literal, uncorrected token.
+ * Uses the same edit-distance budget as tokensMatch; short keys (<=4 chars,
+ * budget 0) fall back to exact matching automatically, so units like "ft"
+ * or "kg" are unaffected — only the long, typo-prone entries benefit.
+ */
+function fuzzyDictLookup(token: string, dict: Record<string, string>): string | undefined {
+  const exact = dict[token];
+  if (exact) return exact;
+
+  let best: string | undefined;
+  let bestDist = Infinity;
+  for (const key in dict) {
+    const shorter = Math.min(token.length, key.length);
+    const budget = maxEdits(shorter);
+    if (budget === 0) continue; // already tried as an exact match above
+    if (Math.abs(token.length - key.length) > budget) continue;
+    if (token[0] !== key[0] && shorter < 7) continue;
+    const d = editDistance(token, key, budget);
+    if (d <= budget && d < bestDist) {
+      bestDist = d;
+      best = dict[key];
+      if (d === 0) break;
+    }
+  }
+  return best;
+}
+
+/**
+ * Canonical form of a single word. May expand into several words.
+ * When `fuzzy` is set, dictionary keys themselves tolerate typos, so a
+ * misspelled "hetopasals" can still be recognised as "hectopascals".
+ */
+function canonicalTokens(token: string, fuzzy: boolean): string[] {
   if (!token) return [];
-  const expanded = ABBREVIATIONS[token];
+  const look = (dict: Record<string, string>, key: string) =>
+    fuzzy ? fuzzyDictLookup(key, dict) : dict[key];
+
+  const expanded = look(ABBREVIATIONS, token);
   if (expanded) return expanded.split(" ");
 
-  let t = SPELLING_VARIANTS[token] ?? token;
-  const unit = UNITS[t];
+  let t = look(SPELLING_VARIANTS, token) ?? token;
+  const unit = look(UNITS, t);
   if (unit) return [unit];
-  const num = NUMBER_WORDS[t];
+  const num = look(NUMBER_WORDS, t);
   if (num) return [num];
   t = singularize(t);
   // Singularizing may reveal a variant/unit ("stabilisers" → "stabiliser").
-  t = SPELLING_VARIANTS[t] ?? t;
-  return [UNITS[t] ?? t];
+  t = look(SPELLING_VARIANTS, t) ?? t;
+  return [look(UNITS, t) ?? t];
 }
 
 /** Full token pipeline. Stopwords are dropped only if content survives. */
-function tokenize(raw: string): string[] {
+function tokenize(raw: string, fuzzy = false): string[] {
   const base = baseNormalize(raw);
   if (!base) return [];
-  const tokens = base.split(" ").flatMap(canonicalTokens).filter(Boolean);
+  const tokens = base
+    .split(" ")
+    .flatMap((token) => canonicalTokens(token, fuzzy))
+    .filter(Boolean);
   const content = tokens.filter((t) => !STOPWORDS.has(t));
   return content.length ? content : tokens;
 }
@@ -453,35 +493,43 @@ export function isShortAnswerCorrect(
 ): boolean {
   if (!answer || !answer.trim()) return false;
 
-  const userTokens = tokenize(answer);
-  if (!userTokens.length) return false;
-
-  // 1. The answer itself, and each keyword treated as a full alternative answer.
   const alternatives = [correctAnswer, ...acceptedKeywords].filter(
     (value): value is string => Boolean(value && value.trim()),
   );
-  for (const alternative of alternatives) {
-    if (answersMatch(userTokens, tokenize(alternative))) return true;
-  }
 
-  // 2. Legacy semantics: when keywords are *required* terms, all must appear.
-  if (acceptedKeywords.length) {
-    const keywordTokenSets = acceptedKeywords
-      .filter((k) => k && k.trim())
-      .map(tokenize)
-      .filter((t) => t.length);
-    if (
-      keywordTokenSets.length &&
-      keywordTokenSets.every((k) => phraseAppearsIn(userTokens, k))
-    ) {
-      return true;
+  const attempt = (fuzzy: boolean): boolean => {
+    const userTokens = tokenize(answer, fuzzy);
+    if (!userTokens.length) return false;
+
+    // 1. The answer itself, and each keyword treated as a full alternative answer.
+    for (const alternative of alternatives) {
+      if (answersMatch(userTokens, tokenize(alternative, fuzzy))) return true;
     }
-  }
 
-  // 3. The player wrote a sentence that contains the answer.
-  if (correctAnswer && userTokens.length <= MAX_CONTAINMENT_TOKENS) {
-    if (phraseAppearsIn(userTokens, tokenize(correctAnswer))) return true;
-  }
+    // 2. Legacy semantics: when keywords are *required* terms, all must appear.
+    if (acceptedKeywords.length) {
+      const keywordTokenSets = acceptedKeywords
+        .filter((k) => k && k.trim())
+        .map((k) => tokenize(k, fuzzy))
+        .filter((t) => t.length);
+      if (
+        keywordTokenSets.length &&
+        keywordTokenSets.every((k) => phraseAppearsIn(userTokens, k))
+      ) {
+        return true;
+      }
+    }
 
-  return false;
+    // 3. The player wrote a sentence that contains the answer.
+    if (correctAnswer && userTokens.length <= MAX_CONTAINMENT_TOKENS) {
+      if (phraseAppearsIn(userTokens, tokenize(correctAnswer, fuzzy))) return true;
+    }
+
+    return false;
+  };
+
+  // Strict tokenization first, so ordinary typo tolerance is never disturbed by
+  // a dictionary key coincidentally sitting close to the player's word. Only if
+  // nothing matches do we retry allowing typos in the dictionary keys as well.
+  return attempt(false) || attempt(true);
 }

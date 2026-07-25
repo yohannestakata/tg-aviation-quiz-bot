@@ -191,6 +191,28 @@ describe("generalises to unseen questions and other subjects", () => {
   });
 });
 
+// A misspelled word that is *also* a dictionary entry (unit, abbreviation,
+// spelling variant) must still be recognised. These collapse to a canonical
+// symbol before typo tolerance runs, so the lookup itself has to be tolerant.
+describe("typos in words that are themselves dictionary entries", () => {
+  test.each([
+    ["hetopasals", "hectopascals", "misspelled full unit name"],
+    ["hetopasals", "hPa", "misspelled name vs the symbol"],
+    ["milibar", "millibar", "misspelled unit"],
+    ["kilometres", "kilometers", "British variant"],
+    ["percentag", "percentage", "misspelled unit word"],
+  ])("%j matches %j (%s)", (answer, correct) => {
+    expect(ok(answer, correct)).toBe(true);
+  });
+
+  test.each([
+    ["kelvin", "hectopascals", "different unit entirely"],
+    ["kilometres", "kilograms", "different unit, similar shape"],
+  ])("%j does not match %j (%s)", (answer, correct) => {
+    expect(ok(answer, correct)).toBe(false);
+  });
+});
+
 describe("normalizeAnswer", () => {
   test("produces a canonical form", () => {
     // Hyphens split into separate tokens; the co-pilot/copilot equivalence is
