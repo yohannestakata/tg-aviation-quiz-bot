@@ -27,6 +27,9 @@ type QuestionData = {
 
 type CategoryEntry = { id: string; name: string };
 
+/** "any" means mixed — take questions of every difficulty. */
+type DiffCode = "easy" | "medium" | "hard" | "any";
+
 type DuelSetup = {
   duelId: string;
   challengerTgId: number;
@@ -38,6 +41,8 @@ type DuelSetup = {
   count?: number;
   questionType?: "mc" | "sa" | "mx" | "any";
   categoryId?: string | null;
+  categoryName?: string | null;
+  difficulty?: DiffCode;
   categories?: CategoryEntry[];
 };
 
@@ -53,6 +58,7 @@ type DuelInvite = {
   questionType: "mc" | "sa" | "mx" | "any";
   categoryId: string | null;
   categoryName: string | null;
+  difficulty: DiffCode;
 };
 
 type RoundAnswer = {
@@ -85,6 +91,7 @@ type DuelState = {
   questions: QuestionData[];
   duelQuestionType: "mc" | "sa" | "mx" | "any";
   categoryId: string | null;
+  difficulty: DiffCode;
   currentIndex: number;
   scores: Record<number, number>;
   roundAnswers: Partial<Record<number, RoundAnswer>>;
@@ -177,6 +184,18 @@ function questionTypeLabel(type: "mc" | "sa" | "mx" | "any"): string {
   return "Any Type";
 }
 
+function difficultyLabel(code: DiffCode): string {
+  if (code === "easy") return "Easy";
+  if (code === "medium") return "Medium";
+  if (code === "hard") return "Hard";
+  return "Mixed Difficulty";
+}
+
+/** "any" maps to undefined so the query is left unfiltered. */
+function toDbDifficulty(code: DiffCode): "easy" | "medium" | "hard" | undefined {
+  return code === "any" ? undefined : code;
+}
+
 function buildSAHint(answer: string, level: number): string {
   const VOWELS = new Set("aeiouAEIOU");
   const words = answer.trim().split(/\s+/).filter(Boolean);
@@ -220,6 +239,14 @@ function categoryKeyboard(duelId: string, cats: CategoryEntry[]): InlineKeyboard
   return kb;
 }
 
+function difficultyKeyboard(duelId: string): InlineKeyboard {
+  return new InlineKeyboard()
+    .text("🎲 Mixed", `duel:diff:${duelId}:any`).row()
+    .text("🟢 Easy", `duel:diff:${duelId}:easy`)
+    .text("🟡 Medium", `duel:diff:${duelId}:medium`)
+    .text("🔴 Hard", `duel:diff:${duelId}:hard`);
+}
+
 function inviteKeyboard(duelId: string): InlineKeyboard {
   return new InlineKeyboard()
     .text("⚔️ Accept", `duel:accept:${duelId}`)
@@ -253,6 +280,7 @@ export function registerDuelHandlers(bot: Bot<BotContext>) {
   bot.callbackQuery(/^duel:count:([^:]+):(\d+)$/, (ctx) => handleDuelCount(ctx, bot));
   bot.callbackQuery(/^duel:type:([^:]+):(\w+)$/, (ctx) => handleDuelType(ctx, bot));
   bot.callbackQuery(/^duel:cat:([^:]+):(\w+)$/, (ctx) => handleDuelCategory(ctx, bot));
+  bot.callbackQuery(/^duel:diff:([^:]+):(\w+)$/, (ctx) => handleDuelDifficulty(ctx, bot));
   bot.callbackQuery(/^duel:accept:(.+)$/, (ctx) => handleDuelAccept(ctx, bot));
   bot.callbackQuery(/^duel:decline:(.+)$/, handleDuelDecline);
   bot.callbackQuery(/^duel:answer:([^:]+):(\d+)$/, (ctx) => handleDuelAnswer(ctx, bot));
@@ -452,9 +480,6 @@ async function handleDuelCategory(ctx: BotContext, bot: Bot<BotContext>) {
     return;
   }
 
-  const count = setup.count ?? 10;
-  const typeCode = setup.questionType ?? "any";
-
   let categoryId: string | null = null;
   let categoryName: string | null = null;
   if (catArg !== "all") {
@@ -462,32 +487,78 @@ async function handleDuelCategory(ctx: BotContext, bot: Bot<BotContext>) {
     const cat = setup.categories?.[idx];
     if (cat) { categoryId = cat.id; categoryName = cat.name; }
   }
+  setup.categoryId = categoryId;
+  setup.categoryName = categoryName;
 
-  // Clean up setup
-  pendingSetups.delete(duelId);
-  usersInSetup.delete(setup.challengerTgId);
+  await ctx.answerCallbackQuery(`${categoryName ?? "All Categories"} — now pick difficulty:`);
 
-  // Fetch questions
+  const descParts = [`${setup.count} questions`, questionTypeLabel(setup.questionType ?? "any")];
+  if (categoryName) descParts.push(categoryName);
+
+  await ctx.editMessageText(
+    [
+      `⚔️ ${setup.challengerName} vs ${setup.targetName}`,
+      `📋 ${descParts.join(" · ")}`,
+      "",
+      `${shortName(setup.challengerName)}, choose difficulty:`,
+    ].join("\n"),
+    { reply_markup: difficultyKeyboard(duelId) },
+  ).catch(() => {});
+}
+
+// ── Difficulty selection ──────────────────────────────────────────────────────
+
+async function handleDuelDifficulty(ctx: BotContext, bot: Bot<BotContext>) {
+  if (!ctx.from || !ctx.match) { await ctx.answerCallbackQuery(); return; }
+
+  const duelId = ctx.match[1]!;
+  const diffCode = ctx.match[2] as DiffCode;
+  const setup = pendingSetups.get(duelId);
+
+  if (!setup) { await ctx.answerCallbackQuery("This setup has expired."); return; }
+  if (ctx.from.id !== setup.challengerTgId) {
+    await ctx.answerCallbackQuery("Only the challenger can choose the difficulty.");
+    return;
+  }
+
+  const count = setup.count ?? 10;
+  const typeCode = setup.questionType ?? "any";
+  const categoryId = setup.categoryId ?? null;
+  const categoryName = setup.categoryName ?? null;
+  setup.difficulty = diffCode;
+
   let questions: QuestionData[];
   try {
-    questions = await fetchDuelQuestions(count, typeCode, categoryId, setup.groupChatId);
+    questions = await fetchDuelQuestions(count, typeCode, categoryId, diffCode, setup.groupChatId);
   } catch {
-    await ctx.answerCallbackQuery("Failed to load questions. Try again.");
-    await ctx.editMessageText("⚔️ Couldn't load questions. Try /duel again.").catch(() => {});
+    // Setup is left alive so the challenger can simply pick again.
+    await ctx.answerCallbackQuery("Failed to load questions — pick a difficulty again.");
     return;
   }
 
   if (questions.length < count) {
-    await ctx.answerCallbackQuery("Not enough questions available right now.");
+    const label = difficultyLabel(diffCode);
+    await ctx.answerCallbackQuery(`Only ${questions.length} available at ${label}. Pick another.`);
     await ctx.editMessageText(
-      "⚔️ Not enough questions available for that combination. Try a different type or category.",
+      [
+        `⚔️ ${setup.challengerName} vs ${setup.targetName}`,
+        `⚠️ Only ${questions.length} of ${count} questions available at ${label}.`,
+        "",
+        `${shortName(setup.challengerName)}, choose a different difficulty:`,
+      ].join("\n"),
+      { reply_markup: difficultyKeyboard(duelId) },
     ).catch(() => {});
     return;
   }
 
+  // Committed — only now mark these questions as used and close the setup.
+  recordRecentQuestionIds(setup.groupChatId, questions.map((q) => q.id));
+  pendingSetups.delete(duelId);
+  usersInSetup.delete(setup.challengerTgId);
+
   await ctx.answerCallbackQuery("Set up! Sending invite...");
 
-  const descParts = [String(count) + " questions", questionTypeLabel(typeCode)];
+  const descParts = [`${count} questions`, questionTypeLabel(typeCode), difficultyLabel(diffCode)];
   if (categoryName) descParts.push(categoryName);
 
   await ctx.editMessageText(
@@ -514,6 +585,7 @@ async function handleDuelCategory(ctx: BotContext, bot: Bot<BotContext>) {
     questionType: typeCode,
     categoryId,
     categoryName,
+    difficulty: diffCode,
   });
 
   setTimeout(() => {
@@ -529,14 +601,26 @@ async function handleDuelCategory(ctx: BotContext, bot: Bot<BotContext>) {
 
 // ── Question fetching ─────────────────────────────────────────────────────────
 
+/**
+ * Returns the questions for a duel. Deliberately does NOT record them as
+ * recently-used: the caller only commits once it knows the pool was big
+ * enough, otherwise a rejected attempt would exclude its own questions from
+ * the retry and make the next attempt strictly worse.
+ */
 async function fetchDuelQuestions(
   count: number,
   typeCode: "mc" | "sa" | "mx" | "any",
   categoryId: string | null,
+  diffCode: DiffCode,
   groupChatId: number | null,
 ): Promise<QuestionData[]> {
   const excludeQuestionIds = getRecentQuestionIds(groupChatId);
-  const base = { categoryId: categoryId ?? undefined, limit: count, excludeQuestionIds };
+  const base = {
+    categoryId: categoryId ?? undefined,
+    difficulty: toDbDifficulty(diffCode),
+    limit: count,
+    excludeQuestionIds,
+  };
 
   let picked: QuestionData[];
   if (typeCode === "mx") {
@@ -561,7 +645,6 @@ async function fetchDuelQuestions(
     picked = raw.map(toQD);
   }
 
-  recordRecentQuestionIds(groupChatId, picked.map((q) => q.id));
   return picked;
 }
 
@@ -609,7 +692,7 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
     }
   }
 
-  const descParts = [questionTypeLabel(invite.questionType)];
+  const descParts = [questionTypeLabel(invite.questionType), difficultyLabel(invite.difficulty)];
   if (invite.categoryName) descParts.push(invite.categoryName);
 
   await ctx.editMessageText(
@@ -632,6 +715,7 @@ async function handleDuelAccept(ctx: BotContext, bot: Bot<BotContext>) {
     questions: invite.questions,
     duelQuestionType: invite.questionType,
     categoryId: invite.categoryId,
+    difficulty: invite.difficulty,
     currentIndex: 0,
     scores: { [invite.challengerTgId]: 0, [invite.targetTgId]: 0 },
     roundAnswers: {},
@@ -1122,9 +1206,27 @@ async function sendHalftimeSummary(bot: Bot<BotContext>, duel: DuelState): Promi
 
 // ── Tiebreaker ────────────────────────────────────────────────────────────────
 
+/**
+ * Prefers a question at the duel's chosen difficulty, but falls back to any
+ * difficulty rather than declaring a tie — short-answer questions at a single
+ * difficulty can easily run out once the duel's own questions are excluded.
+ */
+async function pickTiebreakerQuestion(duel: DuelState, usedIds: string[]) {
+  const preferred = toDbDifficulty(duel.difficulty);
+  if (preferred) {
+    const atDifficulty = await getRandomShortAnswerQuestion(
+      usedIds,
+      duel.categoryId ?? undefined,
+      preferred,
+    ).catch(() => null);
+    if (atDifficulty) return atDifficulty;
+  }
+  return getRandomShortAnswerQuestion(usedIds, duel.categoryId ?? undefined).catch(() => null);
+}
+
 async function startTiebreakerSequence(bot: Bot<BotContext>, duel: DuelState): Promise<void> {
   const usedIds = duel.questions.map((q) => q.id);
-  const tbQ = await getRandomShortAnswerQuestion(usedIds, duel.categoryId ?? undefined).catch(() => null);
+  const tbQ = await pickTiebreakerQuestion(duel, usedIds);
 
   if (!tbQ || !tbQ.correctAnswerText) {
     await Promise.all([
@@ -1201,7 +1303,7 @@ async function sendTiebreakerRound(
       ]);
       await pause(1500);
 
-      const nextQ = await getRandomShortAnswerQuestion(newUsedIds, duel.categoryId ?? undefined).catch(() => null);
+      const nextQ = await pickTiebreakerQuestion(duel, newUsedIds);
       if (!nextQ || !nextQ.correctAnswerText) {
         await finishDuel(bot, duel, { tiebreakerWinnerTgId: null });
         return;

@@ -212,12 +212,17 @@ export async function archiveQuestion(id: string) {
   return updateQuestion(id, { isActive: false });
 }
 
-export async function getRandomShortAnswerQuestion(excludeIds: string[] = [], categoryId?: string) {
+export async function getRandomShortAnswerQuestion(
+  excludeIds: string[] = [],
+  categoryId?: string,
+  difficulty?: DifficultyLevel,
+) {
   const filters = [
     eq(questions.questionType, "short_answer"),
     eq(questions.isActive, true),
     ...(excludeIds.length ? [notInArray(questions.id, excludeIds)] : []),
     ...(categoryId ? [eq(questions.categoryId, categoryId)] : []),
+    ...(difficulty ? [eq(questions.difficulty, difficulty)] : []),
   ];
   const [q] = await db
     .select()
@@ -231,6 +236,7 @@ export async function getRandomShortAnswerQuestion(excludeIds: string[] = [], ca
 export async function listQuestionsForQuiz(input: {
   categoryId?: string;
   questionType?: QuestionType;
+  difficulty?: DifficultyLevel;
   limit: number;
   userId?: string;
   excludeQuestionIds?: string[];
@@ -238,6 +244,9 @@ export async function listQuestionsForQuiz(input: {
   const baseFilters = [eq(questions.isActive, true)];
   if (input.categoryId) baseFilters.push(eq(questions.categoryId, input.categoryId));
   if (input.questionType) baseFilters.push(eq(questions.questionType, input.questionType));
+  // baseFilters feeds every query below, including the fallbacks, so a
+  // difficulty choice is never quietly widened when the pool runs short.
+  if (input.difficulty) baseFilters.push(eq(questions.difficulty, input.difficulty));
 
   let srIds: string[] = [];       // previously wrong — interleave for spaced repetition
   let excludeIds: string[] = [];  // recently correct — skip to avoid boring repeats
