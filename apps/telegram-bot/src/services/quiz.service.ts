@@ -8,6 +8,7 @@ import {
   getPersonalStats,
   getQuestionsByIds,
   getQuizScore,
+  getRecentlyShownQuestionIds,
   getSessionParticipantScores,
   getSessionQuestion,
   getTeamScores,
@@ -960,12 +961,24 @@ async function startConfiguredQuiz(ctx: BotContext) {
       : totalQuestions;
 
   const chatId = ctx.chat?.id ?? null;
+  // Persistent history from past sessions, plus the in-memory cache which also
+  // captures duels played in this chat since the last restart.
+  const shownBefore = await getRecentlyShownQuestionIds({
+    groupId: group?.id ?? null,
+    userId: user.id,
+  }).catch(() => [] as string[]);
+  // Capped to keep the NOT IN list sane; both sources are newest-first, so the
+  // most recent history survives the cut.
+  const excludeQuestionIds = [
+    ...new Set([...shownBefore, ...getRecentQuestionIds(chatId)]),
+  ].slice(0, 800);
+
   const pool = await listQuestionsForQuiz({
     categoryId: draft.categoryId,
     questionType: draft.questionType,
     limit: fetchLimit,
     userId: user.id,
-    excludeQuestionIds: getRecentQuestionIds(chatId),
+    excludeQuestionIds,
   });
 
   if (pool.length < totalQuestions) {

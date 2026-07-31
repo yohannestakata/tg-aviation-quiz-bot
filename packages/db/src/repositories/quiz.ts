@@ -16,6 +16,40 @@ export async function findUserByTelegramId(telegramUserId: string) {
   return user ?? null;
 }
 
+/**
+ * Question IDs recently served in a chat, newest first.
+ *
+ * quiz_session_questions already records every question shown in every
+ * session, so this is a persistent history that survives restarts — unlike
+ * the in-memory cache, which is wiped whenever the service spins down.
+ * Scoped by group for group chats, by user for private ones.
+ *
+ * The result feeds `excludeQuestionIds`, which is a soft filter: if the
+ * remaining pool is too small, listQuestionsForQuiz relaxes it rather than
+ * failing to start a quiz.
+ */
+export async function getRecentlyShownQuestionIds(
+  scope: { groupId?: string | null; userId?: string | null },
+  limit = 600,
+): Promise<string[]> {
+  const filter = scope.groupId
+    ? eq(quizSessions.groupId, scope.groupId)
+    : scope.userId
+      ? and(eq(quizSessions.userId, scope.userId), isNull(quizSessions.groupId))
+      : null;
+  if (!filter) return [];
+
+  const rows = await db
+    .select({ questionId: quizSessionQuestions.questionId })
+    .from(quizSessionQuestions)
+    .innerJoin(quizSessions, eq(quizSessions.id, quizSessionQuestions.quizSessionId))
+    .where(filter)
+    .orderBy(desc(quizSessions.startedAt), asc(quizSessionQuestions.position))
+    .limit(limit);
+
+  return [...new Set(rows.map((r) => r.questionId))];
+}
+
 export async function findUserByUsername(username: string) {
   const [user] = await db
     .select()

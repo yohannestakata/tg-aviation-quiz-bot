@@ -6,11 +6,13 @@ import {
   findUserByUsername,
   getHeadToHead,
   getRandomShortAnswerQuestion,
+  getRecentlyShownQuestionIds,
   listCategories,
   listQuestionsForQuiz,
   recordDuelResult,
 } from "@aviation/db";
 import { isShortAnswerCorrect } from "../utils/normalize-answer";
+import { ensureTelegramGroup } from "../services/telegram-user.service";
 import { getRecentQuestionIds, recordRecentQuestionIds } from "../utils/recent-questions";
 import type { BotContext } from "../types";
 
@@ -527,9 +529,15 @@ async function handleDuelDifficulty(ctx: BotContext, bot: Bot<BotContext>) {
   const categoryName = setup.categoryName ?? null;
   setup.difficulty = diffCode;
 
+  // Duels aren't recorded in quiz_session_questions, but the group's quiz
+  // history still applies — a duel shouldn't replay what the group just saw.
+  const group = await ensureTelegramGroup(ctx).catch(() => null);
+
   let questions: QuestionData[];
   try {
-    questions = await fetchDuelQuestions(count, typeCode, categoryId, diffCode, setup.groupChatId);
+    questions = await fetchDuelQuestions(
+      count, typeCode, categoryId, diffCode, setup.groupChatId, group?.id ?? null,
+    );
   } catch {
     // Setup is left alive so the challenger can simply pick again.
     await ctx.answerCallbackQuery("Failed to load questions — pick a difficulty again.");
@@ -613,8 +621,14 @@ async function fetchDuelQuestions(
   categoryId: string | null,
   diffCode: DiffCode,
   groupChatId: number | null,
+  groupId: string | null,
 ): Promise<QuestionData[]> {
-  const excludeQuestionIds = getRecentQuestionIds(groupChatId);
+  const shownBefore = groupId
+    ? await getRecentlyShownQuestionIds({ groupId }).catch(() => [] as string[])
+    : [];
+  const excludeQuestionIds = [
+    ...new Set([...shownBefore, ...getRecentQuestionIds(groupChatId)]),
+  ].slice(0, 800);
   const base = {
     categoryId: categoryId ?? undefined,
     difficulty: toDbDifficulty(diffCode),

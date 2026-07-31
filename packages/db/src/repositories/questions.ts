@@ -283,14 +283,16 @@ export async function listQuestionsForQuiz(input: {
   const freshFilters = [...baseFilters, ...(freshExclude.length ? [notInArray(questions.id, freshExclude)] : [])];
   const freshLimit = input.limit - srIds.length;
 
+  // Draw uniformly at random across the whole matching pool. Ordering by
+  // difficulty here would put every easy question ahead of every medium one,
+  // so a LIMIT of 10 returned 10 easy questions and never reached the rest of
+  // the bank — the main reason questions felt repetitive. Callers that want a
+  // single difficulty pass `difficulty` instead.
   let fresh = await db
     .select()
     .from(questions)
     .where(and(...freshFilters))
-    .orderBy(
-      sql`CASE ${questions.difficulty} WHEN 'easy' THEN 1 WHEN 'medium' THEN 2 WHEN 'hard' THEN 3 END`,
-      sql`random()`,
-    )
+    .orderBy(sql`random()`)
     .limit(freshLimit);
 
   // Fallback: if the pool is small and we excluded too many, pull from user's recently-correct.
